@@ -34,7 +34,7 @@ Output Format: A single JSON object that follows this schema:
       "input_image": "assets/shot_001_start.png",
       "positive_prompt": "string",
       "negative_prompt": "low quality, blurry, distorted, watermark",
-      "duration_sec": int,
+      "duration_sec": 4,
       "fps": 24,
       "seed": 42,
       "subtitle": "string",
@@ -48,8 +48,7 @@ Output Format: A single JSON object that follows this schema:
         "length_node_id": "267:225",
         "save_node_id": "75"
       }}
-    }},
-    ...
+    }}
   ]
 }}
 
@@ -57,8 +56,8 @@ Guidelines:
 1. Break the story into 3-5 logical shots.
 2. Maintain character and setting consistency in the positive prompts.
 3. Keep prompts descriptive: lighting, camera angle, action.
-4. Output ONLY the JSON object.
-5. Ensure "output" paths use "outputs/shot_xxx.mp4" format.
+4. Output ONLY the JSON object. Do not include markdown formatting or ellipsis.
+5. Ensure "output" paths use "outputs/shot_xxx.mp4" format and are unique.
 
 Brief:
 {brief}
@@ -73,6 +72,11 @@ REQUIRED_SHOT_KEYS = [
     "duration_sec", "fps", "seed", "subtitle", "narration", "output", "workflow_params"
 ]
 
+REQUIRED_WORKFLOW_PARAM_KEYS = [
+    "image_node_id", "positive_node_id", "negative_node_id", 
+    "seed_node_ids", "length_node_id", "save_node_id"
+]
+
 def validate_plan(plan: Dict[str, Any]):
     """Validates the generated plan against the required schema."""
     for key in REQUIRED_TOP_KEYS:
@@ -82,10 +86,24 @@ def validate_plan(plan: Dict[str, Any]):
     if not isinstance(plan["shots"], list) or len(plan["shots"]) == 0:
         raise ValueError("Plan must contain a non-empty shots array")
 
+    seen_outputs = set()
     for idx, shot in enumerate(plan["shots"]):
+        # Check required shot keys
         for key in REQUIRED_SHOT_KEYS:
             if key not in shot:
                 raise ValueError(f"Shot {idx} ({shot.get('id', 'unknown')}) missing required key: {key}")
+        
+        # Check workflow_params keys
+        params = shot.get("workflow_params", {})
+        for key in REQUIRED_WORKFLOW_PARAM_KEYS:
+            if key not in params:
+                raise ValueError(f"Shot {idx} workflow_params missing key: {key}")
+                
+        # Check for duplicate outputs
+        output = shot["output"]
+        if output in seen_outputs:
+            raise ValueError(f"Duplicate output path found in shot {idx}: {output}")
+        seen_outputs.add(output)
 
 def generate_plan(brief_text: str, model: str, url: str) -> Dict[str, Any]:
     prompt = STORY_PLAN_PROMPT.format(brief=brief_text)

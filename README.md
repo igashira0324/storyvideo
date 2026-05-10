@@ -32,7 +32,25 @@ Generated reports will be saved to `projects/exhibition_pr/reports/generation_re
 
 #### Validate Outputs
 ```bash
-python3 tools/validate_shots.py --project projects/exhibition_pr
+#### Generate Shot Plan from Brief
+Use the LLM-powered story planner to create a multi-shot plan from a text description.
+```bash
+# Requires local Ollama server running
+python3 tools/story_planner.py \
+  --brief projects/exhibition_pr/brief.md \
+  --project projects/exhibition_pr \
+  --model qwen3.6:27b
+```
+
+#### Generate Video
+```bash
+./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+```
+
+#### Review Generated Shots
+Check video integrity and duration.
+```bash
+python3 tools/review_shots.py --project projects/exhibition_pr
 ```
 
 #### Assemble Video (Remotion)

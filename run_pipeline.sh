@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Project Directory
 # Get the directory where the script is located

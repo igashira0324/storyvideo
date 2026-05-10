@@ -68,6 +68,8 @@ def main():
         expected_duration = shot.get("duration_sec", 5)
         if info["status"] == "ok":
             if abs(info["duration"] - expected_duration) > 0.5:
+                info["status"] = "warning"
+                info["needs_review"] = True
                 info["warning"] = f"Duration mismatch: expected {expected_duration}s, got {info['duration']}s"
         
         review_results[shot_id] = info
