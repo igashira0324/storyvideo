@@ -62,10 +62,25 @@ npm install
 npm run build
 ```
 
-### Full Pipeline
-You can run the entire pipeline with:
+### 6. Generate Shots via helper script
+Generate videos based on the shot plan using the shortcut script.
 ```bash
 ./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+```
+
+### Full Pipeline Example
+To run the complete process from planning to rendering:
+```bash
+# 1. Plan
+python3 tools/story_planner.py --brief projects/exhibition_pr/brief.md --project projects/exhibition_pr
+# 2. Generate
+./run_pipeline.sh --project projects/exhibition_pr
+# 3. Validate & Review
+python3 tools/validate_shots.py --project projects/exhibition_pr
+python3 tools/review_shots.py --project projects/exhibition_pr
+# 4. Assemble
+python3 tools/build_remotion_timeline.py --project projects/exhibition_pr --remotion-dir remotion
+cd remotion && npm install && npm run build
 ```
 
 > [!IMPORTANT]

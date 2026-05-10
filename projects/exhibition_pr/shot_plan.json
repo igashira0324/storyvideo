@@ -1,6 +1,6 @@
 {
-  "project_name": "egyptian_story",
-  "project_title": "Egyptian Story",
+  "project_name": "Exhibition_PR_Story",
+  "project_title": "Futuristic Robot Crafts Glass Sculpture",
   "composition_name": "FinalVideo",
   "width": 1280,
   "height": 720,
@@ -8,43 +8,97 @@
   "bgm": null,
   "shots": [
     {
-      "id": "shot_001_intro",
+      "id": "shot_001_glass_pickup",
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_001_start.png",
-      "positive_prompt": "Egyptian royal in blue-and-gold headdress, walking steadily forward in the desert, robot soldiers in formation. High quality, cinematic.",
-      "negative_prompt": "blurry, low quality, distorted, watermark",
-      "duration_sec": 5,
+      "positive_prompt": "cinematic close-up, futuristic metallic robotic arm with sleek silver joints precisely picking up a translucent raw glass fragment from a clean white workbench, dramatic side lighting casting long shadows, shallow depth of field focusing on the glass and gripper, photorealistic, 8k",
+      "negative_prompt": "low quality, blurry, distorted, watermark, human hands, dirty environment",
+      "duration_sec": 4,
       "fps": 24,
       "seed": 42,
-      "subtitle": "かつて、神々は沈黙していた。だが、私は違う。",
+      "subtitle": "Precision begins with a single piece.",
       "narration": null,
       "output": "outputs/shot_001.mp4",
       "workflow_params": {
         "image_node_id": "269",
         "positive_node_id": "267:266",
         "negative_node_id": "267:247",
-        "seed_node_ids": ["267:237", "267:216"],
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
         "length_node_id": "267:225",
         "save_node_id": "75"
       }
     },
     {
-      "id": "shot_002_closeup",
+      "id": "shot_002_laser_shaping",
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_002_start.png",
-      "positive_prompt": "Close up of the Egyptian queen, determined expression, wind blowing her hair. Cinematic lighting.",
-      "negative_prompt": "blurry, low quality, distorted",
-      "duration_sec": 3,
+      "positive_prompt": "medium shot, robotic arm manipulating the glass while a focused blue laser beam etches intricate patterns into the surface, sparks of glowing orange molten glass flying, dark futuristic laboratory background with ambient blue lighting, slow motion effect, highly detailed, cinematic composition",
+      "negative_prompt": "low quality, blurry, distorted, watermark, unsafe laser usage, chaotic mess",
+      "duration_sec": 4,
       "fps": 24,
-      "seed": 123,
-      "subtitle": "運命は、この手で切り拓くものだ。",
+      "seed": 85,
+      "subtitle": "Laser precision shapes the vision.",
       "narration": null,
       "output": "outputs/shot_002.mp4",
       "workflow_params": {
         "image_node_id": "269",
         "positive_node_id": "267:266",
         "negative_node_id": "267:247",
-        "seed_node_ids": ["267:237", "267:216"],
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    },
+    {
+      "id": "shot_003_polishing",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_003_start.png",
+      "positive_prompt": "close-up, robotic fingers gently rotating the now-formed glass sculpture on a polishing pad, soft warm studio lighting highlights the smooth curves and transparency of the glass, dust particles dancing in light rays, serene atmosphere, macro details, photorealistic",
+      "negative_prompt": "low quality, blurry, distorted, watermark, scratches on glass, rough texture",
+      "duration_sec": 4,
+      "fps": 24,
+      "seed": 120,
+      "subtitle": "Final touches bring clarity and shine.",
+      "narration": null,
+      "output": "outputs/shot_003.mp4",
+      "workflow_params": {
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    },
+    {
+      "id": "shot_004_glowing_finish",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_004_start.png",
+      "positive_prompt": "wide shot, the completed intricate glass sculpture stands alone on a pedestal, emitting a soft ethereal golden glow from within, dark background with subtle rim lighting, majestic and serene, magical atmosphere, high contrast, cinematic lighting, 8k resolution",
+      "negative_prompt": "low quality, blurry, distorted, watermark, robotic arm visible, cluttered background",
+      "duration_sec": 5,
+      "fps": 24,
+      "seed": 199,
+      "subtitle": "Artistry illuminated.",
+      "narration": null,
+      "output": "outputs/shot_004.mp4",
+      "workflow_params": {
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
         "length_node_id": "267:225",
         "save_node_id": "75"
       }

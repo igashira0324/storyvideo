@@ -89,6 +89,7 @@ def merge_preset(plan: Dict[str, Any], preset: Dict[str, Any]) -> Dict[str, Any]
     for shot in plan.get("shots", []):
         shot["workflow"] = preset.get("workflow")
         shot["workflow_params"] = preset.get("workflow_params")
+        shot["frame_count_formula"] = preset.get("frame_count_formula")
         if "fps" not in shot:
             shot["fps"] = plan["fps"]
             
@@ -107,7 +108,7 @@ def generate_plan(brief_text: str, model: str, url: str, repair_retries: int = 2
         }
         
         logger.info(f"Requesting story plan from LLM ({model})... (Attempt {attempt + 1})")
-        response = requests.post(f"{url}/api/generate", json=payload)
+        response = requests.post(f"{url}/api/generate", json=payload, timeout=300)
         response.raise_for_status()
         
         data = response.json()
@@ -182,7 +183,7 @@ def main():
                         "stream": False,
                         "format": "json"
                     }
-                    response = requests.post(f"{args.url}/api/generate", json=payload)
+                    response = requests.post(f"{args.url}/api/generate", json=payload, timeout=300)
                     response.raise_for_status()
                     data = response.json()
                     response_text = data.get("response") or data.get("thinking")

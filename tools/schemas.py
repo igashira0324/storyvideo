@@ -21,6 +21,7 @@ class Shot(BaseModel):
     subtitle: str
     narration: Optional[str] = None
     output: str
+    frame_count_formula: Optional[str] = None
     workflow_params: WorkflowParams
 
 class ShotPlan(BaseModel):

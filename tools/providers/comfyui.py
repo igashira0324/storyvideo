@@ -12,6 +12,19 @@ class ComfyUIProvider(VideoProvider):
     def __init__(self, comfyui_url: str):
         self.client = ComfyUIClient(comfyui_url)
 
+    def calc_frame_count(self, duration_sec: float, fps: int, formula: str) -> int:
+        base = int(duration_sec * fps)
+
+        if formula == "duration_fps_plus_one":
+            return base + 1
+
+        if formula == "ltx_8n_plus_1":
+            # LTX-2.3 often prefers (8n + 1) frames
+            n = max(1, round((base - 1) / 8))
+            return n * 8 + 1
+
+        return base
+
     def _update_node_input(self, workflow: Dict[str, Any], node_id: str, value: Any, possible_keys: List[str]):
         if node_id not in workflow:
             return False
@@ -150,8 +163,12 @@ class ComfyUIProvider(VideoProvider):
             duration = shot.get("duration_sec", 5)
             fps = shot.get("fps", 24)
             
-            # LTX length calculation
-            if shot.get("model", "").lower().startswith("ltx") or "ltx" in shot.get("workflow", "").lower():
+            # Frame count calculation
+            formula = shot.get("frame_count_formula")
+            if formula:
+                length = self.calc_frame_count(duration, fps, formula)
+            elif shot.get("model", "").lower().startswith("ltx") or "ltx" in shot.get("workflow", "").lower():
+                # Legacy heuristic for LTX
                 length = int(duration * fps) + 1
             else:
                 length = int(duration * fps)

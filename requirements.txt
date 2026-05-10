@@ -2,5 +2,5 @@ requests
 python-dotenv
 websocket-client
 tqdm
-pydantic
+pydantic>=2.0,<3.0
 ffmpeg-python
