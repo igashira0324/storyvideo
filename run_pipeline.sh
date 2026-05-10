@@ -13,14 +13,14 @@ fi
 # Activate venv
 source "$VENV_DIR/bin/activate"
 
-# Install/Update requirements
-echo "Checking dependencies..."
-pip install --upgrade pip
-pip install -r "$PROJECT_ROOT/requirements.txt"
+# Install/Update requirements with proxy bypass
+echo "Checking dependencies (Bypassing proxy)..."
+env -u http_proxy -u https_proxy pip install --upgrade pip
+env -u http_proxy -u https_proxy pip install -r "$PROJECT_ROOT/requirements.txt"
 
-# Run the generation script with all passed arguments
+# Run the generation script with all passed arguments (Bypassing proxy)
 echo "Running generation pipeline..."
-python3 "$PROJECT_ROOT/tools/generate_shots.py" "$@"
+env -u http_proxy -u https_proxy python3 "$PROJECT_ROOT/tools/generate_shots.py" "$@"
 
 # Deactivate venv
 deactivate
