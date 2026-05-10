@@ -49,13 +49,17 @@ def main():
     parser.add_argument("--vlm-model", default="minicpm-v", help="VLM model for auto-review")
     args = parser.parse_args()
 
+    if args.max_rounds < 1:
+        logger.error("--max-rounds must be >= 1")
+        sys.exit(1)
+
     project_dir = os.path.abspath(args.project)
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    report_path = os.path.join(project_dir, "reports", "review_report.json")
     
     for round_num in range(1, args.max_rounds + 1):
         logger.info(f"--- Regeneration Round {round_num} ---")
         
-        report_path = os.path.join(project_dir, "reports", "review_report.json")
         if not os.path.exists(report_path):
             logger.error(f"Review report not found: {report_path}")
             sys.exit(1)
@@ -78,6 +82,7 @@ def main():
             subprocess.run([sys.executable, os.path.join(script_dir, "ai_review_shots.py"), "--project", project_dir, "--model", args.vlm_model], check=True)
         else:
             logger.info("Auto-review disabled. Stopping after one regeneration round.")
+            logger.info("Note: review_report.json is unchanged. Run review_shots.py and ai_review_shots.py manually, or use --auto-review.")
             break
 
     # Final quality gate check

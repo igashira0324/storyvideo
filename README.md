@@ -172,6 +172,63 @@ python3 tools/review_shots.py --project projects/exhibition_pr
 # 2. AI Review (Visual check)
 python3 tools/ai_review_shots.py --project projects/exhibition_pr --model minicpm-v
 
-# 3. Regenerate failed shots
-python3 tools/regenerate_failed_shots.py --project projects/exhibition_pr
+# 3. Autonomous self-healing loop (up to 3 rounds, auto re-review)
+python3 tools/regenerate_failed_shots.py \
+  --project projects/exhibition_pr \
+  --max-rounds 3 \
+  --auto-review \
+  --vlm-model minicpm-v
+```
+
+> [!NOTE]
+> **Without `--auto-review`**: The script regenerates files but does **not** update `review_report.json`.
+> Run `review_shots.py` and `ai_review_shots.py` manually afterward, or use `--auto-review`.
+> If shots still fail after all rounds, the script exits with code **2** (for CI integration).
+
+### 5. Shot Continuity Linking
+Use the last frame of each shot as the start image of the next shot for seamless visual continuity.
+```bash
+# Apply continuity (modifies input images of subsequent shots)
+python3 tools/link_shots_continuity.py --project projects/exhibition_pr --force
+
+# Then regenerate the subsequent shots that now have new start images
+python3 tools/generate_shots.py \
+  --project projects/exhibition_pr \
+  --only shot_002 shot_003 shot_004
+```
+
+> [!WARNING]
+> Running `link_shots_continuity.py --force` overwrites the input images for subsequent shots.
+> Existing generated videos remain unchanged — you **must** regenerate those shots afterward.
+
+## Troubleshooting
+
+### ComfyUI Workflow: Missing Node Types
+If you see `missing_node_type` errors, the API workflow contains node types not installed in your ComfyUI instance.
+
+**Fix: Re-export the workflow from ComfyUI**
+1. Enable Dev Mode in ComfyUI settings
+2. Open the workflow in the browser
+3. Expand any Group Nodes / Subgraphs
+4. **Save (API Format)** — not the regular save
+5. Replace `projects/<project>/comfy_workflows/<name>_api.json`
+
+**Check installed custom nodes:**
+```bash
+ls ComfyUI/custom_nodes/
+```
+
+### ComfyUI Not Responding
+Make sure ComfyUI is running and accessible:
+```bash
+# Start ComfyUI
+cd /path/to/ComfyUI && python main.py --listen 0.0.0.0 --port 8188
+
+# Test connection
+curl http://127.0.0.1:8188/system_stats
+```
+
+Set the URL in your environment:
+```bash
+export COMFYUI_URL=http://127.0.0.1:8188
 ```

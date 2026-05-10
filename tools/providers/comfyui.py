@@ -14,7 +14,7 @@ class ComfyUIProvider(VideoProvider):
         self.client = ComfyUIClient(comfyui_url)
 
     def calc_frame_count(self, duration_sec: float, fps: int, formula: str) -> int:
-        base = int(duration_sec * fps)
+        base = math.ceil(duration_sec * fps)
 
         if formula == "duration_fps_plus_one":
             return base + 1
