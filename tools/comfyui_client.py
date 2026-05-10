@@ -44,10 +44,11 @@ class ComfyUIClient:
             raise RuntimeError(f"ComfyUI prompt request failed ({res.status_code}): {error_data}")
 
         data = res.json()
-        if "error" in data or "node_errors" in data:
+        node_errors = data.get("node_errors", {})
+        if "error" in data or (isinstance(node_errors, dict) and len(node_errors) > 0):
             raise RuntimeError(
                 f"ComfyUI prompt validation failed: "
-                f"error={data.get('error')}, node_errors={data.get('node_errors')}"
+                f"error={data.get('error')}, node_errors={node_errors}"
             )
 
         if "prompt_id" not in data:

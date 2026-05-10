@@ -121,7 +121,7 @@ class ComfyUIProvider(VideoProvider):
 
             # Prompts & Params
             self._require_update(workflow, params.get("positive_node_id"), shot.get("positive_prompt"), 
-                                ["text", "string", "prompt", "positive", "positive_prompt"], "positive prompt")
+                                ["text", "string", "prompt", "positive", "positive_prompt", "value"], "positive prompt")
             
             # Negative prompt is optional in some workflows
             negative_node_id = params.get("negative_node_id")
@@ -150,7 +150,7 @@ class ComfyUIProvider(VideoProvider):
                 length = int(duration * fps)
                 
             self._require_update(workflow, params.get("length_node_id"), length, 
-                                 ["length", "frames", "num_frames", "value_4"], "video length")
+                                 ["length", "frames", "num_frames", "value", "value_4"], "video length")
             
             self._require_update(workflow, params.get("save_node_id"), f"{shot_id}", 
                                  ["filename_prefix", "filenames_prefix", "filename", "path", "value"], "save node prefix")

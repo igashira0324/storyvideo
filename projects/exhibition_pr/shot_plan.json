@@ -21,11 +21,11 @@
       "output": "outputs/shot_001.mp4",
       "workflow_params": {
         "image_node_id": "269",
-        "positive_node_id": "267",
+        "positive_node_id": "267:266",
         "negative_node_id": null,
-        "seed_node_id": "267",
-        "length_node_id": "267",
-        "save_node_id": "301"
+        "seed_node_id": "267:216",
+        "length_node_id": "267:225",
+        "save_node_id": "75"
       }
     },
     {
@@ -42,11 +42,11 @@
       "output": "outputs/shot_002.mp4",
       "workflow_params": {
         "image_node_id": "269",
-        "positive_node_id": "267",
+        "positive_node_id": "267:266",
         "negative_node_id": null,
-        "seed_node_id": "267",
-        "length_node_id": "267",
-        "save_node_id": "301"
+        "seed_node_id": "267:216",
+        "length_node_id": "267:225",
+        "save_node_id": "75"
       }
     }
   ]
