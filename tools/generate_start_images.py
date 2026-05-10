@@ -36,15 +36,17 @@ def load_bible_prefix(project_dir: str) -> str:
 
     return "\n".join(parts) if parts else ""
 
-def generate_start_images(project_dir: str, preset_path: str, model: str = None, dry_run: bool = False):
+def generate_start_images(project_dir: str, preset_path: str, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None):
     load_dotenv()
     comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:8188")
     provider = ComfyUIProvider(comfyui_url)
 
     # Load Bibles for injection
-    bible_prefix = load_bible_prefix(project_dir)
+    bible_prefix = "" if no_bible else load_bible_prefix(project_dir)
     if bible_prefix:
         logger.info("Injecting Bible context into T2I prompts.")
+    elif no_bible:
+        logger.info("Bible injection disabled by --no-bible.")
 
     plan_path = os.path.join(project_dir, "shot_plan.json")
     if not os.path.exists(plan_path):
@@ -60,6 +62,10 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
     shots = plan.get("shots", [])
     for shot in shots:
         shot_id = shot["id"]
+        
+        if only_shots and shot_id not in only_shots:
+            continue
+            
         input_image_rel = shot.get("input_image")
         if not input_image_rel:
             continue
@@ -72,7 +78,6 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
         logger.info(f"Generating start image for {shot_id}...")
         
         # Prepare T2I shot config
-        # We reuse the ComfyUIProvider.generate_shot logic by constructing a temporary shot object
         base_prompt = shot.get("t2i_prompt") or shot["positive_prompt"]
         positive_prompt = f"{bible_prefix}\n\n{base_prompt}" if bible_prefix else base_prompt
 
@@ -84,7 +89,7 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
             "seed": shot.get("seed", 42),
             "width": plan.get("width", 1280),
             "height": plan.get("height", 720),
-            "output": input_image_rel, # We want to save it where the shot plan expects it
+            "output": input_image_rel, 
             "output_type": "image",
             "workflow_params": preset["workflow_params"]
         }
@@ -103,9 +108,11 @@ def main():
     parser.add_argument("--project", required=True, help="Project directory")
     parser.add_argument("--preset", required=True, help="T2I workflow preset JSON")
     parser.add_argument("--dry-run", action="store_true", help="Dry run mode")
+    parser.add_argument("--no-bible", action="store_true", help="Disable bible injection")
+    parser.add_argument("--only", nargs="+", help="Specific shot IDs to generate")
     args = parser.parse_args()
 
-    generate_start_images(args.project, args.preset, dry_run=args.dry_run)
+    generate_start_images(args.project, args.preset, dry_run=args.dry_run, no_bible=args.no_bible, only_shots=args.only)
 
 if __name__ == "__main__":
     main()

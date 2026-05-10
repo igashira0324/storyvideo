@@ -51,6 +51,7 @@ def main():
     parser.add_argument("--max-rounds", type=int, default=1, help="Maximum number of regeneration rounds")
     parser.add_argument("--auto-review", action="store_true", help="Automatically run review scripts after regeneration")
     parser.add_argument("--vlm-model", default="minicpm-v", help="VLM model for auto-review")
+    parser.add_argument("--only", nargs="+", help="Specific shot IDs to allow for regeneration")
     args = parser.parse_args()
 
     if args.max_rounds < 1:
@@ -72,9 +73,12 @@ def main():
             review_report = json.load(f)
 
         failed_shots = [shot_id for shot_id, info in review_report.items() if info.get("needs_review")]
+        
+        if args.only:
+            failed_shots = [s for s in failed_shots if s in args.only]
 
         if not failed_shots:
-            logger.info("No shots found that need review. Loop complete.")
+            logger.info("No shots found that need review (filtered by --only). Loop complete.")
             break
 
         logger.info(f"Found {len(failed_shots)} shots that need review.")

@@ -3,9 +3,13 @@ venv/
 __pycache__/
 *.pyc
 
-projects/*/outputs/
-projects/*/assets/
+# Generated Assets
+projects/*/assets/*_start.png
+projects/*/assets/*_continuity.png
+projects/*/reports/jobs/*.json
+projects/*/reports/jobs/*.log
 projects/*/temp/
+projects/*/outputs/
 projects/*/reports/
 projects/*/renders/
 projects/*/_backup_*/

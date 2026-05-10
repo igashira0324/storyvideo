@@ -93,6 +93,7 @@ def main():
     parser.add_argument("--project", required=True, help="Project directory")
     parser.add_argument("--model", default="minicpm-v", help="Ollama VLM model name")
     parser.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama API URL")
+    parser.add_argument("--only", nargs="+", help="Specific shot IDs to review")
     args = parser.parse_args()
 
     project_dir = os.path.abspath(args.project)
@@ -111,6 +112,9 @@ def main():
     shots_map = {s["id"]: s for s in shot_plan.get("shots", [])}
     
     for shot_id, info in review_report.items():
+        if args.only and shot_id not in args.only:
+            continue
+            
         if info["status"] != "ok":
             continue # Already marked for review
             

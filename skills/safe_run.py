@@ -6,8 +6,13 @@ import argparse
 import time
 from datetime import datetime
 
-def safe_run(project_dir, name, command):
-    # Ensure reports/jobs directory exists
+def safe_run(project_dir, name, command, cwd_override=None):
+    # Determine repo root
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(script_dir, ".."))
+    run_cwd = os.path.abspath(cwd_override) if cwd_override else repo_root
+    
+    # Ensure reports/jobs directory exists (absolute path)
     job_dir = os.path.abspath(os.path.join(project_dir, "reports", "jobs"))
     os.makedirs(job_dir, exist_ok=True)
     
@@ -16,10 +21,6 @@ def safe_run(project_dir, name, command):
     
     log_path = os.path.join(job_dir, f"{job_id}.log")
     status_path = os.path.join(job_dir, f"{job_id}.json")
-    
-    # Prepare the command to run in background
-    # We use a shell wrapper to ensure we capture the PID of the actual command
-    # and update the status file when finished.
     
     status_data = {
         "job_id": job_id,
@@ -34,19 +35,19 @@ def safe_run(project_dir, name, command):
     with open(status_path, 'w') as f:
         json.dump(status_data, f, indent=2)
         
-    # Launch command
-    # We'll use subprocess.Popen and not wait for it.
-    # Note: For persistence across agent restarts, nohup-style is better.
+    # Launch command with status update wrapper
+    # We use python3 skills/update_job_status.py to update the JSON after the command ends
+    python_bin = sys.executable or "python3"
+    update_script = os.path.join(repo_root, "skills", "update_job_status.py")
     
-    log_file = open(log_path, 'w')
+    wrapper_cmd = f"({command}) >> {log_path} 2>&1; {python_bin} {update_script} {status_path} $?"
     
     try:
-        # We run it via 'sh -c' to support complex commands and redirection
         process = subprocess.Popen(
-            f"{command} >> {log_path} 2>&1",
+            wrapper_cmd,
             shell=True,
-            cwd=project_dir,
-            start_new_session=True # Equivalent to nohup / setsid
+            cwd=run_cwd,
+            start_new_session=True 
         )
         
         status_data["status"] = "running"
@@ -76,13 +77,14 @@ def main():
     parser.add_argument("--project", required=True, help="Project directory")
     parser.add_argument("--name", required=True, help="Friendly name for the job")
     parser.add_argument("--cmd", required=True, help="Command to execute")
+    parser.add_argument("--cwd", default=None, help="Working directory (defaults to repo root)")
     args = parser.parse_args()
     
     if not os.path.exists(args.project):
         print(json.dumps({"error": f"Project directory '{args.project}' does not exist."}, indent=2))
         sys.exit(1)
         
-    safe_run(args.project, args.name, args.cmd)
+    safe_run(args.project, args.name, args.cmd, cwd_override=args.cwd)
 
 if __name__ == "__main__":
     main()

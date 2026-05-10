@@ -21,7 +21,7 @@ This document defines the mandatory operational rules for the Antigravity AI age
     - `python3 tools/regenerate_failed_shots.py`
     - `npm run build` (Remotion)
 - **Mandatory Execution Mode**: Launch all heavy jobs using `skills/safe_run.py` or within a `tmux`/`nohup` session.
-- **Monitoring**: Use `python3 skills/pipeline_manager.py --project <path> --status --json` to check project state instead of continuous manual polling.
+- **Monitoring**: Use `python3 skills/pipeline_manager.py --project projects/fallen_miku_mv --status --json` to check project state instead of continuous manual polling.
 
 ## 3. Polling & Logging
 - **Polling Loop Prohibition**: **DO NOT** use `command_status` in a tight loop for more than 5-10 iterations. If a job is taking longer, inform the user and suggest checking back later.

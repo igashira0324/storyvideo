@@ -125,7 +125,9 @@ class VideoSkill:
                 logger.warning(f"Failed to read review report: {e}")
                 
         # Check Background Jobs
-        status["running_jobs"] = self.check_jobs()
+        jobs_data = self.check_jobs()
+        status["running_jobs"] = jobs_data["running"]
+        status["recent_jobs"] = jobs_data["recent"]
         
         # Determine Next Action
         next_action = "unknown"
@@ -150,24 +152,37 @@ class VideoSkill:
     def check_jobs(self):
         job_dir = os.path.join(self.project_dir, "reports", "jobs")
         if not os.path.exists(job_dir):
-            return []
+            return {"running": [], "recent": []}
             
-        jobs = []
-        for f in os.listdir(job_dir):
+        running = []
+        recent = []
+        
+        # Sort files by date (newest first)
+        files = sorted(os.listdir(job_dir), reverse=True)
+        
+        for f in files:
             if f.endswith(".json"):
                 path = os.path.join(job_dir, f)
                 try:
                     with open(path, 'r') as jf:
                         data = json.load(jf)
                         pid = data.get("pid")
-                        if pid and self.is_pid_running(pid):
+                        status = data.get("status")
+                        
+                        if status == "running" and pid and self.is_pid_running(pid):
                             # Add log tail
                             log_path = data.get("log_path")
                             data["log_tail"] = self.get_log_tail(log_path)
-                            jobs.append(data)
+                            running.append(data)
+                        elif status in ["completed", "failed"]:
+                            # Only keep a few recent ones
+                            if len(recent) < 5:
+                                log_path = data.get("log_path")
+                                data["log_tail"] = self.get_log_tail(log_path, lines=5)
+                                recent.append(data)
                 except:
                     pass
-        return jobs
+        return {"running": running, "recent": recent}
 
     def is_pid_running(self, pid):
         try:
@@ -208,6 +223,14 @@ class VideoSkill:
             for job in s["running_jobs"]:
                 print(f"🚀 {job['name']} (PID: {job['pid']})")
                 print(f"   Log tail:\n---\n{job['log_tail']}---")
+        
+        if s["recent_jobs"]:
+            print("\n[Recent Jobs]")
+            for job in s["recent_jobs"]:
+                icon = "✅" if job['status'] == "completed" else "❌"
+                print(f"{icon} {job['name']} ({job['status']}) - {job.get('finished_at', 'unknown')}")
+                if job['status'] == "failed":
+                    print(f"   Log tail (last 5 lines):\n---\n{job['log_tail']}---")
             
         print(f"\n[Suggested Next Action: {s['next_action'].upper()}]")
         if s['next_action'] == "wait_for_jobs":
