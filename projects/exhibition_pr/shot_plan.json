@@ -5,7 +5,7 @@
   "width": 1280,
   "height": 720,
   "fps": 24,
-  "bgm": "assets/bgm.mp3",
+  "bgm": null,
   "shots": [
     {
       "id": "shot_001_intro",
@@ -17,12 +17,12 @@
       "fps": 24,
       "seed": 42,
       "subtitle": "かつて、神々は沈黙していた。だが、私は違う。",
-      "narration": "assets/narration_001.mp3",
+      "narration": null,
       "output": "outputs/shot_001.mp4",
       "workflow_params": {
         "image_node_id": "269",
         "positive_node_id": "267",
-        "negative_node_id": "267",
+        "negative_node_id": null,
         "seed_node_id": "267",
         "length_node_id": "267",
         "save_node_id": "301"
@@ -38,12 +38,12 @@
       "fps": 24,
       "seed": 123,
       "subtitle": "運命は、この手で切り拓くものだ。",
-      "narration": "assets/narration_002.mp3",
+      "narration": null,
       "output": "outputs/shot_002.mp4",
       "workflow_params": {
         "image_node_id": "269",
         "positive_node_id": "267",
-        "negative_node_id": "267",
+        "negative_node_id": null,
         "seed_node_id": "267",
         "length_node_id": "267",
         "save_node_id": "301"

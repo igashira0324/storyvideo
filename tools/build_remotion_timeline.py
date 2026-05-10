@@ -74,7 +74,10 @@ def main():
         })
         
     # Write to remotion/src/shots.json
-    shots_output_path = os.path.join(remotion_dir, "src", "shots.json")
+    src_dir = os.path.join(remotion_dir, "src")
+    os.makedirs(src_dir, exist_ok=True)
+    
+    shots_output_path = os.path.join(src_dir, "shots.json")
     with open(shots_output_path, "w") as f:
         json.dump(remotion_shots, f, indent=2)
     logger.info(f"Remotion shots saved to: {shots_output_path}")
@@ -88,7 +91,7 @@ def main():
         "bgmPath": f"{project_name}/{shot_plan['bgm']}" if shot_plan.get("bgm") else None
     }
     
-    config_path = os.path.join(remotion_dir, "src", "config.json")
+    config_path = os.path.join(src_dir, "config.json")
     with open(config_path, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=2, ensure_ascii=False)
     logger.info(f"Remotion config saved to: {config_path}")

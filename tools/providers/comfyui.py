@@ -88,8 +88,14 @@ class ComfyUIProvider(VideoProvider):
                                 ["text", "string", "prompt", "positive", "positive_prompt"], "positive prompt")
             
             # Negative prompt is optional in some workflows
-            self._update_node_input(workflow, params.get("negative_node_id"), shot.get("negative_prompt"), 
-                                    ["text", "string", "negative", "negative_prompt"])
+            negative_node_id = params.get("negative_node_id")
+            positive_node_id = params.get("positive_node_id")
+            
+            if negative_node_id and negative_node_id != positive_node_id:
+                self._update_node_input(workflow, negative_node_id, shot.get("negative_prompt"), 
+                                        ["text", "string", "negative", "negative_prompt"])
+            elif negative_node_id == positive_node_id:
+                logger.warning(f"Skipping negative prompt update for shot {shot_id}: negative_node_id is same as positive_node_id ({negative_node_id})")
             
             # Seed handling
             seed = shot.get("seed", -1)

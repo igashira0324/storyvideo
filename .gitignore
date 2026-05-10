@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 
 projects/*/outputs/
+projects/*/shots/
 projects/*/reports/
 projects/*/renders/
 
