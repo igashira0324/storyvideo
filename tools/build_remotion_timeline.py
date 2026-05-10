@@ -77,7 +77,8 @@ def main():
             "path": remotion_path,
             "duration_frames": int(shot.get("duration_sec", 5) * shot.get("fps", fps)),
             "subtitle": shot.get("subtitle"),
-            "narration_path": remotion_narration_path
+            "narration_path": remotion_narration_path,
+            "transition": shot.get("transition")
         })
         
     # Write to remotion/src/shots.json

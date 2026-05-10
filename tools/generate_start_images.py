@@ -46,7 +46,7 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
         t2i_shot = {
             "id": f"{shot_id}_start",
             "workflow": preset["workflow"],
-            "positive_prompt": shot["positive_prompt"],
+            "positive_prompt": shot.get("t2i_prompt") or shot["positive_prompt"],
             "negative_prompt": shot.get("negative_prompt", ""),
             "seed": shot.get("seed", 42),
             "width": plan.get("width", 1280),

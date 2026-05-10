@@ -30,11 +30,13 @@ Output Format: A single JSON object that follows this schema:
       "input_image": "assets/shot_001_start.png",
       "positive_prompt": "string (visual description, cinematic, focus on characters and action)",
       "negative_prompt": "low quality, blurry, distorted, watermark",
-      "duration_sec": 4,
-      "seed": 42,
-      "subtitle": "string (narrative or dialogue)",
+      "duration_sec": <int, 3-8>,
+      "seed": <int>,
+      "subtitle": "<text>",
       "narration": null,
-      "output": "outputs/shot_001.mp4"
+      "t2i_prompt": "<detailed visual prompt for start image generation>",
+      "transition": "fade",
+      "output": "outputs/shot_001_intro.mp4"
     }}
   ]
 }}

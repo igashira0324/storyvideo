@@ -52,6 +52,8 @@ class Shot(BaseModel):
     seed: int
     subtitle: str
     narration: Optional[str] = None
+    t2i_prompt: Optional[str] = None
+    transition: Optional[str] = None
     output: str
     frame_count_formula: Optional[str] = None
     workflow_params: WorkflowParams

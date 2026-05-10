@@ -9,29 +9,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def main():
-    parser = argparse.ArgumentParser(description="Regenerate shots marked as 'needs_review' in the review report")
-    parser.add_argument("--project", required=True, help="Project directory")
-    args = parser.parse_args()
-
-    project_dir = os.path.abspath(args.project)
-    report_path = os.path.join(project_dir, "reports", "review_report.json")
-    
-    if not os.path.exists(report_path):
-        logger.error(f"Review report not found: {report_path}")
-        sys.exit(1)
-
-    with open(report_path, 'r') as f:
-        review_report = json.load(f)
-
-    failed_shots = [shot_id for shot_id, info in review_report.items() if info.get("needs_review")]
-
-    if not failed_shots:
-        logger.info("No shots found that need review. Skipping regeneration.")
-        return
-
-    logger.info(f"Found {len(failed_shots)} shots that need review: {failed_shots}")
-    
+def run_regeneration(project_dir: str, failed_shots: List[str]):
     # Update seeds in shot_plan.json
     import random
     plan_path = os.path.join(project_dir, "shot_plan.json")
@@ -55,17 +33,53 @@ def main():
     cmd = [
         sys.executable,
         generate_script,
-        "--project", args.project,
+        "--project", project_dir,
         "--only"
     ] + failed_shots
 
-    logger.info(f"Executing: {' '.join(cmd)}")
-    try:
-        subprocess.run(cmd, check=True)
-        logger.info("Regeneration complete.")
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Regeneration failed: {e}")
-        sys.exit(1)
+    logger.info(f"Executing regeneration: {' '.join(cmd)}")
+    subprocess.run(cmd, check=True)
+
+def main():
+    parser = argparse.ArgumentParser(description="Regenerate shots marked as 'needs_review' in the review report")
+    parser.add_argument("--project", required=True, help="Project directory")
+    parser.add_argument("--max-rounds", type=int, default=1, help="Maximum number of regeneration rounds")
+    parser.add_argument("--auto-review", action="store_true", help="Automatically run review scripts after regeneration")
+    parser.add_argument("--vlm-model", default="minicpm-v", help="VLM model for auto-review")
+    args = parser.parse_args()
+
+    project_dir = os.path.abspath(args.project)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    for round_num in range(1, args.max_rounds + 1):
+        logger.info(f"--- Regeneration Round {round_num} ---")
+        
+        report_path = os.path.join(project_dir, "reports", "review_report.json")
+        if not os.path.exists(report_path):
+            logger.error(f"Review report not found: {report_path}")
+            sys.exit(1)
+
+        with open(report_path, 'r') as f:
+            review_report = json.load(f)
+
+        failed_shots = [shot_id for shot_id, info in review_report.items() if info.get("needs_review")]
+
+        if not failed_shots:
+            logger.info("No shots found that need review. Loop complete.")
+            break
+
+        logger.info(f"Found {len(failed_shots)} shots that need review.")
+        run_regeneration(project_dir, failed_shots)
+
+        if args.auto_review:
+            logger.info("Running automatic review...")
+            subprocess.run([sys.executable, os.path.join(script_dir, "review_shots.py"), "--project", args.project], check=True)
+            subprocess.run([sys.executable, os.path.join(script_dir, "ai_review_shots.py"), "--project", args.project, "--model", args.vlm_model], check=True)
+        else:
+            logger.info("Auto-review disabled. Stopping after one regeneration round.")
+            break
+
+    logger.info("Autonomous regeneration process complete.")
 
 if __name__ == "__main__":
     main()
