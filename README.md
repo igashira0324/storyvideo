@@ -32,6 +32,9 @@ Generated reports will be saved to `projects/exhibition_pr/reports/generation_re
 
 #### Validate Outputs
 ```bash
+python3 tools/validate_shots.py --project projects/exhibition_pr
+```
+
 #### Generate Shot Plan from Brief
 Use the LLM-powered story planner to create a multi-shot plan from a text description.
 ```bash

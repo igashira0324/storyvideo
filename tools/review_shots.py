@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def check_video(file_path: str) -> Dict[str, Any]:
     if not os.path.exists(file_path):
-        return {"status": "missing"}
+        return {"status": "missing", "needs_review": True}
     
     try:
         # Get duration using ffprobe
@@ -32,12 +32,13 @@ def check_video(file_path: str) -> Dict[str, Any]:
         
         return {
             "status": "ok",
+            "needs_review": False,
             "duration": duration,
             "resolution": resolution,
             "size_mb": os.path.getsize(file_path) / (1024 * 1024)
         }
     except Exception as e:
-        return {"status": "corrupt", "error": str(e)}
+        return {"status": "corrupt", "error": str(e), "needs_review": True}
 
 def main():
     parser = argparse.ArgumentParser(description="Review generated shots for a project")
@@ -84,7 +85,13 @@ def main():
     
     # Print summary
     ok_count = sum(1 for r in review_results.values() if r["status"] == "ok")
-    logger.info(f"Summary: {ok_count}/{len(shots)} shots are OK.")
+    warning_count = sum(1 for r in review_results.values() if r["status"] == "warning")
+    missing_count = sum(1 for r in review_results.values() if r["status"] == "missing")
+    corrupt_count = sum(1 for r in review_results.values() if r["status"] == "corrupt")
+
+    logger.info(
+        f"Summary: ok={ok_count}, warning={warning_count}, missing={missing_count}, corrupt={corrupt_count}, total={len(shots)}"
+    )
 
 if __name__ == "__main__":
     main()
