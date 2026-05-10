@@ -1,13 +1,23 @@
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, conlist
 
+class NodeConfig(BaseModel):
+    node_id: str
+    input_key: Optional[str] = None
+
 class WorkflowParams(BaseModel):
-    image_node_id: str
-    positive_node_id: str
+    # Allow both old-style flat strings and new-style NodeConfig objects/lists
+    # We use Dict[str, Any] to be highly flexible for now, but validate internally if needed.
+    # For backward compatibility and new features, we allow arbitrary keys.
+    model_config = {"extra": "allow"}
+    
+    # Common keys for validation if they exist
+    image_node_id: Optional[str] = None
+    positive_node_id: Optional[str] = None
     negative_node_id: Optional[str] = None
-    seed_node_ids: List[str]
-    length_node_id: str
-    save_node_id: str
+    seed_node_ids: Optional[List[str]] = None
+    length_node_id: Optional[str] = None
+    save_node_id: Optional[str] = None
 
 class Shot(BaseModel):
     id: str

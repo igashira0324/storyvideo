@@ -90,13 +90,51 @@ cd remotion && npm install && npm run build
 > **Sample Assets**: Sample input images are included in `projects/exhibition_pr/assets/`. 
 > BGM and narration files are optional and not included by default.
 
-## Directory Structure
-- `tools/`: Python orchestration scripts and providers.
-- `projects/`: Project-specific shot plans, workflows, and outputs.
-- `remotion/`: Remotion project for final composition.
-- `assets/`: Global assets.
-- `workflow_presets/`: Reusable ComfyUI workflow configurations.
+## Advanced Features
 
-## Future Work
-- Integration as an OpenMontage provider.
-- Advanced AI-based quality validation.
+### 1. Workflow Parameter Mapping
+You can explicitly map node IDs and input keys in your workflow presets. This is more robust than the default heuristic search.
+```json
+"workflow_params": {
+  "positive": { "node_id": "267:266", "input_key": "value" },
+  "negative": { "node_id": "267:247", "input_key": "text" },
+  "image": { "node_id": "269", "input_key": "image" },
+  "seeds": [
+    { "node_id": "267:237", "input_key": "noise_seed" },
+    { "node_id": "267:216", "input_key": "noise_seed" }
+  ]
+}
+```
+
+### 2. Automated Start Image Generation (T2I)
+Automatically generate the initial images (`input_image`) for your shots using a T2I workflow.
+```bash
+python3 tools/generate_start_images.py \
+  --project projects/exhibition_pr \
+  --preset workflow_presets/sdxl_t2i.json
+```
+
+### 3. Character & Style Bibles
+Maintain visual consistency by providing character and style definitions. If `character_bible.json` or `style_bible.json` exist in your project directory, they will be injected into the story planner's prompt.
+```json
+// projects/exhibition_pr/character_bible.json
+{
+  "main_character": {
+    "name": "Spark-chan",
+    "description": "Short blue hair, VR goggles, silver tactical suit"
+  }
+}
+```
+
+### 4. AI Quality Review (VLM)
+Use a Vision-Language Model (VLM) to automatically check if the generated videos match the prompt and meet quality standards.
+```bash
+# 1. Standard Review (Integrity check)
+python3 tools/review_shots.py --project projects/exhibition_pr
+
+# 2. AI Review (Visual check)
+python3 tools/ai_review_shots.py --project projects/exhibition_pr --model minicpm-v
+
+# 3. Regenerate failed shots
+python3 tools/regenerate_failed_shots.py --project projects/exhibition_pr
+```

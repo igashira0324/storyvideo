@@ -25,23 +25,57 @@ class ComfyUIProvider(VideoProvider):
 
         return base
 
-    def _update_node_input(self, workflow: Dict[str, Any], node_id: str, value: Any, possible_keys: List[str]):
-        if node_id not in workflow:
+    def _update_node_input(self, workflow: Dict[str, Any], node_id: str, value: Any, possible_keys: List[str], input_key: str = None):
+        if not node_id or node_id not in workflow:
             return False
         node = workflow[node_id]
         inputs = node.get("inputs", {})
+        
+        # If input_key is explicitly provided, use it
+        if input_key:
+            if input_key in inputs:
+                inputs[input_key] = value
+                return True
+            else:
+                logger.warning(f"Explicit input_key '{input_key}' not found in node {node_id}. Falling back to search.")
+
+        # Search for possible keys
         for key in possible_keys:
             if key in inputs:
                 inputs[key] = value
                 return True
         return False
 
+    def _update_param(self, workflow: Dict[str, Any], params: Dict[str, Any], key_name: str, value: Any, possible_keys: List[str], label: str, required: bool = True):
+        """Updates a parameter using either the new Dict format or the old string format."""
+        config = params.get(key_name)
+        if not config:
+            if required:
+                raise RuntimeError(f"Missing required parameter config for {label} (key: {key_name})")
+            return False
+
+        if isinstance(config, dict):
+            # New format: {"node_id": "...", "input_key": "..."}
+            node_id = config.get("node_id")
+            input_key = config.get("input_key")
+            ok = self._update_node_input(workflow, node_id, value, possible_keys, input_key)
+        else:
+            # Old format: "node_id" (string)
+            ok = self._update_node_input(workflow, str(config), value, possible_keys)
+
+        if not ok and required:
+            raise RuntimeError(
+                f"Failed to update {label}: config={config}, possible_keys={possible_keys}. "
+                "Check if the node_id and input key are correct in the API workflow JSON."
+            )
+        return ok
+
     def _require_update(self, workflow: Dict[str, Any], node_id: str, value: Any, possible_keys: List[str], label: str):
+        # This remains for internal use but usually _update_param is preferred now
         ok = self._update_node_input(workflow, node_id, value, possible_keys)
         if not ok:
             raise RuntimeError(
                 f"Failed to update {label}: node_id={node_id}, possible_keys={possible_keys}. "
-                "Check if the node_id and input key are correct in the API workflow JSON."
             )
 
     def select_video_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -126,25 +160,28 @@ class ComfyUIProvider(VideoProvider):
                 if os.path.exists(input_image_path):
                     if not dry_run:
                         uploaded_name = self.client.upload_image(input_image_path)
-                        self._require_update(workflow, params.get("image_node_id"), uploaded_name, ["image"], "input image")
+                        # Try new "image" key first, then fallback to "image_node_id"
+                        if "image" in params:
+                            self._update_param(workflow, params, "image", uploaded_name, ["image"], "input image")
+                        else:
+                            self._update_param(workflow, params, "image_node_id", uploaded_name, ["image"], "input image")
                 else:
                     report["status"] = "failed"
                     report["error"] = f"Input image not found: {input_image_path}"
                     return report
 
-            # Prompts & Params
-            self._require_update(workflow, params.get("positive_node_id"), shot.get("positive_prompt"), 
-                                ["text", "string", "prompt", "positive", "positive_prompt", "value"], "positive prompt")
+            # Prompts
+            # New format "positive" / "negative" vs old "positive_node_id" / "negative_node_id"
+            pos_key = "positive" if "positive" in params else "positive_node_id"
+            neg_key = "negative" if "negative" in params else "negative_node_id"
             
-            # Negative prompt is optional in some workflows
-            negative_node_id = params.get("negative_node_id")
-            positive_node_id = params.get("positive_node_id")
+            self._update_param(workflow, params, pos_key, shot.get("positive_prompt"), 
+                              ["text", "string", "prompt", "positive", "positive_prompt", "value"], "positive prompt")
             
-            if negative_node_id and negative_node_id != positive_node_id:
-                self._require_update(workflow, negative_node_id, shot.get("negative_prompt"), 
-                                    ["text", "string", "negative", "negative_prompt"], "negative prompt")
-            elif negative_node_id == positive_node_id:
-                logger.warning(f"Skipping negative prompt update for shot {shot_id}: negative_node_id is same as positive_node_id ({negative_node_id})")
+            neg_val = shot.get("negative_prompt")
+            if neg_val:
+                self._update_param(workflow, params, neg_key, neg_val, 
+                                  ["text", "string", "negative", "negative_prompt"], "negative prompt", required=False)
             
             # Seed handling
             seed = shot.get("seed", -1)
@@ -152,13 +189,18 @@ class ComfyUIProvider(VideoProvider):
                 import random
                 seed = random.randint(1, 2**32 - 1)
             
-            seed_node_ids = params.get("seed_node_ids")
-            if seed_node_ids and isinstance(seed_node_ids, list):
-                for i, node_id in enumerate(seed_node_ids):
-                    # Increment seed slightly for each node to ensure variation if they share logic
-                    self._update_node_input(workflow, node_id, seed + i, ["seed", "noise_seed"])
+            # Seeds can be a list (new/old) or single
+            seeds_config = params.get("seeds") or params.get("seed_node_ids")
+            if seeds_config and isinstance(seeds_config, list):
+                for i, config in enumerate(seeds_config):
+                    s_val = seed + i
+                    if isinstance(config, dict):
+                        self._update_node_input(workflow, config.get("node_id"), s_val, ["seed", "noise_seed"], config.get("input_key"))
+                    else:
+                        self._update_node_input(workflow, str(config), s_val, ["seed", "noise_seed"])
             else:
-                self._update_node_input(workflow, params.get("seed_node_id"), seed, ["seed", "noise_seed"])
+                # Fallback to single seed_node_id
+                self._update_param(workflow, params, "seed_node_id", seed, ["seed", "noise_seed"], "seed", required=False)
             
             duration = shot.get("duration_sec", 5)
             fps = shot.get("fps", 24)
@@ -172,11 +214,16 @@ class ComfyUIProvider(VideoProvider):
                 length = int(duration * fps) + 1
             else:
                 length = int(duration * fps)
-                
-            self._require_update(workflow, params.get("length_node_id"), length, 
+            
+            # Length & Save
+            len_key = "length" if "length" in params else "length_node_id"
+            save_key = "save" if "save" in params else "save_node_id"
+            
+            self._update_param(workflow, params, len_key, length, 
                                  ["length", "frames", "num_frames", "value", "value_4"], "video length")
             
-            self._require_update(workflow, params.get("save_node_id"), f"{shot_id}", 
+            self._require_update(workflow, params.get(save_key).get("node_id") if isinstance(params.get(save_key), dict) else params.get(save_key), 
+                                 f"{shot_id}", 
                                  ["filename_prefix", "filenames_prefix", "filename", "path", "value"], "save node prefix")
 
             if dry_run:

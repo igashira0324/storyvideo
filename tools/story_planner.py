@@ -148,17 +148,35 @@ def main():
     with open(args.brief, 'r', encoding='utf-8') as f:
         brief_content = f.read()
 
+    # Character and Style Bibles
+    bibles_text = ""
+    char_bible_path = os.path.join(args.project, "character_bible.json")
+    style_bible_path = os.path.join(args.project, "style_bible.json")
+    
+    if os.path.exists(char_bible_path):
+        with open(char_bible_path, 'r', encoding='utf-8') as f:
+            bibles_text += f"\nCharacter Bible:\n{f.read()}\n"
+            logger.info("Using character bible for prompt injection.")
+            
+    if os.path.exists(style_bible_path):
+        with open(style_bible_path, 'r', encoding='utf-8') as f:
+            bibles_text += f"\nStyle Bible:\n{f.read()}\n"
+            logger.info("Using style bible for prompt injection.")
+
     try:
         preset = load_preset(args.preset)
         
         plan = None
         last_error = None
         
+        # Inject bibles into the story prompt
+        full_brief = f"{brief_content}\n{bibles_text}"
+        
         for attempt in range(args.repair_retries + 1):
             try:
                 # 1. Generate (or regenerate on failure)
                 if plan is None:
-                    plan = generate_plan(brief_content, args.model, args.url, repair_retries=0) # We handle retry here
+                    plan = generate_plan(full_brief, args.model, args.url, repair_retries=0)
                 
                 # 2. Merge Preset
                 merged_plan = merge_preset(plan, preset)
