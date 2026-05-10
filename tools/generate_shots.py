@@ -69,7 +69,7 @@ def process_shot(provider: Any, project_dir: str, shot: Dict[str, Any], dry_run:
 def main():
     parser = argparse.ArgumentParser(description="Generate video shots using ComfyUI API")
     parser.add_argument("--project", required=True, help="Project directory")
-    parser.add_argument("--only", help="Only process specific shot ID")
+    parser.add_argument("--only", nargs="+", help="Only process specific shot ID(s)")
     parser.add_argument("--skip-existing", action="store_true", help="Skip if output file already exists")
     parser.add_argument("--dry-run", action="store_true", help="Prepare workflows without sending to ComfyUI")
     parser.add_argument("--retries", type=int, default=1, help="Max retries per shot")
@@ -98,7 +98,7 @@ def main():
     for shot in shots:
         shot_id = shot["id"]
         
-        if args.only and shot_id != args.only:
+        if args.only and shot_id not in args.only:
             continue
             
         output_path = os.path.join(project_dir, shot["output"])

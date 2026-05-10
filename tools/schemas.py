@@ -6,12 +6,18 @@ class NodeConfig(BaseModel):
     input_key: Optional[str] = None
 
 class WorkflowParams(BaseModel):
-    # Allow both old-style flat strings and new-style NodeConfig objects/lists
-    # We use Dict[str, Any] to be highly flexible for now, but validate internally if needed.
-    # For backward compatibility and new features, we allow arbitrary keys.
+    # Support for both new structured format and old flat format
     model_config = {"extra": "allow"}
     
-    # Common keys for validation if they exist
+    # New structured format keys
+    positive: Optional[NodeConfig] = None
+    negative: Optional[NodeConfig] = None
+    image: Optional[NodeConfig] = None
+    seeds: Optional[List[NodeConfig]] = None
+    length: Optional[NodeConfig] = None
+    save: Optional[NodeConfig] = None
+    
+    # Old flat format keys (for backward compatibility)
     image_node_id: Optional[str] = None
     positive_node_id: Optional[str] = None
     negative_node_id: Optional[str] = None

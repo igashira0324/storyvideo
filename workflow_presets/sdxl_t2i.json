@@ -1,0 +1,13 @@
+{
+  "workflow": "comfy_workflows/sdxl_t2i_api.json",
+  "workflow_params": {
+    "positive": { "node_id": "6", "input_key": "text" },
+    "negative": { "node_id": "7", "input_key": "text" },
+    "save": { "node_id": "9", "input_key": "filename_prefix" },
+    "seeds": [
+      { "node_id": "3", "input_key": "seed" }
+    ],
+    "width": { "node_id": "5", "input_key": "width" },
+    "height": { "node_id": "5", "input_key": "height" }
+  }
+}

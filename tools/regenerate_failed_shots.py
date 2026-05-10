@@ -32,8 +32,23 @@ def main():
 
     logger.info(f"Found {len(failed_shots)} shots that need review: {failed_shots}")
     
+    # Update seeds in shot_plan.json
+    import random
+    plan_path = os.path.join(project_dir, "shot_plan.json")
+    with open(plan_path, 'r', encoding='utf-8') as f:
+        shot_plan = json.load(f)
+    
+    for shot in shot_plan.get("shots", []):
+        if shot["id"] in failed_shots:
+            old_seed = shot.get("seed", 42)
+            new_seed = random.randint(1, 2**32 - 1)
+            shot["seed"] = new_seed
+            logger.info(f"Updated seed for {shot['id']}: {old_seed} -> {new_seed}")
+            
+    with open(plan_path, 'w', encoding='utf-8') as f:
+        json.dump(shot_plan, f, indent=2, ensure_ascii=False)
+    
     # Construct the command to run generate_shots.py
-    # We use space-separated IDs for the --only flag
     cmd = [
         "python3", "tools/generate_shots.py",
         "--project", args.project,

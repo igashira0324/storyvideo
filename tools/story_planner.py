@@ -193,7 +193,7 @@ def main():
                 if attempt < args.repair_retries:
                     logger.warning(f"Validation failed (Attempt {attempt + 1}). Retrying... Error: {e}")
                     # Update prompt for repair
-                    repair_prompt = f"{STORY_PLAN_PROMPT.format(brief=brief_content)}\n\nIMPORTANT: Your previous output failed validation. Error: {e}. Please fix the structure and provide a valid JSON object ONLY."
+                    repair_prompt = f"{STORY_PLAN_PROMPT.format(brief=full_brief)}\n\nIMPORTANT: Your previous output failed validation. Error: {e}. Please fix the structure and provide a valid JSON object ONLY."
                     
                     payload = {
                         "model": args.model,

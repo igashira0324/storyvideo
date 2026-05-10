@@ -3,6 +3,7 @@ import sys
 import json
 import argparse
 import logging
+import shutil
 from typing import Any, Dict, List
 
 # Setup logging
@@ -40,8 +41,14 @@ def main():
     target_link = os.path.join(public_dir, project_name)
 
     if not os.path.exists(target_link):
-        os.symlink(project_dir, target_link)
-        logger.info(f"Created symlink: {target_link} -> {project_dir}")
+        try:
+            os.symlink(project_dir, target_link)
+            logger.info(f"Created symlink: {target_link} -> {project_dir}")
+        except OSError as e:
+            logger.warning(f"Symlink failed: {e}. Falling back to copytree.")
+            # For Windows or restrictive environments, copy the directory instead
+            shutil.copytree(project_dir, target_link, dirs_exist_ok=True)
+            logger.info(f"Copied directory: {project_dir} -> {target_link}")
 
     # Prepare shots for Remotion
     remotion_shots = []

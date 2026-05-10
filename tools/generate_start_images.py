@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def generate_start_images(project_dir: str, preset_path: str, model: str = None, dry_run: bool = False):
     load_dotenv()
-    comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:11434")
+    comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:8188")
     provider = ComfyUIProvider(comfyui_url)
 
     plan_path = os.path.join(project_dir, "shot_plan.json")
@@ -50,6 +50,7 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
             "negative_prompt": shot.get("negative_prompt", ""),
             "seed": shot.get("seed", 42),
             "output": input_image_rel, # We want to save it where the shot plan expects it
+            "output_type": "image",
             "workflow_params": preset["workflow_params"]
         }
 

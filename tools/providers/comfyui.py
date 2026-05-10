@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import math
 from typing import Any, Dict, List
 from providers.base import VideoProvider
 from comfyui_client import ComfyUIClient
@@ -20,7 +21,7 @@ class ComfyUIProvider(VideoProvider):
 
         if formula == "ltx_8n_plus_1":
             # LTX-2.3 often prefers (8n + 1) frames
-            n = max(1, round((base - 1) / 8))
+            n = max(1, math.ceil((base - 1) / 8))
             return n * 8 + 1
 
         return base
@@ -85,6 +86,14 @@ class ComfyUIProvider(VideoProvider):
             if filename.lower().endswith(video_exts):
                 return item
         raise RuntimeError(f"No video output found among files: {[o.get('filename') for o in outputs]}")
+
+    def select_image_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        image_exts = (".png", ".jpg", ".jpeg", ".webp")
+        for item in outputs:
+            filename = item.get("filename", "")
+            if filename.lower().endswith(image_exts):
+                return item
+        raise RuntimeError(f"No image output found among files: {[o.get('filename') for o in outputs]}")
 
     def validate_node_types(self, workflow: Dict[str, Any]):
         """Check if all node types in the workflow are registered on the server."""
@@ -222,8 +231,7 @@ class ComfyUIProvider(VideoProvider):
             self._update_param(workflow, params, len_key, length, 
                                  ["length", "frames", "num_frames", "value", "value_4"], "video length")
             
-            self._require_update(workflow, params.get(save_key).get("node_id") if isinstance(params.get(save_key), dict) else params.get(save_key), 
-                                 f"{shot_id}", 
+            self._update_param(workflow, params, save_key, f"{shot_id}", 
                                  ["filename_prefix", "filenames_prefix", "filename", "path", "value"], "save node prefix")
 
             if dry_run:
@@ -237,7 +245,12 @@ class ComfyUIProvider(VideoProvider):
             if not outputs:
                 raise RuntimeError("No output files found")
                 
-            output_info = self.select_video_output(outputs)
+            output_type = shot.get("output_type", "video")
+            if output_type == "image":
+                output_info = self.select_image_output(outputs)
+            else:
+                output_info = self.select_video_output(outputs)
+
             dest_path = os.path.join(project_dir, shot["output"])
             os.makedirs(os.path.dirname(dest_path), exist_ok=True)
             self.client.download_file(output_info["filename"], output_info.get("subfolder", ""), output_info.get("type", "output"), dest_path)
