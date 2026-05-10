@@ -5,6 +5,8 @@ import subprocess
 import argparse
 import requests
 import logging
+import shutil
+from datetime import datetime
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -125,10 +127,35 @@ class VideoSkill:
         else:
             print("Action: Finalize with 'tools/build_remotion_timeline.py' and render.")
 
+    def backup(self):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_name = f"_backup_{timestamp}"
+        backup_path = os.path.join(self.project_dir, backup_name)
+        
+        logger.info(f"Starting backup of {self.project_dir} to {backup_path}...")
+        
+        # Files and dirs to backup
+        targets = ["outputs", "reports", "shot_plan.json", "assets"]
+        os.makedirs(backup_path, exist_ok=True)
+        
+        for item in targets:
+            src = os.path.join(self.project_dir, item)
+            dst = os.path.join(backup_path, item)
+            if os.path.exists(src):
+                if os.path.isdir(src):
+                    shutil.copytree(src, dst, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src, dst)
+                logger.info(f"Backed up: {item}")
+        
+        print(f"\n✅ Backup created successfully at: {backup_path}")
+        return backup_path
+
 def main():
     parser = argparse.ArgumentParser(description="Antigravity Pipeline Manager Skill")
     parser.add_argument("--project", required=True, help="Path to project directory")
     parser.add_argument("--status", action="store_true", help="Print current project status summary")
+    parser.add_argument("--backup", action="store_true", help="Create a timestamped backup of project data")
     args = parser.parse_args()
     
     if not os.path.exists(args.project):
@@ -138,6 +165,8 @@ def main():
     skill = VideoSkill(args.project)
     if args.status:
         skill.print_summary()
+    if args.backup:
+        skill.backup()
 
 if __name__ == "__main__":
     main()
