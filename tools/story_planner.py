@@ -38,6 +38,8 @@ Output Format: A single JSON object that follows this schema:
       "fps": 24,
       "seed": 42,
       "subtitle": "string",
+      "narration": null,
+      "output": "outputs/shot_001.mp4",
       "workflow_params": {{
         "image_node_id": "269",
         "positive_node_id": "267:266",
@@ -56,10 +58,34 @@ Guidelines:
 2. Maintain character and setting consistency in the positive prompts.
 3. Keep prompts descriptive: lighting, camera angle, action.
 4. Output ONLY the JSON object.
+5. Ensure "output" paths use "outputs/shot_xxx.mp4" format.
 
 Brief:
 {brief}
 """
+
+REQUIRED_TOP_KEYS = [
+    "project_name", "project_title", "composition_name", "width", "height", "fps", "shots"
+]
+
+REQUIRED_SHOT_KEYS = [
+    "id", "workflow", "input_image", "positive_prompt", "negative_prompt", 
+    "duration_sec", "fps", "seed", "subtitle", "narration", "output", "workflow_params"
+]
+
+def validate_plan(plan: Dict[str, Any]):
+    """Validates the generated plan against the required schema."""
+    for key in REQUIRED_TOP_KEYS:
+        if key not in plan:
+            raise ValueError(f"Plan missing required top-level key: {key}")
+            
+    if not isinstance(plan["shots"], list) or len(plan["shots"]) == 0:
+        raise ValueError("Plan must contain a non-empty shots array")
+
+    for idx, shot in enumerate(plan["shots"]):
+        for key in REQUIRED_SHOT_KEYS:
+            if key not in shot:
+                raise ValueError(f"Shot {idx} ({shot.get('id', 'unknown')}) missing required key: {key}")
 
 def generate_plan(brief_text: str, model: str, url: str) -> Dict[str, Any]:
     prompt = STORY_PLAN_PROMPT.format(brief=brief_text)
@@ -96,6 +122,9 @@ def main():
 
     try:
         plan = generate_plan(brief_content, args.model, args.url)
+        
+        # Validate the plan before saving
+        validate_plan(plan)
         
         os.makedirs(args.project, exist_ok=True)
         output_path = os.path.join(args.project, "shot_plan.json")

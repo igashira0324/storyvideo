@@ -4,6 +4,7 @@ import json
 import argparse
 import logging
 import subprocess
+from typing import Any, Dict
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Project Directory
-PROJECT_ROOT="/home/nttdmse/aipf/RRMOTION/storyvideo"
+# Get the directory where the script is located
+PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 VENV_DIR="$PROJECT_ROOT/venv"
 
 # Create venv if not exists

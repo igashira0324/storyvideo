@@ -128,8 +128,8 @@ class ComfyUIProvider(VideoProvider):
             positive_node_id = params.get("positive_node_id")
             
             if negative_node_id and negative_node_id != positive_node_id:
-                self._update_node_input(workflow, negative_node_id, shot.get("negative_prompt"), 
-                                        ["text", "string", "negative", "negative_prompt"])
+                self._require_update(workflow, negative_node_id, shot.get("negative_prompt"), 
+                                    ["text", "string", "negative", "negative_prompt"], "negative prompt")
             elif negative_node_id == positive_node_id:
                 logger.warning(f"Skipping negative prompt update for shot {shot_id}: negative_node_id is same as positive_node_id ({negative_node_id})")
             
