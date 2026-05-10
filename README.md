@@ -22,20 +22,9 @@ pip install -r requirements.txt
 cp .env.example .env  # Edit COMFYUI_URL in .env
 ```
 
-### 3. Usage
+## Usage
 
-#### Generate Shots
-```bash
-python3 tools/generate_shots.py --project projects/exhibition_pr
-```
-Generated reports will be saved to `projects/exhibition_pr/reports/generation_report.json`.
-
-#### Validate Outputs
-```bash
-python3 tools/validate_shots.py --project projects/exhibition_pr
-```
-
-#### Generate Shot Plan from Brief
+### 1. Generate Shot Plan from Brief
 Use the LLM-powered story planner to create a multi-shot plan from a text description.
 ```bash
 # Requires local Ollama server running
@@ -45,23 +34,38 @@ python3 tools/story_planner.py \
   --model qwen3.6:27b
 ```
 
-#### Generate Video
+### 2. Generate Shots
+Generate videos based on the shot plan.
 ```bash
-./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+python3 tools/generate_shots.py --project projects/exhibition_pr
+```
+Generated reports will be saved to `projects/exhibition_pr/reports/generation_report.json`.
+
+### 3. Validate Outputs
+Run verification on the generated video files.
+```bash
+python3 tools/validate_shots.py --project projects/exhibition_pr
 ```
 
-#### Review Generated Shots
-Check video integrity and duration.
+### 4. Review Generated Shots
+Check video integrity, duration, and metadata.
 ```bash
 python3 tools/review_shots.py --project projects/exhibition_pr
 ```
 
-#### Assemble Video (Remotion)
+### 5. Assemble Video (Remotion)
+Final composition and rendering.
 ```bash
 python3 tools/build_remotion_timeline.py --project projects/exhibition_pr --remotion-dir remotion
 cd remotion
 npm install
 npm run build
+```
+
+### Full Pipeline
+You can run the entire pipeline with:
+```bash
+./run_pipeline.sh --project projects/exhibition_pr --skip-existing
 ```
 
 > [!IMPORTANT]
@@ -76,6 +80,7 @@ npm run build
 - `projects/`: Project-specific shot plans, workflows, and outputs.
 - `remotion/`: Remotion project for final composition.
 - `assets/`: Global assets.
+- `workflow_presets/`: Reusable ComfyUI workflow configurations.
 
 ## Future Work
 - Integration as an OpenMontage provider.

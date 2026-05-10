@@ -1,3 +1,8 @@
+"""
+Experimental diagnostic converter.
+Do not rely on this for production workflows.
+For production, always export workflows from ComfyUI using Save (API Format).
+"""
 import json
 import sys
 import os

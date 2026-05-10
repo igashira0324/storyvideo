@@ -1,0 +1,13 @@
+{
+  "workflow": "comfy_workflows/ltx23_i2v_api.json",
+  "fps": 24,
+  "frame_count_formula": "ltx_8n_plus_1",
+  "workflow_params": {
+    "image_node_id": "269",
+    "positive_node_id": "267:266",
+    "negative_node_id": "267:247",
+    "seed_node_ids": ["267:237", "267:216"],
+    "length_node_id": "267:225",
+    "save_node_id": "75"
+  }
+}

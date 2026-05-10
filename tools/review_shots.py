@@ -20,7 +20,10 @@ def check_video(file_path: str) -> Dict[str, Any]:
             "ffprobe", "-v", "error", "-show_entries", "format=duration",
             "-of", "default=noprint_wrappers=1:nokey=1", file_path
         ]
-        duration = float(subprocess.check_output(cmd).decode().strip())
+        duration_out = subprocess.check_output(cmd).decode().strip()
+        if not duration_out:
+            raise ValueError("No duration found")
+        duration = float(duration_out)
         
         # Get resolution
         cmd = [
@@ -38,7 +41,11 @@ def check_video(file_path: str) -> Dict[str, Any]:
             "size_mb": os.path.getsize(file_path) / (1024 * 1024)
         }
     except Exception as e:
-        return {"status": "corrupt", "error": str(e), "needs_review": True}
+        return {
+            "status": "corrupt", 
+            "needs_review": True, 
+            "error": str(e)
+        }
 
 def main():
     parser = argparse.ArgumentParser(description="Review generated shots for a project")
@@ -65,7 +72,7 @@ def main():
         logger.info(f"Reviewing shot: {shot_id}")
         info = check_video(output_path)
         
-        # Validation logic
+        # Validation logic for duration
         expected_duration = shot.get("duration_sec", 5)
         if info["status"] == "ok":
             if abs(info["duration"] - expected_duration) > 0.5:
@@ -89,9 +96,14 @@ def main():
     missing_count = sum(1 for r in review_results.values() if r["status"] == "missing")
     corrupt_count = sum(1 for r in review_results.values() if r["status"] == "corrupt")
 
-    logger.info(
-        f"Summary: ok={ok_count}, warning={warning_count}, missing={missing_count}, corrupt={corrupt_count}, total={len(shots)}"
-    )
+    logger.info("-" * 40)
+    logger.info("REVIEW SUMMARY")
+    logger.info(f"  OK:      {ok_count}")
+    logger.info(f"  WARNING: {warning_count}")
+    logger.info(f"  MISSING: {missing_count}")
+    logger.info(f"  CORRUPT: {corrupt_count}")
+    logger.info(f"  TOTAL:   {len(shots)}")
+    logger.info("-" * 40)
 
 if __name__ == "__main__":
     main()
