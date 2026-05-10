@@ -67,14 +67,31 @@ class VideoSkill:
             "reviewed": 0,
             "ai_passed": 0,
             "needs_regeneration": 0,
-            "assets_exist": os.path.exists(os.path.join(self.project_dir, "assets"))
+            "start_images_total": 0,
+            "start_images_existing": 0,
+            "missing_start_images": []
         }
         
+        plan_data = None
         if status["has_plan"]:
             try:
                 with open(self.plan_path, 'r', encoding='utf-8') as f:
-                    plan = json.load(f)
-                    status["num_shots"] = len(plan.get("shots", []))
+                    plan_data = json.load(f)
+                    status["num_shots"] = len(plan_data.get("shots", []))
+                    
+                    # Check individual start images
+                    for shot in plan_data.get("shots", []):
+                        img = shot.get("input_image")
+                        if img:
+                            status["start_images_total"] += 1
+                            img_path = os.path.join(self.project_dir, img)
+                            if os.path.exists(img_path):
+                                status["start_images_existing"] += 1
+                            else:
+                                status["missing_start_images"].append({
+                                    "id": shot.get("id"),
+                                    "input_image": img
+                                })
             except Exception as e:
                 logger.warning(f"Failed to read shot plan: {e}")
                 status["has_plan"] = "error"
@@ -113,7 +130,7 @@ class VideoSkill:
             next_action = "start_servers"
         elif not status['has_plan']:
             next_action = "create_plan"
-        elif not status['assets_exist'] or status['generated'] == 0:
+        elif status['missing_start_images']:
             next_action = "generate_start_images"
         elif status['generated'] < status['num_shots']:
             next_action = "generate_shots"
@@ -136,6 +153,7 @@ class VideoSkill:
             
         print("\n[Pipeline Progress]")
         print(f"Shot Plan:  {'[OK]' if s['has_plan'] is True else '[ERROR]' if s['has_plan'] == 'error' else '[MISSING]'}")
+        print(f"Start Imgs: {s['start_images_existing']}/{s['start_images_total']} images")
         print(f"Generated:  {s['generated']}/{s['num_shots']} shots")
         print(f"Reviewed:   {s['reviewed']}/{s['num_shots']} shots")
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
