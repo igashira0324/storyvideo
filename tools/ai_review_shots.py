@@ -53,13 +53,13 @@ Does the video content match the prompt?
 Are there major visual distortions (deformed faces, flickering, logic errors)?
 
 Respond in JSON format:
-{
+{{
   "matches_prompt": true/false,
   "prompt_match_score": <float, 0.0 to 1.0>,
   "quality_ok": true/false,
   "visual_quality_score": <float, 0.0 to 1.0>,
   "reason": "short explanation"
-}
+}}
 """
 
     payload = {

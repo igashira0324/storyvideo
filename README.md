@@ -41,9 +41,16 @@ OLLAMA_URL=http://127.0.0.1:11434
 
 ### 3. 外部ツールの準備
 
-- **ComfyUI**: LTX-2.3 および SDXL のモデルが配置され、API モードで動作していること。
+- **ComfyUI**: LTX-2.3 および Ernie Image Turbo のモデルが配置され、API モードで動作していること。
 - **Ollama**: `qwen2.5:14b`（プランニング用）および `minicpm-v`（レビュー用）がインストールされていること。
 - **FFmpeg**: 動画処理およびフレーム抽出のために PATH が通っていること。
+
+### T2I (Ernie Image Turbo) 必要モデル
+以下のモデルが ComfyUI の `models/checkpoints/` または各フォルダに配置されている必要があります。
+- `ernie-image-turbo.safetensors` (UNET)
+- `ministral-3-3b.safetensors` (CLIP)
+- `flux2-vae.safetensors` (VAE)
+- `ernie-image-prompt-enhancer.safetensors` (Prompt Enhancement 使用時)
 
 ## 基本的な使い方（フルパイプライン）
 
@@ -58,7 +65,7 @@ python3 tools/story_planner.py \
 # 2. 開始画像の生成 (T2I)
 python3 tools/generate_start_images.py \
   --project projects/exhibition_pr \
-  --preset workflow_presets/sdxl_t2i.json
+  --preset workflow_presets/ernie_image_turbo.json
 
 # 3. 動画クリップの生成 (I2V)
 python3 tools/generate_shots.py \
