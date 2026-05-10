@@ -2,9 +2,9 @@ import os
 import json
 import logging
 from typing import Any, Dict, List
-from .base import VideoProvider
-from ..comfyui_client import ComfyUIClient
-from .. import utils
+from providers.base import VideoProvider
+from comfyui_client import ComfyUIClient
+import utils
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,16 @@ class ComfyUIProvider(VideoProvider):
                 return True
         return False
 
+    def select_video_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        video_exts = (".mp4", ".webm", ".mov", ".mkv", ".gif")
+        for item in outputs:
+            filename = item.get("filename", "")
+            if filename.lower().endswith(video_exts):
+                return item
+        if outputs:
+            return outputs[0]
+        raise RuntimeError("No suitable output found.")
+
     def generate_shot(self, shot: Dict[str, Any], project_dir: str, dry_run: bool = False) -> Dict[str, Any]:
         shot_id = shot["id"]
         report = {
@@ -39,6 +49,16 @@ class ComfyUIProvider(VideoProvider):
             return report
             
         workflow_template = utils.load_json(workflow_path)
+        
+        # API format check
+        if "nodes" in workflow_template and "links" in workflow_template:
+            report["status"] = "failed"
+            report["error"] = (
+                f"Workflow file appears to be ComfyUI UI format, not API format: {workflow_path}. "
+                "Please export workflow as API format from ComfyUI."
+            )
+            return report
+
         params = shot.get("workflow_params", {})
         
         try:
@@ -69,7 +89,13 @@ class ComfyUIProvider(VideoProvider):
             
             duration = shot.get("duration_sec", 5)
             fps = shot.get("fps", 24)
-            length = int(duration * fps)
+            
+            # LTX length calculation
+            if shot.get("model", "").lower().startswith("ltx") or "ltx" in shot.get("workflow", "").lower():
+                length = int(duration * fps) + 1
+            else:
+                length = int(duration * fps)
+                
             self._update_node_input(workflow, params.get("length_node_id"), length, ["length", "frames", "num_frames"])
             self._update_node_input(workflow, params.get("save_node_id"), f"{shot_id}", ["filename_prefix"])
 
@@ -84,7 +110,7 @@ class ComfyUIProvider(VideoProvider):
             if not outputs:
                 raise RuntimeError("No output files found")
                 
-            output_info = outputs[0]
+            output_info = self.select_video_output(outputs)
             dest_path = os.path.join(project_dir, shot["output"])
             os.makedirs(os.path.dirname(dest_path), exist_ok=True)
             self.client.download_file(output_info["filename"], output_info.get("subfolder", ""), output_info.get("type", "output"), dest_path)
@@ -99,6 +125,4 @@ class ComfyUIProvider(VideoProvider):
             return report
 
     def validate_shot(self, shot: Dict[str, Any], project_dir: str) -> Dict[str, Any]:
-        # This can be implemented by calling the logic in validate_shots.py
-        # Or keeping it as a separate tool.
-        return {"valid": True} # Placeholder
+        return {"valid": True}

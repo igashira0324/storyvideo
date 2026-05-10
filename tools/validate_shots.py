@@ -92,7 +92,9 @@ def main():
     logger.info(f"Validation complete: {valid_count}/{len(results)} shots are valid.")
     
     # Save validation report
-    report_path = os.path.join(project_dir, "validation_report.json")
+    report_dir = os.path.join(project_dir, "reports")
+    os.makedirs(report_dir, exist_ok=True)
+    report_path = os.path.join(report_dir, "validation_report.json")
     with open(report_path, "w") as f:
         json.dump(results, f, indent=2)
     logger.info(f"Validation report saved to: {report_path}")

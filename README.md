@@ -1,12 +1,9 @@
-# AI Video Generation Pipeline (StoryVideo)
+## Important: ComfyUI Workflow Format
+The pipeline requires ComfyUI workflows in **API Format** (exported via "Save API Format" or "Export API").
+- **UI Format**: Contains `nodes` and `links` arrays. This is NOT compatible with the `/prompt` endpoint.
+- **API Format**: A flat JSON where each key is a `node_id`. This is what the pipeline uses.
 
-A modular, lightweight pipeline for multi-shot AI video generation using ComfyUI and Remotion.
-
-## Features
-- **Shot Orchestration**: Define multiple shots in a single `shot_plan.json`.
-- **Workflow Automation**: Programmatically modify ComfyUI workflows (WAN 2.2, LTX 2.3).
-- **Remotion Composition**: Automatically assemble shots into a final video with subtitles.
-- **Validation**: Automated quality checks using `ffprobe`.
+When defining `workflow_params` in `shot_plan.json`, the `node_id` must match the keys in the **API Format** JSON.
 
 ## Quick Start
 
@@ -28,6 +25,7 @@ cp .env.example .env  # Edit COMFYUI_URL in .env
 ```bash
 python3 tools/generate_shots.py --project projects/exhibition_pr
 ```
+Generated reports will be saved to `projects/exhibition_pr/reports/generation_report.json`.
 
 #### Validate Outputs
 ```bash
@@ -43,10 +41,10 @@ npm run build
 ```
 
 ## Directory Structure
-- `tools/`: Python orchestration scripts.
-- `projects/`: Project-specific shot plans and assets.
+- `tools/`: Python orchestration scripts and providers.
+- `projects/`: Project-specific shot plans, workflows, and outputs.
 - `remotion/`: Remotion project for final composition.
-- `assets/`: Global assets (if any).
+- `assets/`: Global assets.
 
 ## Future Work
 - Integration as an OpenMontage provider.

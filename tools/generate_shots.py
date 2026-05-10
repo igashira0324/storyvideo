@@ -121,8 +121,10 @@ def main():
         "results": results
     }
     
-    report_path = os.path.join(project_dir, "generation_report.json")
-    utils.save_json(final_report, report_path)
+    report_dir = os.path.join(project_dir, "reports")
+    os.makedirs(report_dir, exist_ok=True)
+    report_path = os.path.join(report_dir, "generation_report.json")
+    utils.save_json(report_path, final_report)
     logger.info(f"Generation report saved to: {report_path}")
     
     # Summary

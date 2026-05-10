@@ -29,7 +29,18 @@ class ComfyUIClient:
         }
         res = requests.post(url, json=payload)
         res.raise_for_status()
-        return res.json()["prompt_id"]
+        data = res.json()
+
+        if "error" in data or "node_errors" in data:
+            raise RuntimeError(
+                f"ComfyUI prompt validation failed: "
+                f"error={data.get('error')}, node_errors={data.get('node_errors')}"
+            )
+
+        if "prompt_id" not in data:
+            raise RuntimeError(f"ComfyUI did not return prompt_id: {data}")
+
+        return data["prompt_id"]
 
     def get_history(self, prompt_id: str) -> Optional[Dict[str, Any]]:
         """Gets the history for a specific prompt_id."""
@@ -54,12 +65,10 @@ class ComfyUIClient:
         output_files = []
         outputs = history.get("outputs", {})
         for node_id, node_output in outputs.items():
-            if "gifs" in node_output: # ComfyUI-VideoHelperSuite outputs
-                for item in node_output["gifs"]:
-                    output_files.append(item)
-            if "images" in node_output:
-                for item in node_output["images"]:
-                    output_files.append(item)
+            for key in ["videos", "gifs", "images"]:
+                if key in node_output:
+                    for item in node_output[key]:
+                        output_files.append(item)
         return output_files
 
     def download_file(self, filename: str, subfolder: str, type: str, dest_path: str):
