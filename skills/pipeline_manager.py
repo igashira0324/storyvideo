@@ -7,7 +7,7 @@ import requests
 import logging
 import shutil
 from datetime import datetime
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class VideoSkill:
     def __init__(self, project_dir):
-        load_dotenv()
+        load_dotenv(find_dotenv())
         self.project_dir = os.path.abspath(project_dir)
         self.report_dir = os.path.join(self.project_dir, "reports")
         self.plan_path = os.path.join(self.project_dir, "shot_plan.json")
@@ -193,15 +193,15 @@ def main():
         
     skill = VideoSkill(args.project)
     
+    if args.status:
+        skill.print_summary()
+
+    if args.backup:
+        skill.backup()
+
     if args.json:
         status = skill.get_status()
         print(json.dumps(status, indent=2, ensure_ascii=False))
-        return
-
-    if args.status:
-        skill.print_summary()
-    if args.backup:
-        skill.backup()
 
 if __name__ == "__main__":
     main()

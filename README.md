@@ -96,7 +96,7 @@ python3 tools/link_shots_continuity.py --project projects/exhibition_pr
 python3 tools/generate_shots.py --project projects/exhibition_pr --only shot_002 shot_003 ...
 
 # 3. 再レビューと再合成
-# (ステップ 4〜8 を再度実行)
+# (基本フローのステップ 4〜7 を再度実行)
 ```
 
 ### キャラクター & スタイル・バイブル
