@@ -1,0 +1,12 @@
+{
+  "workflow": "comfy_workflows/ernie_image_turbo_api.json",
+  "workflow_params": {
+    "positive": { "node_id": "88:94", "input_key": "value" },
+    "save": { "node_id": "73", "input_key": "filename_prefix" },
+    "seeds": [
+      { "node_id": "88:70", "input_key": "seed" }
+    ],
+    "width": { "node_id": "88:71", "input_key": "width" },
+    "height": { "node_id": "88:71", "input_key": "height" }
+  }
+}
