@@ -3,11 +3,14 @@
   "fps": 24,
   "frame_count_formula": "ltx_8n_plus_1",
   "workflow_params": {
-    "image_node_id": "269",
-    "positive_node_id": "267:266",
-    "negative_node_id": "267:247",
-    "seed_node_ids": ["267:237", "267:216"],
-    "length_node_id": "267:225",
-    "save_node_id": "75"
+    "positive": { "node_id": "267:266", "input_key": "value" },
+    "negative": { "node_id": "267:247", "input_key": "text" },
+    "image": { "node_id": "269", "input_key": "image" },
+    "seeds": [
+      { "node_id": "267:237", "input_key": "noise_seed" },
+      { "node_id": "267:216", "input_key": "noise_seed" }
+    ],
+    "length": { "node_id": "267:225", "input_key": "value" },
+    "save": { "node_id": "75", "input_key": "filename_prefix" }
   }
 }
