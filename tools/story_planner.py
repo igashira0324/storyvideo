@@ -100,41 +100,49 @@ def merge_preset(plan: Dict[str, Any], preset: Dict[str, Any]) -> Dict[str, Any]
             
     return plan
 
-def generate_plan(brief_text: str, model: str, url: str, repair_retries: int = 2) -> Dict[str, Any]:
-    prompt = STORY_PLAN_PROMPT.format(brief=brief_text)
+def call_llm_json(model: str, url: str, prompt: str) -> Dict[str, Any]:
+    """Calls Ollama and ensures a JSON response."""
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False,
+        "format": "json"
+    }
     
-    current_prompt = prompt
-    for attempt in range(repair_retries + 1):
-        payload = {
-            "model": model,
-            "prompt": current_prompt,
-            "stream": False,
-            "format": "json"
-        }
-        
-        logger.info(f"Requesting story plan from LLM ({model})... (Attempt {attempt + 1})")
-        response = requests.post(f"{url}/api/generate", json=payload, timeout=300)
-        response.raise_for_status()
-        
-        data = response.json()
-        response_text = data.get("response") or data.get("thinking")
-        if not response_text:
-            logger.warning(f"Ollama returned an empty response fields. Data keys: {list(data.keys())}")
-            if attempt < repair_retries:
-                continue
-            else:
-                raise ValueError("Ollama returned an empty response.")
+    response = requests.post(f"{url}/api/generate", json=payload, timeout=300)
+    response.raise_for_status()
+    
+    data = response.json()
+    response_text = data.get("response") or data.get("thinking")
+    if not response_text:
+        raise ValueError("Ollama returned an empty response.")
 
+    return json.loads(response_text)
+
+def generate_and_repair_plan(full_brief: str, model: str, url: str, preset: Dict[str, Any], repair_retries: int) -> Dict[str, Any]:
+    """Handles the full generation and repair loop."""
+    base_prompt = STORY_PLAN_PROMPT.format(brief=full_brief)
+    current_prompt = base_prompt
+    
+    last_error = None
+    for attempt in range(repair_retries + 1):
         try:
-            plan_json = json.loads(response_text)
-            return plan_json
-        except json.JSONDecodeError as e:
+            logger.info(f"Requesting story plan from LLM ({model})... (Attempt {attempt + 1})")
+            plan = call_llm_json(model, url, current_prompt)
+            
+            # Merge and Validate
+            merged_plan = merge_preset(plan, preset)
+            validated_plan = validate_plan(merged_plan)
+            
+            return validated_plan
+            
+        except (json.JSONDecodeError, ValueError) as e:
+            last_error = e
+            logger.warning(f"Generation attempt {attempt + 1} failed: {e}")
             if attempt < repair_retries:
-                logger.warning(f"JSON decode failed. Retrying... Error: {e}")
-                current_prompt = f"{prompt}\n\nIMPORTANT: Your previous output was invalid JSON. Error: {e}. Please provide a valid JSON object ONLY."
-                continue
+                current_prompt = f"{base_prompt}\n\nIMPORTANT: Your previous output was invalid or failed validation. Error: {e}. Please fix the structure and provide a valid JSON object ONLY."
             else:
-                raise
+                raise last_error
 
 def main():
     parser = argparse.ArgumentParser(description="Generate a shot plan from a story brief using LLM")
@@ -170,51 +178,10 @@ def main():
 
     try:
         preset = load_preset(args.preset)
-        
-        plan = None
-        last_error = None
-        
-        # Inject bibles into the story prompt
         full_brief = f"{brief_content}\n{bibles_text}"
         
-        for attempt in range(args.repair_retries + 1):
-            try:
-                # 1. Generate (or regenerate on failure)
-                if plan is None:
-                    plan = generate_plan(full_brief, args.model, args.url, repair_retries=0)
-                
-                # 2. Merge Preset
-                merged_plan = merge_preset(plan, preset)
-                
-                # 3. Validate
-                validated_plan = validate_plan(merged_plan)
-                
-                # If we reach here, everything is good
-                plan = validated_plan
-                break
-                
-            except Exception as e:
-                last_error = e
-                if attempt < args.repair_retries:
-                    logger.warning(f"Validation failed (Attempt {attempt + 1}). Retrying... Error: {e}")
-                    # Update prompt for repair
-                    repair_prompt = f"{STORY_PLAN_PROMPT.format(brief=full_brief)}\n\nIMPORTANT: Your previous output failed validation. Error: {e}. Please fix the structure and provide a valid JSON object ONLY."
-                    
-                    payload = {
-                        "model": args.model,
-                        "prompt": repair_prompt,
-                        "stream": False,
-                        "format": "json"
-                    }
-                    response = requests.post(f"{args.url}/api/generate", json=payload, timeout=300)
-                    response.raise_for_status()
-                    data = response.json()
-                    response_text = data.get("response") or data.get("thinking")
-                    if not response_text:
-                        raise ValueError("Ollama returned an empty response during repair.")
-                    plan = json.loads(response_text)
-                else:
-                    raise last_error
+        # Generation & Repair Loop
+        plan = generate_and_repair_plan(full_brief, args.model, args.url, preset, args.repair_retries)
 
         os.makedirs(args.project, exist_ok=True)
         output_path = os.path.join(args.project, "shot_plan.json")

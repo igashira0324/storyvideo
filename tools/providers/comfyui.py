@@ -32,15 +32,16 @@ class ComfyUIProvider(VideoProvider):
         node = workflow[node_id]
         inputs = node.get("inputs", {})
         
-        # If input_key is explicitly provided, use it
+        # If input_key is explicitly provided, use it strictly
         if input_key:
             if input_key in inputs:
                 inputs[input_key] = value
                 return True
             else:
-                logger.warning(f"Explicit input_key '{input_key}' not found in node {node_id}. Falling back to search.")
+                logger.error(f"Explicit input_key '{input_key}' not found in node {node_id}. Strict mapping failed.")
+                return False
 
-        # Search for possible keys
+        # Heuristic Search for possible keys (only if no explicit input_key)
         for key in possible_keys:
             if key in inputs:
                 inputs[key] = value
