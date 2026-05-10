@@ -117,7 +117,7 @@ class ComfyUIProvider(VideoProvider):
                                  ["length", "frames", "num_frames", "value_4"], "video length")
             
             self._require_update(workflow, params.get("save_node_id"), f"{shot_id}", 
-                                 ["filename_prefix", "filenames_prefix", "filename", "path"], "save node prefix")
+                                 ["filename_prefix", "filenames_prefix", "filename", "path", "value"], "save node prefix")
 
             if dry_run:
                 report["status"] = "dry_run"
