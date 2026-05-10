@@ -47,10 +47,8 @@ npm run build
 > **Execution Order**: You MUST run `build_remotion_timeline.py` before running `npm run build` or `npm start`. The script generates `remotion/src/shots.json` and `remotion/src/config.json` which are required for the Remotion project to build.
 
 > [!NOTE]
-> **Missing Assets**: Sample input images, BGM, and narration files are not included in this repository. To run a full generation and render, please place your assets at:
-> - `projects/exhibition_pr/assets/shot_001_start.png`
-> - `projects/exhibition_pr/assets/shot_002_start.png`
-> - (Optional) `projects/exhibition_pr/assets/bgm.mp3`
+> **Sample Assets**: Sample input images are included in `projects/exhibition_pr/assets/`. 
+> BGM and narration files are optional and not included by default.
 
 ## Directory Structure
 - `tools/`: Python orchestration scripts and providers.
