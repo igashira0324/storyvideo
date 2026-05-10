@@ -1,0 +1,24 @@
+{
+  "name": "storyvideo-remotion",
+  "version": "1.0.0",
+  "description": "Remotion project for storyvideo pipeline",
+  "scripts": {
+    "start": "remotion preview src/index.ts",
+    "build": "remotion render src/index.ts FinalVideo out/final.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "remotion": "4.0.0",
+    "@remotion/cli": "4.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@types/react": "18.2.0",
+    "typescript": "5.0.0"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config": "4.0.0",
+    "eslint": "8.40.0",
+    "prettier": "2.8.8"
+  },
+  "packageManager": "npm@9.6.7"
+}

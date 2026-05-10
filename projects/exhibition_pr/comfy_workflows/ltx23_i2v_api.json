@@ -1,0 +1,130 @@
+{
+  "id": "07824bbb-6672-4bb0-ac36-4313a519e35b",
+  "revision": 0,
+  "last_node_id": 301,
+  "last_link_id": 627,
+  "nodes": [
+    {
+      "id": 270,
+      "type": "MarkdownNote",
+      "pos": [ -439.99998242345026, 4069.9999490306295 ],
+      "size": [ 400, 139.98697916666669 ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Usage Guide & Tips",
+      "properties": {},
+      "widgets_values": [ "### 使い方ガイド & ヒント\n1. **ロード・生成時間の目安 (DGX SPARK実測ベース)**:\n   - **初回起動時ロード**: 約**5分**（モデルのGPU展開）\n   - **2回目以降**: ロード時間は無し\n\n   **【秒数・length・生成時間の詳細一覧 (fps=24)】**\n   - 5秒  : **121** frames (約**3.0分**)\n   - 6秒  : **145** frames (約**3.6分**)\n   - 7秒  : **169** frames (約**4.1分**) ※実測値\n   - 8秒  : **193** frames (約**4.7分**)\n   - 9秒  : **217** frames (約**5.3分**)\n   - 10秒 : **241** frames (約**5.8分**)\n   - 11秒 : **265** frames (約**6.4分**)\n   - 12秒 : **289** frames (約**7.0分**)\n   - 13秒 : **313** frames (約**7.6分**)\n   - 14秒 : **337** frames (約**8.2分**)\n   - 15秒 : **361** frames (約**8.7分**)\n\n2. **DGX SPARKでの推奨設定と品質**:\n   - **最高品質（推奨）: 5秒 〜 10秒 (length: 121 〜 241)**\n     一貫性や背景の安定感が非常に高い範囲です。\n   - **高品質（挑戦）: 10秒 〜 15秒 (length: 241 〜 361)**\n     10秒を超えると「ドリフト現象（姿の崩れ）」が起きやすくなります。\n\n3. **保存先の自由な指定 (絶対パス対応)**:\n   右下の **Output Path / Filename Prefix** ノードで、PC内の好きな場所を指定できます。\n   - **絶対パスで保存する場合**: 先頭に `ROOT/` をつけてからフルパスを記述してください。\n     例：`ROOT/home/nttdmse/aipf/ComfyUI/input/EXPO/2026-gw-ai/result/video01` と入力すると、その場所に直接保存されます。\n   - **EXPOフォルダへのショートカット**: `EXPO_Result/ファイル名` も引き続き使用可能です。\n\n4. **アスペクト比の自動調整**:\n   画像入力時に自動的にアスペクト比を維持して長辺1024pxにリサイズされます。" ]
+    },
+    {
+      "id": 269,
+      "type": "LoadImage",
+      "pos": [ -439.99998242345026, 3530.000022487056 ],
+      "size": [ 400, 469.9869791666667 ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links": [ 609, 624 ] },
+        { "name": "MASK", "type": "MASK", "links": null }
+      ],
+      "properties": { "Node name for S&R": "LoadImage" },
+      "widgets_values": [ "egyptian_queen.png", "image" ]
+    },
+    {
+      "id": 75,
+      "type": "SaveVideo",
+      "pos": [ 430.0000786863412, 3530.000022487056 ],
+      "size": [ 659.9869791666667, 469.9869791666667 ],
+      "flags": { "collapsed": false },
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        { "name": "video", "type": "VIDEO", "link": 594 },
+        { "name": "filenames_prefix", "type": "STRING", "link": 627, "widget": { "name": "filenames_prefix" } }
+      ],
+      "outputs": [],
+      "properties": { "Node name for S&R": "SaveVideo" },
+      "widgets_values": [ "video/LTX_2.3_i2v", "auto", "auto" ]
+    },
+    {
+      "id": 267,
+      "type": "b94257db-cdc1-45d3-8913-ca61e782d9c1",
+      "pos": [ -10, 3530 ],
+      "size": [ 400, 470 ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        { "label": "first_frame", "name": "input", "type": "IMAGE,MASK", "link": 609 },
+        { "label": "disable_i2v", "name": "value_1", "type": "BOOLEAN", "widget": { "name": "value_1" }, "link": null },
+        { "label": "width", "name": "value_2", "type": "INT", "widget": { "name": "value_2" }, "link": 625 },
+        { "label": "height", "name": "value_3", "type": "INT", "widget": { "name": "value_3" }, "link": 626 },
+        { "label": "length", "name": "value_4", "type": "INT", "widget": { "name": "value_4" }, "link": null },
+        { "label": "distilled_lora", "name": "lora_name", "type": "COMBO", "widget": { "name": "lora_name" }, "link": null },
+        { "label": "latent_upscale_model", "name": "model_name", "type": "COMBO", "widget": { "name": "model_name" }, "link": null }
+      ],
+      "outputs": [
+        { "name": "VIDEO", "type": "VIDEO", "links": [ 594 ] }
+      ],
+      "properties": { "Node name for S&R": "Video Generation (LTX-2.3)" },
+      "widgets_values": [
+        "Prompt template",
+        false,
+        1280,
+        720,
+        121,
+        null,
+        null,
+        "ltx-2.3-22b-dev-fp8.safetensors",
+        "gemma_3_12B_it_fp4_mixed.safetensors",
+        "gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+        "ltx-2.3-spatial-upscaler-x2-1.0.safetensors",
+        "ltx-2.3-22b-distilled-lora-384.safetensors"
+      ]
+    },
+    {
+      "id": 300,
+      "type": "LTXV_Resolution_Calculator",
+      "pos": [ -440, 3800 ],
+      "size": [ 350, 100 ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [ { "name": "image", "type": "IMAGE", "link": 624 } ],
+      "outputs": [
+        { "name": "width", "type": "INT", "links": [ 625 ] },
+        { "name": "height", "type": "INT", "links": [ 626 ] }
+      ],
+      "properties": { "Node name for S&R": "LTXV_Resolution_Calculator" },
+      "widgets_values": [ 1024 ]
+    },
+    {
+      "id": 301,
+      "type": "PrimitiveNode",
+      "pos": [ 430, 4050 ],
+      "size": [ 659.9869791666667, 100 ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        { "name": "STRING", "type": "STRING", "links": [ 627 ] }
+      ],
+      "title": "Output Path / Filename Prefix",
+      "properties": {},
+      "widgets_values": [ "video/LTX_2.3_i2v", "fixed" ]
+    }
+  ],
+  "links": [
+    [ 594, 267, 0, 75, 0, "VIDEO" ],
+    [ 609, 269, 0, 267, 0, "IMAGE" ],
+    [ 624, 269, 0, 300, 0, "IMAGE" ],
+    [ 625, 300, 0, 267, 2, "INT" ],
+    [ 626, 300, 1, 267, 3, "INT" ],
+    [ 627, 301, 0, 75, 1, "STRING" ]
+  ]
+}

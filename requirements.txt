@@ -1,0 +1,6 @@
+requests
+python-dotenv
+websocket-client
+tqdm
+pydantic
+ffmpeg-python

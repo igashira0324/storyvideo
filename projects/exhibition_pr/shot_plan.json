@@ -1,0 +1,62 @@
+{
+  "project_title": "Exhibition PR Video",
+  "composition_name": "ExhibitionPR",
+  "aspect_ratio": "16:9",
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "bgm": "assets/bgm/bgm.mp3",
+  "narration_audio": "assets/voice/narration.wav",
+  "shots": [
+    {
+      "id": "shot_001",
+      "duration_sec": 6,
+      "model": "wan22_i2v",
+      "workflow": "comfy_workflows/wan22_i2v_api.json",
+      "input_image": "assets/input_images/shot_001.png",
+      "output": "shots/shot_001.mp4",
+      "seed": 101001,
+      "positive_prompt": "A realistic 6-second promotional video shot based on the input image. Keep the original exhibition booth, objects, signs, logos, printed text, QR codes, camera angle, aspect ratio and composition stable and recognizable. Add only subtle natural camera motion, clean Japanese trade show lighting, professional corporate PR atmosphere.",
+      "negative_prompt": "low quality, blurry, noisy, distorted background, warped text, unreadable text, broken logo, broken QR code, flickering, unstable camera, excessive motion blur, duplicate people, deformed objects, bad anatomy, anime, cartoon, nsfw",
+      "subtitle": "こちらは、最新技術を体験できる展示ブースです。",
+      "id": "shot_001_intro",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_001_start.png",
+      "positive_prompt": "Egyptian royal in blue-and-gold headdress, walking steadily forward in the desert, robot soldiers in formation. High quality, cinematic.",
+      "negative_prompt": "blurry, low quality, distorted, watermark",
+      "duration_sec": 5,
+      "fps": 24,
+      "seed": 42,
+      "subtitle": "かつて、神々は沈黙していた。だが、私は違う。",
+      "narration": "assets/narration_001.mp3",
+      "output": "outputs/shot_001.mp4",
+      "workflow_params": {
+        "image_node_id": "269",
+        "positive_node_id": "267",
+        "negative_node_id": "267",
+        "seed_node_id": "267",
+        "length_node_id": "267",
+        "save_node_id": "301"
+      }
+    },
+    {
+      "id": "shot_002_closeup",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_002_start.png",
+      "positive_prompt": "Close up of the Egyptian queen, determined expression, wind blowing her hair. Cinematic lighting.",
+      "negative_prompt": "blurry, low quality, distorted",
+      "duration_sec": 3,
+      "fps": 24,
+      "seed": 123,
+      "output": "outputs/shot_002.mp4",
+      "workflow_params": {
+        "image_node_id": "269",
+        "positive_node_id": "267",
+        "negative_node_id": "267",
+        "seed_node_id": "267",
+        "length_node_id": "267",
+        "save_node_id": "301"
+      }
+    }
+  ]
+}
