@@ -37,10 +37,12 @@ def safe_run(project_dir, name, command, cwd_override=None):
         
     # Launch command with status update wrapper
     # We use python3 skills/update_job_status.py to update the JSON after the command ends
+    import shlex
     python_bin = sys.executable or "python3"
     update_script = os.path.join(repo_root, "skills", "update_job_status.py")
     
-    wrapper_cmd = f"({command}) >> {log_path} 2>&1; {python_bin} {update_script} {status_path} $?"
+    # We wrap the command in a subshell and then run the status update
+    wrapper_cmd = f"({command}) >> {shlex.quote(log_path)} 2>&1; {shlex.quote(python_bin)} {shlex.quote(update_script)} {shlex.quote(status_path)} $?"
     
     try:
         process = subprocess.Popen(

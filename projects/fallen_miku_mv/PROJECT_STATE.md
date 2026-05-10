@@ -20,6 +20,16 @@ Last updated: 2026-05-11
 3. [/] Run `tools/generate_shots.py` (via `safe_run.py`).
 4. [ ] Perform quality review.
 
+## Model / Workflow Policy
+
+- **T2I start images**: Ernie Image Turbo
+  - Preset: `workflow_presets/ernie_image_turbo.json`
+  - Workflow: `comfy_workflows/ernie_image_turbo_api.json`
+- **I2V videos**: LTX-2.3
+  - Preset: `workflow_presets/ltx23_i2v.json`
+  - Workflow: `comfy_workflows/ltx23_i2v_api.json`
+- **SDXL**: Legacy/fallback only. Not used in this project.
+
 ## Rules
 - Launch heavy jobs via `skills/safe_run.py`.
 - Do not paste full logs into chat.
