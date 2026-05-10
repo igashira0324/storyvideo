@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.pyc
+
+projects/*/outputs/
+projects/*/reports/
+projects/*/renders/
+
+remotion/node_modules/
+remotion/out/
+remotion/dist/
+remotion/public/*
+!remotion/public/.gitkeep
+
+.DS_Store

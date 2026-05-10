@@ -1,3 +1,6 @@
+# StoryVideo
+A lightweight multi-shot AI video generation pipeline using ComfyUI and Remotion.
+
 ## Important: ComfyUI Workflow Format
 The pipeline requires ComfyUI workflows in **API Format** (exported via "Save API Format" or "Export API").
 - **UI Format**: Contains `nodes` and `links` arrays. This is NOT compatible with the `/prompt` endpoint.

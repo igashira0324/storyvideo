@@ -1,6 +1,7 @@
 import { Composition } from 'remotion';
 import { MainTimeline } from './Timeline';
 import shotsData from './shots.json';
+import config from './config.json';
 
 export const RemotionRoot: React.FC = () => {
   // Calculate total duration from shots
@@ -9,15 +10,15 @@ export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
-        id="FinalVideo"
+        id={config.compositionName || "FinalVideo"}
         component={MainTimeline}
         durationInFrames={totalFrames || 100}
-        fps={24}
-        width={1920}
-        height={1080}
+        fps={config.fps || 24}
+        width={config.width || 1280}
+        height={config.height || 720}
         defaultProps={{
           shots: shotsData,
-          bgm_path: "/assets/bgm.mp3",
+          bgm_path: config.bgmPath,
           bgm_volume: 0.2
         }}
       />

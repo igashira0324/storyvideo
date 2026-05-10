@@ -23,15 +23,21 @@ class ComfyUIProvider(VideoProvider):
                 return True
         return False
 
+    def _require_update(self, workflow: Dict[str, Any], node_id: str, value: Any, possible_keys: List[str], label: str):
+        ok = self._update_node_input(workflow, node_id, value, possible_keys)
+        if not ok:
+            raise RuntimeError(
+                f"Failed to update {label}: node_id={node_id}, possible_keys={possible_keys}. "
+                "Check if the node_id and input key are correct in the API workflow JSON."
+            )
+
     def select_video_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
-        video_exts = (".mp4", ".webm", ".mov", ".mkv", ".gif")
+        video_exts = (".mp4", ".webm", ".mov", ".mkv")
         for item in outputs:
             filename = item.get("filename", "")
             if filename.lower().endswith(video_exts):
                 return item
-        if outputs:
-            return outputs[0]
-        raise RuntimeError("No suitable output found.")
+        raise RuntimeError(f"No video output found among files: {[o.get('filename') for o in outputs]}")
 
     def generate_shot(self, shot: Dict[str, Any], project_dir: str, dry_run: bool = False) -> Dict[str, Any]:
         shot_id = shot["id"]
@@ -71,16 +77,21 @@ class ComfyUIProvider(VideoProvider):
                 if os.path.exists(input_image_path):
                     if not dry_run:
                         uploaded_name = self.client.upload_image(input_image_path)
-                        self._update_node_input(workflow, params.get("image_node_id"), uploaded_name, ["image"])
+                        self._require_update(workflow, params.get("image_node_id"), uploaded_name, ["image"], "input image")
                 else:
                     report["status"] = "failed"
                     report["error"] = f"Input image not found: {input_image_path}"
                     return report
 
             # Prompts & Params
-            self._update_node_input(workflow, params.get("positive_node_id"), shot.get("positive_prompt"), ["text", "string"])
-            self._update_node_input(workflow, params.get("negative_node_id"), shot.get("negative_prompt"), ["text", "string"])
+            self._require_update(workflow, params.get("positive_node_id"), shot.get("positive_prompt"), 
+                                ["text", "string", "prompt", "positive", "positive_prompt"], "positive prompt")
             
+            # Negative prompt is optional in some workflows
+            self._update_node_input(workflow, params.get("negative_node_id"), shot.get("negative_prompt"), 
+                                    ["text", "string", "negative", "negative_prompt"])
+            
+            # Seed handling
             seed = shot.get("seed", -1)
             if seed == -1 and not dry_run:
                 import random
@@ -96,8 +107,11 @@ class ComfyUIProvider(VideoProvider):
             else:
                 length = int(duration * fps)
                 
-            self._update_node_input(workflow, params.get("length_node_id"), length, ["length", "frames", "num_frames"])
-            self._update_node_input(workflow, params.get("save_node_id"), f"{shot_id}", ["filename_prefix"])
+            self._require_update(workflow, params.get("length_node_id"), length, 
+                                 ["length", "frames", "num_frames", "value_4"], "video length")
+            
+            self._require_update(workflow, params.get("save_node_id"), f"{shot_id}", 
+                                 ["filename_prefix", "filenames_prefix", "filename", "path"], "save node prefix")
 
             if dry_run:
                 report["status"] = "dry_run"

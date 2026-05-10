@@ -19,7 +19,7 @@ def main():
     remotion_dir = os.path.abspath(args.remotion_dir)
     
     shot_plan_path = os.path.join(project_dir, "shot_plan.json")
-    report_path = os.path.join(project_dir, "generation_report.json")
+    report_path = os.path.join(project_dir, "reports", "generation_report.json")
     
     if not os.path.exists(shot_plan_path):
         logger.error(f"Shot plan not found: {shot_plan_path}")
@@ -32,26 +32,24 @@ def main():
     else:
         logger.warning(f"Generation report not found at {report_path}. Proceeding with all shots from plan.")
 
+    # Prepare public directory and symlink
+    public_dir = os.path.join(remotion_dir, "public")
+    os.makedirs(public_dir, exist_ok=True)
+
+    project_name = os.path.basename(project_dir)
+    target_link = os.path.join(public_dir, project_name)
+
+    if not os.path.exists(target_link):
+        os.symlink(project_dir, target_link)
+        logger.info(f"Created symlink: {target_link} -> {project_dir}")
+
     # Prepare shots for Remotion
     remotion_shots = []
-    fps = shot_plan.get("default_fps", 24)
+    fps = shot_plan.get("fps", 24)
     
-    # Create symlink from remotion/public/projects to the projects root
-    # This allows staticFile() to access project assets
-    public_projects_dir = os.path.join(remotion_dir, "public", "projects")
-    if not os.path.exists(public_projects_dir):
-        # We want to link the entire projects directory or just the current project?
-        # Linking the current project is safer.
-        project_name = os.path.basename(project_dir)
-        target_link = os.path.join(remotion_dir, "public", project_name)
-        if not os.path.exists(target_link):
-            os.symlink(project_dir, target_link)
-            logger.info(f"Created symlink: {target_link} -> {project_dir}")
-
     for shot in shot_plan.get("shots", []):
         shot_id = shot["id"]
         
-        # Check if shot was successful in report (if report exists)
         if report:
             shot_report = next((r for r in report.get("results", []) if r["id"] == shot_id), None)
             if shot_report and shot_report["status"] not in ["success", "skipped"]:
@@ -59,14 +57,13 @@ def main():
                 continue
 
         # Remotion expects path relative to 'public' folder
-        project_name = os.path.basename(project_dir)
         video_rel_path = shot["output"] # e.g. "outputs/shot_001.mp4"
-        remotion_path = f"/{project_name}/{video_rel_path}"
+        remotion_path = f"{project_name}/{video_rel_path}"
         
-        narration_rel_path = shot.get("narration") # e.g. "assets/narration_001.mp3"
+        narration_rel_path = shot.get("narration")
         remotion_narration_path = None
         if narration_rel_path:
-            remotion_narration_path = f"/{project_name}/{narration_rel_path}"
+            remotion_narration_path = f"{project_name}/{narration_rel_path}"
 
         remotion_shots.append({
             "id": shot_id,
@@ -77,12 +74,24 @@ def main():
         })
         
     # Write to remotion/src/shots.json
-    output_path = os.path.join(remotion_dir, "src", "shots.json")
-    with open(output_path, "w") as f:
+    shots_output_path = os.path.join(remotion_dir, "src", "shots.json")
+    with open(shots_output_path, "w") as f:
         json.dump(remotion_shots, f, indent=2)
-        
-    logger.info(f"Remotion timeline built with {len(remotion_shots)} shots.")
-    logger.info(f"JSON saved to: {output_path}")
+    logger.info(f"Remotion shots saved to: {shots_output_path}")
+
+    # Generate Remotion Config
+    config = {
+        "compositionName": shot_plan.get("composition_name", "FinalVideo"),
+        "width": shot_plan.get("width", 1280),
+        "height": shot_plan.get("height", 720),
+        "fps": shot_plan.get("fps", 24),
+        "bgmPath": f"{project_name}/{shot_plan['bgm']}" if shot_plan.get("bgm") else None
+    }
+    
+    config_path = os.path.join(remotion_dir, "src", "config.json")
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2, ensure_ascii=False)
+    logger.info(f"Remotion config saved to: {config_path}")
 
 if __name__ == "__main__":
     main()
