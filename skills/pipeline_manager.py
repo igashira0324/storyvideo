@@ -7,6 +7,7 @@ import requests
 import logging
 import shutil
 from datetime import datetime
+from dotenv import load_dotenv
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -14,9 +15,12 @@ logger = logging.getLogger(__name__)
 
 class VideoSkill:
     def __init__(self, project_dir):
+        load_dotenv()
         self.project_dir = os.path.abspath(project_dir)
         self.report_dir = os.path.join(self.project_dir, "reports")
         self.plan_path = os.path.join(self.project_dir, "shot_plan.json")
+        self.comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:8188")
+        self.ollama_url = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434")
         
     def check_environment(self):
         env_status = {
@@ -29,8 +33,7 @@ class VideoSkill:
         
         # Check ComfyUI
         try:
-            # We use a common default, but in a real scenario we'd read .env
-            res = requests.get("http://127.0.0.1:8188/system_stats", timeout=2)
+            res = requests.get(f"{self.comfyui_url}/system_stats", timeout=2)
             if res.status_code == 200:
                 env_status["comfyui"] = "online"
         except:
@@ -38,7 +41,7 @@ class VideoSkill:
             
         # Check Ollama
         try:
-            res = requests.get("http://127.0.0.1:11434/api/tags", timeout=2)
+            res = requests.get(f"{self.ollama_url}/api/tags", timeout=2)
             if res.status_code == 200:
                 env_status["ollama"] = "online"
         except:
@@ -72,7 +75,8 @@ class VideoSkill:
                 with open(self.plan_path, 'r', encoding='utf-8') as f:
                     plan = json.load(f)
                     status["num_shots"] = len(plan.get("shots", []))
-            except:
+            except Exception as e:
+                logger.warning(f"Failed to read shot plan: {e}")
                 status["has_plan"] = "error"
                 
         gen_report = os.path.join(self.report_dir, "generation_report.json")
@@ -80,21 +84,45 @@ class VideoSkill:
             try:
                 with open(gen_report, 'r', encoding='utf-8') as f:
                     report = json.load(f)
-                    status["generated"] = len([s for s in report.values() if s.get("status") == "success"])
-            except:
-                pass
+                    # FIX: report is a dict with "results" list
+                    results = report.get("results", [])
+                    status["generated"] = len([
+                        s for s in results 
+                        if s.get("status") in ["success", "skipped", "dry_run"]
+                    ])
+            except Exception as e:
+                logger.warning(f"Failed to read generation report: {e}")
                 
         rev_report = os.path.join(self.report_dir, "review_report.json")
         if os.path.exists(rev_report):
             try:
                 with open(rev_report, 'r', encoding='utf-8') as f:
                     report = json.load(f)
-                    status["reviewed"] = len(report)
-                    status["ai_passed"] = len([s for s in report.values() if s.get("ai_review", {}).get("quality_ok")])
-                    status["needs_regeneration"] = len([s for s in report.values() if s.get("needs_review")])
-            except:
-                pass
+                    if isinstance(report, dict):
+                        status["reviewed"] = len(report)
+                        status["ai_passed"] = len([s for s in report.values() if isinstance(s, dict) and s.get("ai_review", {}).get("quality_ok")])
+                        status["needs_regeneration"] = len([s for s in report.values() if isinstance(s, dict) and s.get("needs_review")])
+                    else:
+                        logger.warning("Unexpected review_report format (not a dict)")
+            except Exception as e:
+                logger.warning(f"Failed to read review report: {e}")
                 
+        # Determine Next Action
+        next_action = "unknown"
+        if status['env']['comfyui'] != "online" or status['env']['ollama'] != "online":
+            next_action = "start_servers"
+        elif not status['has_plan']:
+            next_action = "create_plan"
+        elif not status['assets_exist'] or status['generated'] == 0:
+            next_action = "generate_start_images"
+        elif status['generated'] < status['num_shots']:
+            next_action = "generate_shots"
+        elif status['needs_regeneration'] > 0:
+            next_action = "regenerate_failed"
+        else:
+            next_action = "finalize_timeline"
+        
+        status["next_action"] = next_action
         return status
 
     def print_summary(self):
@@ -113,18 +141,18 @@ class VideoSkill:
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
         print(f"To Re-gen:  {s['needs_regeneration']}")
         
-        print("\n[Suggested Next Action]")
-        if s['env']['comfyui'] != "online" or s['env']['ollama'] != "online":
+        print(f"\n[Suggested Next Action: {s['next_action'].upper()}]")
+        if s['next_action'] == "start_servers":
             print("CRITICAL: Ensure ComfyUI and Ollama servers are running.")
-        elif not s['has_plan']:
+        elif s['next_action'] == "create_plan":
             print("Action: Run 'tools/story_planner.py' to create a shot plan.")
-        elif s['generated'] == 0 and s['num_shots'] > 0:
+        elif s['next_action'] == "generate_start_images":
             print("Action: Run 'tools/generate_start_images.py' followed by 'tools/generate_shots.py'.")
-        elif s['generated'] < s['num_shots']:
+        elif s['next_action'] == "generate_shots":
             print("Action: Resume generation with 'tools/generate_shots.py --skip-existing'.")
-        elif s['needs_regeneration'] > 0:
+        elif s['next_action'] == "regenerate_failed":
             print("Action: Run 'tools/regenerate_failed_shots.py --max-rounds 3 --auto-review'.")
-        else:
+        elif s['next_action'] == "finalize_timeline":
             print("Action: Finalize with 'tools/build_remotion_timeline.py' and render.")
 
     def backup(self):
@@ -156,6 +184,7 @@ def main():
     parser.add_argument("--project", required=True, help="Path to project directory")
     parser.add_argument("--status", action="store_true", help="Print current project status summary")
     parser.add_argument("--backup", action="store_true", help="Create a timestamped backup of project data")
+    parser.add_argument("--json", action="store_true", help="Output status as JSON")
     args = parser.parse_args()
     
     if not os.path.exists(args.project):
@@ -163,6 +192,12 @@ def main():
         sys.exit(1)
         
     skill = VideoSkill(args.project)
+    
+    if args.json:
+        status = skill.get_status()
+        print(json.dumps(status, indent=2, ensure_ascii=False))
+        return
+
     if args.status:
         skill.print_summary()
     if args.backup:
