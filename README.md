@@ -1,234 +1,108 @@
-# StoryVideo
-A lightweight multi-shot AI video generation pipeline using ComfyUI and Remotion.
+# StoryVideo: 自律型 AI 動画制作パイプライン
 
-## Important: ComfyUI Workflow Format
-The pipeline requires ComfyUI workflows in **API Format** (exported via "Save API Format" or "Export API").
-- **UI Format**: Contains `nodes` and `links` arrays. This is NOT compatible with the `/prompt` endpoint.
-- **API Format**: A flat JSON where each key is a `node_id`. This is what the pipeline uses.
+StoryVideo は、テキストの要約（Brief）から、プロット作成、画像生成（T2I）、動画生成（I2V）、AI による品質レビュー、自動再生成、そして最終的な動画編集（Remotion）までを一貫して行う、展示会クオリティの AI 動画制作パイプラインです。
 
-When defining `workflow_params` in `shot_plan.json`, the `node_id` must match the keys in the **API Format** JSON.
+## 主な機能
 
-## Quick Start
+- **自律型ストーリープランナー**: LLM を使用して、短い指示からマルチショットの構成案（ショットプラン）を自動作成します。
+- **マルチモーダル生成**: ComfyUI をバックエンドに使用し、SDXL による開始画像生成と LTX-2.3 による高品質な動画生成を統合しています。
+- **自己修復ループ (Self-Healing)**: AI（VLM）が生成物をレビューし、品質が低い場合はシード値を更新して自動的に再生成を繰り返します。
+- **ショット間の連続性維持 (Continuity)**: 前のショットの最終フレームを次のショットの開始画像として自動的に使用し、一貫性のある映像を実現します。
+- **キャラクター/スタイル・バイブル**: キャラクター設定や画風を定義した JSON を読み込ませることで、作品全体の一貫性を保ちます。
+- **Remotion 統合**: 生成されたクリップ、字幕、トランジションを自動的に Remotion タイムラインへ組み立て、即座にレンダリング可能です。
 
-### 1. Prerequisites
-- Python 3.10+
-- Node.js 18+
-- ffmpeg & ffprobe
-- Access to a ComfyUI server
+## セットアップ
 
-### 2. Installation
+### 1. 依存関係のインストール
+
 ```bash
+# Python 依存関係
 pip install -r requirements.txt
-cp .env.example .env  # Edit COMFYUI_URL in .env
-```
 
-## Usage
-
-### 1. Generate Shot Plan from Brief
-Use the LLM-powered story planner to create a multi-shot plan from a text description.
-```bash
-# Requires local Ollama server running
-python3 tools/story_planner.py \
-  --brief projects/exhibition_pr/brief.md \
-  --project projects/exhibition_pr \
-  --model qwen2.5:14b
-```
-
-### 2. Generate Shots
-Generate videos based on the shot plan.
-```bash
-python3 tools/generate_shots.py --project projects/exhibition_pr
-```
-Generated reports will be saved to `projects/exhibition_pr/reports/generation_report.json`.
-
-### 3. Validate Outputs
-Run verification on the generated video files.
-```bash
-python3 tools/validate_shots.py --project projects/exhibition_pr
-```
-
-### 4. Review Generated Shots
-Check video integrity, duration, and metadata.
-```bash
-python3 tools/review_shots.py --project projects/exhibition_pr
-```
-
-### 5. Assemble Video (Remotion)
-Final composition and rendering.
-```bash
-python3 tools/build_remotion_timeline.py --project projects/exhibition_pr --remotion-dir remotion
+# Node 依存関係 (Remotion 用)
 cd remotion
 npm install
-npm run build
 ```
 
-### 6. Generate Shots via helper script
-Generate videos based on the shot plan using the shortcut script.
-```bash
-./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+### 2. 環境設定 (`.env`)
+
+`.env` ファイルを作成し、各サーバーの URL を設定します。
+
+```env
+COMFYUI_URL=http://127.0.0.1:8188
+OLLAMA_URL=http://127.0.0.1:11434
 ```
 
-### Full Pipeline Example
-To run the complete process from planning to final rendering, including autonomous self-healing:
+### 3. 外部ツールの準備
+
+- **ComfyUI**: LTX-2.3 および SDXL のモデルが配置され、API モードで動作していること。
+- **Ollama**: `qwen2.5:14b`（プランニング用）および `minicpm-v`（レビュー用）がインストールされていること。
+- **FFmpeg**: 動画処理およびフレーム抽出のために PATH が通っていること。
+
+## 基本的な使い方（フルパイプライン）
+
+以下の 8 ステップで、企画から動画完成までを自動実行します。
 
 ```bash
-# 1. Shot plan generation
+# 1. ショットプランの作成 (LLM)
 python3 tools/story_planner.py \
   --brief projects/exhibition_pr/brief.md \
-  --project projects/exhibition_pr \
-  --preset workflow_presets/ltx23_i2v.json
-
-# 2. T2I start image generation
-python3 tools/generate_start_images.py \
-  --project projects/exhibition_pr \
-  --preset workflow_presets/sdxl_t2i.json
-
-# 3. I2V video generation
-python3 tools/generate_shots.py \
-  --project projects/exhibition_pr \
-  --skip-existing
-
-# 4. Basic integrity check
-python3 tools/review_shots.py \
   --project projects/exhibition_pr
 
-# 5. AI quality review
-python3 tools/ai_review_shots.py \
-  --project projects/exhibition_pr \
-  --model minicpm-v
-
-# 6. Autonomous self-healing loop (regenerate, re-review)
-python3 tools/regenerate_failed_shots.py \
-  --project projects/exhibition_pr \
-  --max-rounds 3 \
-  --auto-review \
-  --vlm-model minicpm-v
-
-# 7. Continuity linking (optional, for smooth transitions)
-# Note: Since this modifies input images, you may need to regenerate subsequent shots if used.
-python3 tools/link_shots_continuity.py \
-  --project projects/exhibition_pr \
-  --force
-
-# 8. Final assembly & rendering (Remotion)
-python3 tools/build_remotion_timeline.py \
-  --project projects/exhibition_pr \
-  --remotion-dir remotion
-
-cd remotion
-npm install
-npm run build
-```
-
-> [!IMPORTANT]
-> **Execution Order**: You MUST run `build_remotion_timeline.py` before running `npm run build` or `npm start`. The script generates `remotion/src/shots.json` and `remotion/src/config.json` which are required for the Remotion project to build.
-
-> [!NOTE]
-> **Sample Assets**: Sample input images are included in `projects/exhibition_pr/assets/`. 
-> BGM and narration files are optional and not included by default.
-
-## Advanced Features
-
-### 1. Workflow Parameter Mapping
-You can explicitly map node IDs and input keys in your workflow presets. This is more robust than the default heuristic search.
-```json
-"workflow_params": {
-  "positive": { "node_id": "267:266", "input_key": "value" },
-  "negative": { "node_id": "267:247", "input_key": "text" },
-  "image": { "node_id": "269", "input_key": "image" },
-  "seeds": [
-    { "node_id": "267:237", "input_key": "noise_seed" },
-    { "node_id": "267:216", "input_key": "noise_seed" }
-  ]
-}
-```
-
-### 2. Automated Start Image Generation (T2I)
-Automatically generate the initial images (`input_image`) for your shots using a T2I workflow.
-```bash
+# 2. 開始画像の生成 (T2I)
 python3 tools/generate_start_images.py \
   --project projects/exhibition_pr \
   --preset workflow_presets/sdxl_t2i.json
-```
 
-### 3. Character & Style Bibles
-Maintain visual consistency by providing character and style definitions. If `character_bible.json` or `style_bible.json` exist in your project directory, they will be injected into the story planner's prompt.
-```json
-// projects/exhibition_pr/character_bible.json
-{
-  "main_character": {
-    "name": "Spark-chan",
-    "description": "Short blue hair, VR goggles, silver tactical suit"
-  }
-}
-```
+# 3. 動画クリップの生成 (I2V)
+python3 tools/generate_shots.py \
+  --project projects/exhibition_pr --skip-existing
 
-### 4. AI Quality Review (VLM)
-Use a Vision-Language Model (VLM) to automatically check if the generated videos match the prompt and meet quality standards.
-```bash
-# 1. Standard Review (Integrity check)
+# 4. 基本的な整合性チェック
 python3 tools/review_shots.py --project projects/exhibition_pr
 
-# 2. AI Review (Visual check)
-python3 tools/ai_review_shots.py --project projects/exhibition_pr --model minicpm-v
+# 5. AI による品質レビュー (VLM)
+python3 tools/ai_review_shots.py \
+  --project projects/exhibition_pr --model minicpm-v
 
-# 3. Autonomous self-healing loop (up to 3 rounds, auto re-review)
+# 6. 自動再生成ループ (自己修復)
+# レビューで却下されたショットを最大3回まで自動で作り直します。
 python3 tools/regenerate_failed_shots.py \
-  --project projects/exhibition_pr \
-  --max-rounds 3 \
-  --auto-review \
-  --vlm-model minicpm-v
-```
+  --project projects/exhibition_pr --max-rounds 3 --auto-review
 
-> [!NOTE]
-> **Without `--auto-review`**: The script regenerates files but does **not** update `review_report.json`.
-> Run `review_shots.py` and `ai_review_shots.py` manually afterward, or use `--auto-review`.
-> If shots still fail after all rounds, the script exits with code **2** (for CI integration).
-
-### 5. Shot Continuity Linking
-Use the last frame of each shot as the start image of the next shot for seamless visual continuity.
-```bash
-# Apply continuity (modifies input images of subsequent shots)
+# 7. ショット間の連続性適用 (オプション)
+# 前のショットの最後を次の開始画像に設定します。
 python3 tools/link_shots_continuity.py --project projects/exhibition_pr --force
 
-# Then regenerate the subsequent shots that now have new start images
-python3 tools/generate_shots.py \
-  --project projects/exhibition_pr \
-  --only shot_002 shot_003 shot_004
+# 8. Remotion タイムラインへの組み立てとレンダリング
+python3 tools/build_remotion_timeline.py \
+  --project projects/exhibition_pr --remotion-dir remotion
+cd remotion
+npm run build
 ```
 
-> [!WARNING]
-> Running `link_shots_continuity.py --force` overwrites the input images for subsequent shots.
-> Existing generated videos remain unchanged — you **must** regenerate those shots afterward.
+## 高度な機能
 
-## Troubleshooting
+### キャラクター & スタイル・バイブル
+`projects/<project_dir>/` 内に `character_bible.json` または `style_bible.json` を配置すると、プランナーおよび T2I 生成時にその設定が自動的に反映されます。
 
-### ComfyUI Workflow: Missing Node Types
-If you see `missing_node_type` errors, the API workflow contains node types not installed in your ComfyUI instance.
+### ワークフロー・プリセット
+`workflow_presets/` 内の JSON で、ComfyUI のノード ID マッピングを管理します。独自のワークフローを使用する場合は、ここを編集してノードを紐付けてください。
 
-**Fix: Re-export the workflow from ComfyUI**
-1. Enable Dev Mode in ComfyUI settings
-2. Open the workflow in the browser
-3. Expand any Group Nodes / Subgraphs
-4. **Save (API Format)** — not the regular save
-5. Replace `projects/<project>/comfy_workflows/<name>_api.json`
+## トラブルシューティング
 
-**Check installed custom nodes:**
+### "missing_node_type" エラーが出る場合
+ComfyUI の API ワークフロー JSON に、インストールされていないカスタムノードが含まれています。
+1. ComfyUI でワークフローを開き、Group Node/Subgraph があれば展開（Ungroup）します。
+2. 設定で **Dev Mode** を有効にし、**Save (API Format)** で保存し直してください。
+3. 保存した JSON をプロジェクトの `comfy_workflows/` 内のものと差し替えます。
+
+### ComfyUI が応答しない
+`COMFYUI_URL` が正しいか、ComfyUI が起動しているか確認してください。
 ```bash
-ls ComfyUI/custom_nodes/
-```
-
-### ComfyUI Not Responding
-Make sure ComfyUI is running and accessible:
-```bash
-# Start ComfyUI
-cd /path/to/ComfyUI && python main.py --listen 0.0.0.0 --port 8188
-
-# Test connection
 curl http://127.0.0.1:8188/system_stats
 ```
 
-Set the URL in your environment:
-```bash
-export COMFYUI_URL=http://127.0.0.1:8188
-```
+---
+
+*このプロジェクトは、SusHi Tech Tokyo 2026 等の展示会における自律的な映像制作体験を提供するために開発されています。*
