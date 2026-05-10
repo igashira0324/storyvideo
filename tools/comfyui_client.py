@@ -28,9 +28,15 @@ class ComfyUIClient:
             "client_id": self.client_id
         }
         res = requests.post(url, json=payload)
-        res.raise_for_status()
-        data = res.json()
+        
+        if res.status_code != 200:
+            try:
+                error_data = res.json()
+            except:
+                error_data = res.text
+            raise RuntimeError(f"ComfyUI prompt request failed ({res.status_code}): {error_data}")
 
+        data = res.json()
         if "error" in data or "node_errors" in data:
             raise RuntimeError(
                 f"ComfyUI prompt validation failed: "
