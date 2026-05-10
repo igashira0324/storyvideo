@@ -31,7 +31,7 @@ Use the LLM-powered story planner to create a multi-shot plan from a text descri
 python3 tools/story_planner.py \
   --brief projects/exhibition_pr/brief.md \
   --project projects/exhibition_pr \
-  --model qwen3.6:27b
+  --model qwen2.5:14b
 ```
 
 ### 2. Generate Shots

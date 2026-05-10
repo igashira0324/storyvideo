@@ -20,9 +20,13 @@ def run_regeneration(project_dir: str, failed_shots: List[str]):
     for shot in shot_plan.get("shots", []):
         if shot["id"] in failed_shots:
             old_seed = shot.get("seed", 42)
+            # Track history
+            history = shot.setdefault("seed_history", [])
+            history.append(old_seed)
+            
             new_seed = random.randint(1, 2**32 - 1)
             shot["seed"] = new_seed
-            logger.info(f"Updated seed for {shot['id']}: {old_seed} -> {new_seed}")
+            logger.info(f"Updated seed for {shot['id']}: {old_seed} -> {new_seed} (History: {history})")
             
     with open(plan_path, 'w', encoding='utf-8') as f:
         json.dump(shot_plan, f, indent=2, ensure_ascii=False)

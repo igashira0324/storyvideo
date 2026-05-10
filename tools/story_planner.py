@@ -43,13 +43,13 @@ Output Format: A single JSON object that follows this schema:
 
 Guidelines:
 - Each shot should visually follow the previous one.
-- Keep the number of shots reasonable (3-6 shots is a good start).
+- Keep the number of shots reasonable: 3-6 shots.
 - Use dynamic camera movements and detailed visual prompts.
+- Include lighting, camera angle, subject, action, and atmosphere.
 - Ensure 'duration_sec' is an integer between 3 and 8.
 - Ensure 'seed' is an integer.
-3. Keep prompts descriptive: lighting, camera angle, action.
-4. Output ONLY the JSON object. Do not include markdown formatting or ellipsis.
-5. Ensure "output" paths use "outputs/shot_xxx.mp4" format and are unique.
+- Ensure "output" paths use "outputs/shot_xxx.mp4" format and are unique.
+- Output ONLY the JSON object. Do not include markdown formatting or ellipsis.
 
 Brief:
 {brief}
@@ -142,7 +142,7 @@ def main():
     parser.add_argument("--project", required=True, help="Project directory to save the plan")
     parser.add_argument("--preset", default="workflow_presets/ltx23_i2v.json", help="Workflow preset JSON")
     parser.add_argument("--repair-retries", type=int, default=2, help="Number of times to retry on JSON/Validation error")
-    parser.add_argument("--model", default="qwen3.6:27b", help="Ollama model name")
+    parser.add_argument("--model", default="qwen2.5:14b", help="Ollama model name")
     parser.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama API URL")
     args = parser.parse_args()
 
