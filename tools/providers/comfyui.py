@@ -211,26 +211,34 @@ class ComfyUIProvider(VideoProvider):
                 # Fallback to single seed_node_id
                 self._update_param(workflow, params, "seed_node_id", seed, ["seed", "noise_seed"], "seed", required=False)
             
-            duration = shot.get("duration_sec", 5)
-            fps = shot.get("fps", 24)
+            # Frame count / Length calculation (only for video)
+            output_type = shot.get("output_type", "video")
+            if output_type != "image":
+                duration = shot.get("duration_sec", 5)
+                fps = shot.get("fps", 24)
+                
+                formula = shot.get("frame_count_formula")
+                if formula:
+                    length = self.calc_frame_count(duration, fps, formula)
+                elif shot.get("model", "").lower().startswith("ltx") or "ltx" in shot.get("workflow", "").lower():
+                    # Legacy heuristic for LTX
+                    length = int(duration * fps) + 1
+                else:
+                    length = int(duration * fps)
+
+                len_key = "length" if "length" in params else "length_node_id"
+                self._update_param(workflow, params, len_key, length, 
+                                     ["length", "frames", "num_frames", "value", "value_4"], "video length")
             
-            # Frame count calculation
-            formula = shot.get("frame_count_formula")
-            if formula:
-                length = self.calc_frame_count(duration, fps, formula)
-            elif shot.get("model", "").lower().startswith("ltx") or "ltx" in shot.get("workflow", "").lower():
-                # Legacy heuristic for LTX
-                length = int(duration * fps) + 1
-            else:
-                length = int(duration * fps)
-            
-            # Length & Save
-            len_key = "length" if "length" in params else "length_node_id"
+            # Width & Height (Optional)
+            if "width" in params:
+                self._update_param(workflow, params, "width", shot.get("width", 1280), 
+                                     ["width", "value"], "image width", required=False)
+            if "height" in params:
+                self._update_param(workflow, params, "height", shot.get("height", 720), 
+                                     ["height", "value"], "image height", required=False)
+
             save_key = "save" if "save" in params else "save_node_id"
-            
-            self._update_param(workflow, params, len_key, length, 
-                                 ["length", "frames", "num_frames", "value", "value_4"], "video length")
-            
             self._update_param(workflow, params, save_key, f"{shot_id}", 
                                  ["filename_prefix", "filenames_prefix", "filename", "path", "value"], "save node prefix")
 

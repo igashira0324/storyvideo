@@ -49,8 +49,12 @@ def main():
         json.dump(shot_plan, f, indent=2, ensure_ascii=False)
     
     # Construct the command to run generate_shots.py
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    generate_script = os.path.join(script_dir, "generate_shots.py")
+
     cmd = [
-        "python3", "tools/generate_shots.py",
+        sys.executable,
+        generate_script,
         "--project", args.project,
         "--only"
     ] + failed_shots

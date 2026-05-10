@@ -49,6 +49,8 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
             "positive_prompt": shot["positive_prompt"],
             "negative_prompt": shot.get("negative_prompt", ""),
             "seed": shot.get("seed", 42),
+            "width": plan.get("width", 1280),
+            "height": plan.get("height", 720),
             "output": input_image_rel, # We want to save it where the shot plan expects it
             "output_type": "image",
             "workflow_params": preset["workflow_params"]

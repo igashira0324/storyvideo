@@ -1,5 +1,5 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, conlist
+from pydantic import BaseModel, Field, conlist, model_validator
 
 class NodeConfig(BaseModel):
     node_id: str
@@ -24,6 +24,22 @@ class WorkflowParams(BaseModel):
     seed_node_ids: Optional[List[str]] = None
     length_node_id: Optional[str] = None
     save_node_id: Optional[str] = None
+
+    @model_validator(mode='before')
+    @classmethod
+    def check_unknown_keys(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            allowed_keys = {
+                "positive", "negative", "image", "seeds", "length", "save",
+                "width", "height", "fps", "frame_count_formula", "workflow", "workflow_params", # common keys in presets
+                "image_node_id", "positive_node_id", "negative_node_id",
+                "seed_node_ids", "seed_node_id", "length_node_id", "save_node_id"
+            }
+            extra_keys = set(data.keys()) - allowed_keys
+            if extra_keys:
+                import logging
+                logging.getLogger(__name__).warning(f"Unknown keys in workflow_params: {extra_keys}. This might be a typo.")
+        return data
 
 class Shot(BaseModel):
     id: str
