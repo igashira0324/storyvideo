@@ -138,7 +138,14 @@ class ComfyUIProvider(VideoProvider):
             if seed == -1 and not dry_run:
                 import random
                 seed = random.randint(1, 2**32 - 1)
-            self._update_node_input(workflow, params.get("seed_node_id"), seed, ["seed", "noise_seed"])
+            
+            seed_node_ids = params.get("seed_node_ids")
+            if seed_node_ids and isinstance(seed_node_ids, list):
+                for i, node_id in enumerate(seed_node_ids):
+                    # Increment seed slightly for each node to ensure variation if they share logic
+                    self._update_node_input(workflow, node_id, seed + i, ["seed", "noise_seed"])
+            else:
+                self._update_node_input(workflow, params.get("seed_node_id"), seed, ["seed", "noise_seed"])
             
             duration = shot.get("duration_sec", 5)
             fps = shot.get("fps", 24)
