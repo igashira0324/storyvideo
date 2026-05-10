@@ -4,9 +4,11 @@ __pycache__/
 *.pyc
 
 projects/*/outputs/
-projects/*/shots/
+projects/*/assets/
+projects/*/temp/
 projects/*/reports/
 projects/*/renders/
+projects/*/_backup_*/
 
 remotion/node_modules/
 remotion/out/

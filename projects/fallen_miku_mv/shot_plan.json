@@ -1,0 +1,143 @@
+{
+  "project_name": "Fallen_Miku_Noir",
+  "project_title": "堕天使の闇落ち初音ミク MV",
+  "composition_name": "FinalVideo",
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "bgm": null,
+  "shots": [
+    {
+      "id": "shot_001_intro",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_001_start.png",
+      "positive_prompt": "A beautiful Japanese woman in a tattered gothic Hatsune Miku costume stands before a ruined altar in an abandoned church. She has long dark teal twintails with black tips, a large black feathered wing on her left, and a glowing teal scar on her right shoulder. Dramatic chiaroscuro lighting, deep shadows, volumetric teal god rays piercing through broken stained glass windows, cinematic film grain, dark fantasy atmosphere, melancholic expression.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, extra limbs, deformed wings, bright colors, cartoonish",
+      "duration_sec": 5,
+      "fps": 24,
+      "seed": 42,
+      "subtitle": "失われた翼の記憶が、この廃墟に響く。",
+      "narration": null,
+      "t2i_prompt": "Cinematic shot of a Japanese woman cosplaying as fallen Hatsune Miku standing in a ruined church altar, dark teal twintails, black wing on left, glowing teal scar on right, tattered black and teal gothic outfit, dramatic lighting, high contrast, teal light rays, dark fantasy style, film grain, 8k, highly detailed",
+      "transition": "fade",
+      "output": "outputs/shot_001_intro.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": null,
+        "negative": null,
+        "image": null,
+        "seeds": null,
+        "length": null,
+        "save": null,
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    },
+    {
+      "id": "shot_002_emotion",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_002_start.png",
+      "positive_prompt": "The Dark Miku cosplayer tilts her head back, singing passionately towards the crumbling church ceiling. Her single large black wing unfurls dramatically, feathers drifting in the air. Teal volumetric light beams illuminate her from above, highlighting the contrast between the dark feathers and the glowing teal accents on her outfit and scar. Dynamic camera angle, slight upward tilt, cinematic motion blur, emotional intensity.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, extra limbs, deformed wings, bright colors, cartoonish, static pose",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 87,
+      "subtitle": "闇に堕ちた翼も、今なお歌を紡ぐ。",
+      "narration": null,
+      "t2i_prompt": "Japanese woman singing with head tilted back in ruined church, single large black wing spread wide, feathers floating, teal god rays from above, glowing teal scar on shoulder, tattered gothic Miku outfit, dramatic lighting, cinematic composition, dark fantasy, film grain, emotional expression",
+      "transition": "cut",
+      "output": "outputs/shot_002_emotion.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": null,
+        "negative": null,
+        "image": null,
+        "seeds": null,
+        "length": null,
+        "save": null,
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    },
+    {
+      "id": "shot_003_closeup",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_003_start.png",
+      "positive_prompt": "Extreme close-up of the Dark Miku's face. Her eyes glow with a soft, intense teal light, reflecting sorrow and determination. Fine details of her gothic makeup, the texture of her skin, and the strands of her dark teal hair are visible. Background is blurred deep shadows with faint teal light leaks. High contrast, shallow depth of field, cinematic portrait style, melancholic yet powerful atmosphere.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, extra limbs, deformed features, bright background, cartoonish, flat lighting",
+      "duration_sec": 4,
+      "fps": 24,
+      "seed": 123,
+      "subtitle": "瞳に映るは、戻らない過去と、進むべき道。",
+      "narration": null,
+      "t2i_prompt": "Extreme close-up portrait of Japanese woman with glowing teal eyes, dark teal hair, gothic makeup, melancholic expression, shallow depth of field, blurred dark background with teal light accents, cinematic lighting, high contrast, film grain, highly detailed texture",
+      "transition": "fade",
+      "output": "outputs/shot_003_closeup.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": null,
+        "negative": null,
+        "image": null,
+        "seeds": null,
+        "length": null,
+        "save": null,
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    },
+    {
+      "id": "shot_004_ending",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_004_start.png",
+      "positive_prompt": "Wide shot of the ruined church interior. The Dark Miku stands silhouetted against a brilliant teal light source emerging from the broken altar. Black feathers rain down densely around her as her form begins to dissolve and fade into the bright teal light. Atmospheric haze, volumetric lighting, dramatic contrast, cinematic fade-out effect, ethereal and dark fantasy atmosphere.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, extra limbs, deformed wings, bright colors, cartoonish, clear visibility of character, no feathers",
+      "duration_sec": 7,
+      "fps": 24,
+      "seed": 256,
+      "subtitle": "光へ還りて、闇に甦る。",
+      "narration": null,
+      "t2i_prompt": "Silhouette of Japanese woman in ruined church, surrounded by falling black feathers, dissolving into bright teal light from altar, atmospheric haze, volumetric god rays, high contrast, dark fantasy, cinematic wide shot, film grain, ethereal mood",
+      "transition": "fade_to_black",
+      "output": "outputs/shot_004_ending.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": null,
+        "negative": null,
+        "image": null,
+        "seeds": null,
+        "length": null,
+        "save": null,
+        "image_node_id": "269",
+        "positive_node_id": "267:266",
+        "negative_node_id": "267:247",
+        "seed_node_ids": [
+          "267:237",
+          "267:216"
+        ],
+        "length_node_id": "267:225",
+        "save_node_id": "75"
+      }
+    }
+  ]
+}

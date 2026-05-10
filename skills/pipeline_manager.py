@@ -124,10 +124,15 @@ class VideoSkill:
             except Exception as e:
                 logger.warning(f"Failed to read review report: {e}")
                 
+        # Check Background Jobs
+        status["running_jobs"] = self.check_jobs()
+        
         # Determine Next Action
         next_action = "unknown"
         if status['env']['comfyui'] != "online" or status['env']['ollama'] != "online":
             next_action = "start_servers"
+        elif status["running_jobs"]:
+            next_action = "wait_for_jobs"
         elif not status['has_plan']:
             next_action = "create_plan"
         elif status['missing_start_images']:
@@ -141,6 +146,45 @@ class VideoSkill:
         
         status["next_action"] = next_action
         return status
+
+    def check_jobs(self):
+        job_dir = os.path.join(self.project_dir, "reports", "jobs")
+        if not os.path.exists(job_dir):
+            return []
+            
+        jobs = []
+        for f in os.listdir(job_dir):
+            if f.endswith(".json"):
+                path = os.path.join(job_dir, f)
+                try:
+                    with open(path, 'r') as jf:
+                        data = json.load(jf)
+                        pid = data.get("pid")
+                        if pid and self.is_pid_running(pid):
+                            # Add log tail
+                            log_path = data.get("log_path")
+                            data["log_tail"] = self.get_log_tail(log_path)
+                            jobs.append(data)
+                except:
+                    pass
+        return jobs
+
+    def is_pid_running(self, pid):
+        try:
+            os.kill(pid, 0)
+            return True
+        except OSError:
+            return False
+
+    def get_log_tail(self, path, lines=20):
+        if not path or not os.path.exists(path):
+            return ""
+        try:
+            # Use tail command for efficiency
+            res = subprocess.run(["tail", "-n", str(lines), path], capture_output=True, text=True)
+            return res.stdout
+        except:
+            return "Could not read log tail."
 
     def print_summary(self):
         s = self.get_status()
@@ -159,8 +203,16 @@ class VideoSkill:
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
         print(f"To Re-gen:  {s['needs_regeneration']}")
         
+        if s["running_jobs"]:
+            print("\n[Running Background Jobs]")
+            for job in s["running_jobs"]:
+                print(f"🚀 {job['name']} (PID: {job['pid']})")
+                print(f"   Log tail:\n---\n{job['log_tail']}---")
+            
         print(f"\n[Suggested Next Action: {s['next_action'].upper()}]")
-        if s['next_action'] == "start_servers":
+        if s['next_action'] == "wait_for_jobs":
+            print("Action: Background jobs are running. Monitor logs or wait for completion.")
+        elif s['next_action'] == "start_servers":
             print("CRITICAL: Ensure ComfyUI and Ollama servers are running.")
         elif s['next_action'] == "create_plan":
             print("Action: Run 'tools/story_planner.py' to create a shot plan.")

@@ -1,0 +1,4 @@
+{
+  "t2i_preset": "workflow_presets/ernie_image_turbo.json",
+  "i2v_preset": "workflow_presets/ltx23_i2v.json"
+}

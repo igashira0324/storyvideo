@@ -100,7 +100,7 @@ def merge_preset(plan: Dict[str, Any], preset: Dict[str, Any]) -> Dict[str, Any]
             
     return plan
 
-def call_llm_json(model: str, url: str, prompt: str) -> Dict[str, Any]:
+def call_llm_json(model: str, url: str, prompt: str, timeout: int = 300) -> Dict[str, Any]:
     """Calls Ollama and ensures a JSON response."""
     payload = {
         "model": model,
@@ -109,7 +109,7 @@ def call_llm_json(model: str, url: str, prompt: str) -> Dict[str, Any]:
         "format": "json"
     }
     
-    response = requests.post(f"{url}/api/generate", json=payload, timeout=300)
+    response = requests.post(f"{url}/api/generate", json=payload, timeout=timeout)
     response.raise_for_status()
     
     data = response.json()
@@ -119,7 +119,7 @@ def call_llm_json(model: str, url: str, prompt: str) -> Dict[str, Any]:
 
     return json.loads(response_text)
 
-def generate_and_repair_plan(full_brief: str, model: str, url: str, preset: Dict[str, Any], repair_retries: int) -> Dict[str, Any]:
+def generate_and_repair_plan(full_brief: str, model: str, url: str, preset: Dict[str, Any], repair_retries: int, timeout: int = 300) -> Dict[str, Any]:
     """Handles the full generation and repair loop."""
     base_prompt = STORY_PLAN_PROMPT.format(brief=full_brief)
     current_prompt = base_prompt
@@ -128,7 +128,7 @@ def generate_and_repair_plan(full_brief: str, model: str, url: str, preset: Dict
     for attempt in range(repair_retries + 1):
         try:
             logger.info(f"Requesting story plan from LLM ({model})... (Attempt {attempt + 1})")
-            plan = call_llm_json(model, url, current_prompt)
+            plan = call_llm_json(model, url, current_prompt, timeout=timeout)
             
             # Merge and Validate
             merged_plan = merge_preset(plan, preset)
@@ -136,11 +136,15 @@ def generate_and_repair_plan(full_brief: str, model: str, url: str, preset: Dict
             
             return validated_plan
             
-        except (json.JSONDecodeError, ValueError) as e:
+        except (json.JSONDecodeError, ValueError, Exception) as e:
             last_error = e
-            logger.warning(f"Generation attempt {attempt + 1} failed: {e}")
+            error_msg = str(e)
+            if len(error_msg) > 500:
+                error_msg = error_msg[:500] + "...[truncated]"
+            
+            logger.warning(f"Generation attempt {attempt + 1} failed: {error_msg}")
             if attempt < repair_retries:
-                current_prompt = f"{base_prompt}\n\nIMPORTANT: Your previous output was invalid or failed validation. Error: {e}. Please fix the structure and provide a valid JSON object ONLY."
+                current_prompt = f"{base_prompt}\n\nIMPORTANT: Your previous output was invalid or failed validation. Error: {error_msg}. Please fix the structure and provide a valid JSON object ONLY."
             else:
                 raise last_error
 
@@ -152,6 +156,10 @@ def main():
     parser.add_argument("--repair-retries", type=int, default=2, help="Number of times to retry on JSON/Validation error")
     parser.add_argument("--model", default="qwen2.5:14b", help="Ollama model name")
     parser.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama API URL")
+    parser.add_argument("--timeout", type=int, default=300, help="Ollama request timeout in seconds")
+    parser.add_argument("--max-brief-chars", type=int, default=8000, help="Max characters for brief")
+    parser.add_argument("--max-bible-chars", type=int, default=4000, help="Max characters per bible file")
+    parser.add_argument("--no-bible", action="store_true", help="Disable bible injection")
     args = parser.parse_args()
 
     if not os.path.exists(args.brief):
@@ -160,28 +168,32 @@ def main():
 
     with open(args.brief, 'r', encoding='utf-8') as f:
         brief_content = f.read()
+        if len(brief_content) > args.max_brief_chars:
+            logger.warning(f"Brief truncated from {len(brief_content)} to {args.max_brief_chars}")
+            brief_content = brief_content[:args.max_brief_chars] + "\n...[truncated]"
 
     # Character and Style Bibles
     bibles_text = ""
-    char_bible_path = os.path.join(args.project, "character_bible.json")
-    style_bible_path = os.path.join(args.project, "style_bible.json")
-    
-    if os.path.exists(char_bible_path):
-        with open(char_bible_path, 'r', encoding='utf-8') as f:
-            bibles_text += f"\nCharacter Bible:\n{f.read()}\n"
-            logger.info("Using character bible for prompt injection.")
-            
-    if os.path.exists(style_bible_path):
-        with open(style_bible_path, 'r', encoding='utf-8') as f:
-            bibles_text += f"\nStyle Bible:\n{f.read()}\n"
-            logger.info("Using style bible for prompt injection.")
+    if not args.no_bible:
+        char_bible_path = os.path.join(args.project, "character_bible.json")
+        style_bible_path = os.path.join(args.project, "style_bible.json")
+        
+        for label, path in [("Character", char_bible_path), ("Style", style_bible_path)]:
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    if len(content) > args.max_bible_chars:
+                        logger.warning(f"{label} Bible truncated from {len(content)} to {args.max_bible_chars}")
+                        content = content[:args.max_bible_chars] + "\n...[truncated]"
+                    bibles_text += f"\n{label} Bible:\n{content}\n"
+                    logger.info(f"Using {label.lower()} bible for prompt injection.")
 
     try:
         preset = load_preset(args.preset)
         full_brief = f"{brief_content}\n{bibles_text}"
         
         # Generation & Repair Loop
-        plan = generate_and_repair_plan(full_brief, args.model, args.url, preset, args.repair_retries)
+        plan = generate_and_repair_plan(full_brief, args.model, args.url, preset, args.repair_retries, timeout=args.timeout)
 
         os.makedirs(args.project, exist_ok=True)
         output_path = os.path.join(args.project, "shot_plan.json")
