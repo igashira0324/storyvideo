@@ -39,7 +39,39 @@ class ComfyUIProvider(VideoProvider):
                 return item
         raise RuntimeError(f"No video output found among files: {[o.get('filename') for o in outputs]}")
 
-    def generate_shot(self, shot: Dict[str, Any], project_dir: str, dry_run: bool = False) -> Dict[str, Any]:
+    def validate_node_types(self, workflow: Dict[str, Any]):
+        """Check if all node types in the workflow are registered on the server."""
+        try:
+            object_info = self.client.get_object_info()
+            available_types = set(object_info.keys())
+        except Exception as e:
+            logger.warning(f"Could not fetch object_info for preflight validation: {e}")
+            return
+
+        missing = []
+        for node_id, node in workflow.items():
+            class_type = node.get("class_type")
+            if class_type not in available_types:
+                missing.append({
+                    "node_id": node_id,
+                    "class_type": class_type
+                })
+
+        if missing:
+            raise RuntimeError(
+                "Workflow contains node types not registered in this ComfyUI server: "
+                f"{missing}.\n"
+                "Possible reasons:\n"
+                "1. Custom nodes are not installed on the server.\n"
+                "2. The workflow contains 'Group Nodes' or 'Subgraphs' that are not expanded.\n\n"
+                "To fix:\n"
+                "- Open the workflow in ComfyUI browser.\n"
+                "- Enable 'Dev mode' in settings.\n"
+                "- Export using 'Save (API Format)' or 'Export API' to ensure subgraphs are expanded.\n"
+                "- Replace the JSON file in your project with the new export."
+            )
+
+    def generate_shot(self, shot: Dict[str, Any], project_dir: str, dry_run: bool = False, skip_preflight: bool = False) -> Dict[str, Any]:
         shot_id = shot["id"]
         report = {
             "id": shot_id,
@@ -56,7 +88,11 @@ class ComfyUIProvider(VideoProvider):
             
         workflow_template = utils.load_json(workflow_path)
         
-        # API format check
+        # Preflight validation
+        if not dry_run and not skip_preflight:
+            self.validate_node_types(workflow_template)
+            
+        # API format check (legacy check, redundant if preflight is on but good for dry-run)
         if "nodes" in workflow_template and "links" in workflow_template:
             report["status"] = "failed"
             report["error"] = (

@@ -32,7 +32,7 @@ def update_node_input(workflow: Dict[str, Any], node_id: str, value: Any, possib
     logger.warning(f"None of the possible keys {possible_keys} found in node {node_id} inputs.")
     return False
 
-def process_shot(provider: Any, project_dir: str, shot: Dict[str, Any], dry_run: bool = False, max_retries: int = 1) -> Dict[str, Any]:
+def process_shot(provider: Any, project_dir: str, shot: Dict[str, Any], dry_run: bool = False, max_retries: int = 1, skip_preflight: bool = False) -> Dict[str, Any]:
     shot_id = shot["id"]
     logger.info(f"Processing shot: {shot_id}")
     
@@ -47,7 +47,7 @@ def process_shot(provider: Any, project_dir: str, shot: Dict[str, Any], dry_run:
     for attempt in range(max_retries + 1):
         report["retries"] = attempt
         try:
-            shot_report = provider.generate_shot(shot, project_dir, dry_run)
+            shot_report = provider.generate_shot(shot, project_dir, dry_run, skip_preflight)
             report.update(shot_report)
             
             if report["status"] != "failed":
@@ -73,6 +73,7 @@ def main():
     parser.add_argument("--skip-existing", action="store_true", help="Skip if output file already exists")
     parser.add_argument("--dry-run", action="store_true", help="Prepare workflows without sending to ComfyUI")
     parser.add_argument("--retries", type=int, default=1, help="Max retries per shot")
+    parser.add_argument("--skip-preflight", action="store_true", help="Skip ComfyUI node type validation")
     args = parser.parse_args()
 
     load_dotenv()
@@ -106,7 +107,7 @@ def main():
             results.append({"id": shot_id, "status": "skipped", "output": shot["output"]})
             continue
             
-        report = process_shot(provider, project_dir, shot, args.dry_run, args.retries)
+        report = process_shot(provider, project_dir, shot, args.dry_run, args.retries, args.skip_preflight)
         results.append(report)
         
         if report["status"] == "failed":

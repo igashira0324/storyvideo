@@ -10,6 +10,13 @@ class ComfyUIClient:
         self.base_url = base_url.rstrip('/')
         self.client_id = str(uuid.uuid4())
 
+    def get_object_info(self) -> Dict[str, Any]:
+        """Gets registered node types and their info from ComfyUI."""
+        url = f"{self.base_url}/object_info"
+        res = requests.get(url)
+        res.raise_for_status()
+        return res.json()
+
     def upload_image(self, image_path: str, overwrite: bool = True) -> str:
         """Uploads an image to ComfyUI and returns the filename."""
         url = f"{self.base_url}/upload/image"
