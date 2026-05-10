@@ -4,6 +4,7 @@ import json
 import argparse
 import subprocess
 import logging
+from typing import List
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -73,13 +74,22 @@ def main():
 
         if args.auto_review:
             logger.info("Running automatic review...")
-            subprocess.run([sys.executable, os.path.join(script_dir, "review_shots.py"), "--project", args.project], check=True)
-            subprocess.run([sys.executable, os.path.join(script_dir, "ai_review_shots.py"), "--project", args.project, "--model", args.vlm_model], check=True)
+            subprocess.run([sys.executable, os.path.join(script_dir, "review_shots.py"), "--project", project_dir], check=True)
+            subprocess.run([sys.executable, os.path.join(script_dir, "ai_review_shots.py"), "--project", project_dir, "--model", args.vlm_model], check=True)
         else:
             logger.info("Auto-review disabled. Stopping after one regeneration round.")
             break
 
-    logger.info("Autonomous regeneration process complete.")
+    # Final quality gate check
+    with open(report_path, "r", encoding="utf-8") as f:
+        final_report = json.load(f)
+
+    remaining = [sid for sid, info in final_report.items() if info.get("needs_review")]
+    if remaining:
+        logger.warning(f"Regeneration finished but shots still need review: {remaining}")
+        sys.exit(2)
+        
+    logger.info("Autonomous regeneration process complete. All shots passed review.")
 
 if __name__ == "__main__":
     main()

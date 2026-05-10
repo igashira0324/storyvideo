@@ -30,9 +30,9 @@ Output Format: A single JSON object that follows this schema:
       "input_image": "assets/shot_001_start.png",
       "positive_prompt": "string (visual description, cinematic, focus on characters and action)",
       "negative_prompt": "low quality, blurry, distorted, watermark",
-      "duration_sec": <int, 3-8>,
-      "seed": <int>,
-      "subtitle": "<text>",
+      "duration_sec": 4,
+      "seed": 42,
+      "subtitle": "A short cinematic narration line.",
       "narration": null,
       "t2i_prompt": "<detailed visual prompt for start image generation>",
       "transition": "fade",
@@ -42,8 +42,11 @@ Output Format: A single JSON object that follows this schema:
 }}
 
 Guidelines:
-1. Break the story into 3-5 logical shots.
-2. Maintain character and setting consistency in the positive prompts.
+- Each shot should visually follow the previous one.
+- Keep the number of shots reasonable (3-6 shots is a good start).
+- Use dynamic camera movements and detailed visual prompts.
+- Ensure 'duration_sec' is an integer between 3 and 8.
+- Ensure 'seed' is an integer.
 3. Keep prompts descriptive: lighting, camera angle, action.
 4. Output ONLY the JSON object. Do not include markdown formatting or ellipsis.
 5. Ensure "output" paths use "outputs/shot_xxx.mp4" format and are unique.

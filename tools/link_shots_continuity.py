@@ -16,7 +16,9 @@ def extract_last_frame(video_path: str, output_path: str):
         "ffmpeg", "-y", "-sseof", "-0.1", "-i", video_path,
         "-update", "1", "-q:v", "2", "-frames:v", "1", output_path
     ]
-    subprocess.run(cmd, capture_output=True, check=True)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"ffmpeg failed: {result.stderr}")
 
 def main():
     parser = argparse.ArgumentParser(description="Link shots by using the last frame of the previous shot as the start of the next")

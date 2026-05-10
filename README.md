@@ -69,31 +69,55 @@ Generate videos based on the shot plan using the shortcut script.
 ```
 
 ### Full Pipeline Example
-To run the complete process from planning to final rendering:
+To run the complete process from planning to final rendering, including autonomous self-healing:
 
 ```bash
-# 1. Plan the story
-python3 tools/story_planner.py --brief projects/exhibition_pr/brief.md --project projects/exhibition_pr
+# 1. Shot plan generation
+python3 tools/story_planner.py \
+  --brief projects/exhibition_pr/brief.md \
+  --project projects/exhibition_pr \
+  --preset workflow_presets/ltx23_i2v.json
 
-# 2. Generate start images (T2I)
-python3 tools/generate_start_images.py --project projects/exhibition_pr --preset workflow_presets/sdxl_t2i.json
+# 2. T2I start image generation
+python3 tools/generate_start_images.py \
+  --project projects/exhibition_pr \
+  --preset workflow_presets/sdxl_t2i.json
 
-# 3. Generate video shots (I2V)
-./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+# 3. I2V video generation
+python3 tools/generate_shots.py \
+  --project projects/exhibition_pr \
+  --skip-existing
 
-# 4. Integrity Check & Quality Review
-python3 tools/validate_shots.py --project projects/exhibition_pr
-python3 tools/review_shots.py --project projects/exhibition_pr
+# 4. Basic integrity check
+python3 tools/review_shots.py \
+  --project projects/exhibition_pr
 
-# 5. AI Quality Review (VLM)
-python3 tools/ai_review_shots.py --project projects/exhibition_pr --model minicpm-v
+# 5. AI quality review
+python3 tools/ai_review_shots.py \
+  --project projects/exhibition_pr \
+  --model minicpm-v
 
-# 6. Automated Regeneration (if rejected by AI or integrity check)
-python3 tools/regenerate_failed_shots.py --project projects/exhibition_pr
+# 6. Autonomous self-healing loop (regenerate, re-review)
+python3 tools/regenerate_failed_shots.py \
+  --project projects/exhibition_pr \
+  --max-rounds 3 \
+  --auto-review \
+  --vlm-model minicpm-v
 
-# 7. Final Assembly & Rendering
-python3 tools/build_remotion_timeline.py --project projects/exhibition_pr --remotion-dir remotion
-cd remotion && npm install && npm run build
+# 7. Continuity linking (optional, for smooth transitions)
+# Note: Since this modifies input images, you may need to regenerate subsequent shots if used.
+python3 tools/link_shots_continuity.py \
+  --project projects/exhibition_pr \
+  --force
+
+# 8. Final assembly & rendering (Remotion)
+python3 tools/build_remotion_timeline.py \
+  --project projects/exhibition_pr \
+  --remotion-dir remotion
+
+cd remotion
+npm install
+npm run build
 ```
 
 > [!IMPORTANT]
