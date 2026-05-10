@@ -69,16 +69,29 @@ Generate videos based on the shot plan using the shortcut script.
 ```
 
 ### Full Pipeline Example
-To run the complete process from planning to rendering:
+To run the complete process from planning to final rendering:
+
 ```bash
-# 1. Plan
+# 1. Plan the story
 python3 tools/story_planner.py --brief projects/exhibition_pr/brief.md --project projects/exhibition_pr
-# 2. Generate
-./run_pipeline.sh --project projects/exhibition_pr
-# 3. Validate & Review
+
+# 2. Generate start images (T2I)
+python3 tools/generate_start_images.py --project projects/exhibition_pr --preset workflow_presets/sdxl_t2i.json
+
+# 3. Generate video shots (I2V)
+./run_pipeline.sh --project projects/exhibition_pr --skip-existing
+
+# 4. Integrity Check & Quality Review
 python3 tools/validate_shots.py --project projects/exhibition_pr
 python3 tools/review_shots.py --project projects/exhibition_pr
-# 4. Assemble
+
+# 5. AI Quality Review (VLM)
+python3 tools/ai_review_shots.py --project projects/exhibition_pr --model minicpm-v
+
+# 6. Automated Regeneration (if rejected by AI or integrity check)
+python3 tools/regenerate_failed_shots.py --project projects/exhibition_pr
+
+# 7. Final Assembly & Rendering
 python3 tools/build_remotion_timeline.py --project projects/exhibition_pr --remotion-dir remotion
 cd remotion && npm install && npm run build
 ```

@@ -78,7 +78,11 @@ Respond in JSON format:
         return json.loads(text)
     except Exception as e:
         logger.error(f"Failed to parse VLM response: {e}")
-        return {"matches_prompt": True, "quality_ok": True, "reason": "Failed to parse AI review"}
+        return {
+            "matches_prompt": False, 
+            "quality_ok": False, 
+            "reason": f"Failed to parse AI review response: {e}"
+        }
 
 def main():
     parser = argparse.ArgumentParser(description="AI Quality Review of generated shots using VLM")
