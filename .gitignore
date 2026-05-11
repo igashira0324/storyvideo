@@ -6,6 +6,7 @@ __pycache__/
 # Generated Assets
 projects/*/assets/*_start.png
 projects/*/assets/*_continuity.png
+projects/*/assets/*.rejected.png
 projects/*/reports/jobs/*.json
 projects/*/reports/jobs/*.log
 projects/*/temp/

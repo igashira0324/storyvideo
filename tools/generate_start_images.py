@@ -36,8 +36,30 @@ def load_bible_prefix(project_dir: str) -> str:
 
     return "\n".join(parts) if parts else ""
 
-def generate_start_images(project_dir: str, preset_path: str, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None):
+def generate_start_images(project_dir: str, preset_path: str = None, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None):
     load_dotenv()
+    
+    # Resolve Preset
+    if not preset_path:
+        config_path = os.path.join(project_dir, "project_config.json")
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    preset_path = config.get("t2i_preset")
+                    if preset_path:
+                        logger.info(f"Using T2I preset from project_config: {preset_path}")
+            except Exception as e:
+                logger.warning(f"Failed to read project_config.json: {e}")
+                
+    if not preset_path:
+        preset_path = "workflow_presets/ernie_image_turbo.json"
+        logger.info(f"No preset specified. Using default: {preset_path}")
+
+    if not os.path.exists(preset_path):
+        logger.error(f"Preset file not found: {preset_path}")
+        return
+
     comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:8188")
     provider = ComfyUIProvider(comfyui_url)
 
@@ -106,7 +128,7 @@ def generate_start_images(project_dir: str, preset_path: str, model: str = None,
 def main():
     parser = argparse.ArgumentParser(description="Generate start images for shots using T2I")
     parser.add_argument("--project", required=True, help="Project directory")
-    parser.add_argument("--preset", required=True, help="T2I workflow preset JSON")
+    parser.add_argument("--preset", help="T2I workflow preset JSON (optional, reads from project_config if missing)")
     parser.add_argument("--dry-run", action="store_true", help="Dry run mode")
     parser.add_argument("--no-bible", action="store_true", help="Disable bible injection")
     parser.add_argument("--only", nargs="+", help="Specific shot IDs to generate")

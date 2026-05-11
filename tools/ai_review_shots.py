@@ -93,6 +93,9 @@ def main():
     parser.add_argument("--project", required=True, help="Project directory")
     parser.add_argument("--model", default="minicpm-v", help="Ollama VLM model name")
     parser.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama API URL")
+    parser.add_argument("--num-frames", type=int, default=3, help="Number of frames to extract for review")
+    parser.add_argument("--prompt-score-threshold", type=float, default=0.7, help="Minimum prompt match score")
+    parser.add_argument("--quality-score-threshold", type=float, default=0.7, help="Minimum visual quality score")
     parser.add_argument("--only", nargs="+", help="Specific shot IDs to review")
     args = parser.parse_args()
 
@@ -125,19 +128,32 @@ def main():
         if not os.path.exists(video_path):
             continue
 
-        logger.info(f"AI Reviewing shot: {shot_id}")
+        logger.info(f"AI Reviewing shot: {shot_id} (frames: {args.num_frames})")
         temp_dir = os.path.join(project_dir, "temp", shot_id)
-        frame_paths = extract_frames(video_path, temp_dir)
+        frame_paths = extract_frames(video_path, temp_dir, num_frames=args.num_frames)
         
         vlm_res = ask_vlm(frame_paths, shot_data["positive_prompt"], args.model, args.url)
         
         info["ai_review"] = vlm_res
-        if not vlm_res.get("matches_prompt", True) or not vlm_res.get("quality_ok", True):
+        
+        matches_prompt = vlm_res.get("matches_prompt", True)
+        prompt_score = vlm_res.get("prompt_match_score", 1.0)
+        quality_ok = vlm_res.get("quality_ok", True)
+        quality_score = vlm_res.get("visual_quality_score", 1.0)
+        
+        rejected = (
+            not matches_prompt or 
+            prompt_score < args.prompt_score_threshold or
+            not quality_ok or
+            quality_score < args.quality_score_threshold
+        )
+
+        if rejected:
             info["status"] = "ai_rejected"
             info["needs_review"] = True
-            logger.warning(f"Shot {shot_id} REJECTED by AI: {vlm_res.get('reason')}")
+            logger.warning(f"Shot {shot_id} REJECTED by AI (Prompt: {prompt_score}, Quality: {quality_score}): {vlm_res.get('reason')}")
         else:
-            logger.info(f"Shot {shot_id} PASSED AI Review")
+            logger.info(f"Shot {shot_id} PASSED AI Review (Prompt: {prompt_score}, Quality: {quality_score})")
 
     # Update report
     with open(report_path, 'w') as f:

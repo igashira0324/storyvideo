@@ -27,6 +27,21 @@ This document defines the mandatory operational rules for the Antigravity AI age
 - **Polling Loop Prohibition**: **DO NOT** use `command_status` in a tight loop for more than 5-10 iterations. If a job is taking longer, inform the user and suggest checking back later.
 - **Log Inspection**: When checking logs, always use `tail -n 20` to see only the most recent progress.
 
-## 4. File System Hygiene
+## 4. Harness Design Concepts (Stateless Orchestration)
+The StoryVideo "Harness" is the orchestration layer that decouples the AI Agent (Director) from the heavy execution engines (ComfyUI/Tools).
+
+### Core Principles
+- **Director vs. Engine Separation**: Antigravity is the "Director" who makes decisions. `safe_run.py` and tools are the "Engine" that does the work.
+- **Context-Free Persistence**: The "ground truth" of the project state must reside in the filesystem (`PROJECT_STATE.md`, `reports/jobs/*.json`), NOT in the agent's memory.
+- **Telemetry-based Monitoring**: The agent should only see the "tail" of logs. If a job is running, the agent should return `WAIT_FOR_JOBS` and exit or move to another task.
+- **Handoff Readiness**: Every step should produce a "Session Handoff" state. If the agent crashes or the conversation is reset, the next agent should be able to resume immediately by reading the project state.
+
+### Harness Implementation Checklist
+- [ ] Use `safe_run.py` for all jobs > 30 seconds.
+- [ ] Maintain `PROJECT_STATE.md` with current phase and next actions.
+- [ ] Use `pipeline_manager.py` to get a structured overview before making decisions.
+- [ ] Use `shlex.quote()` for all shell command generation in `safe_run.py`.
+
+## 5. File System Hygiene
 - Ensure `.gitignore` is correctly configured to exclude large media files and job logs from IDE indexing.
 - Use `PROJECT_STATE.md` within each project directory to track high-level progress and handoff notes.

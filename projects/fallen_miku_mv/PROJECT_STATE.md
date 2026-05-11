@@ -3,12 +3,13 @@
 Last updated: 2026-05-11
 
 ## Current Status
-- **Phase**: Video Shot Generation (Background)
+- **Phase**: Quality Review (AI)
 - **Shot Plan**: Verified [OK]
 - **Workflows**: Corrected and verified in `projects/fallen_miku_mv/comfy_workflows/`
 - **Assets**: 4/4 generated [OK]
-- **Videos**: 0/4 generated (Job starting: `generate_shots`)
-- **AI Review**: Not started
+- **Videos**: 4/4 generated [OK]
+- **Integrity Review**: Completed (Job: `review_shots`)
+- **AI Review**: In Progress (Job: `ai_review`)
 
 ## Known Issues
 - Antigravity robustness measures (P0/P1) fully implemented and pushed.

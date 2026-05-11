@@ -80,21 +80,33 @@ class ComfyUIProvider(VideoProvider):
                 f"Failed to update {label}: node_id={node_id}, possible_keys={possible_keys}. "
             )
 
-    def select_video_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def select_video_output(self, outputs: List[Dict[str, Any]], preferred_prefix: str = None) -> Dict[str, Any]:
         video_exts = (".mp4", ".webm", ".mov", ".mkv")
-        for item in outputs:
-            filename = item.get("filename", "")
-            if filename.lower().endswith(video_exts):
-                return item
-        raise RuntimeError(f"No video output found among files: {[o.get('filename') for o in outputs]}")
+        videos = [o for o in outputs if o.get("filename", "").lower().endswith(video_exts)]
+        
+        if not videos:
+             raise RuntimeError(f"No video output found among files: {[o.get('filename') for o in outputs]}")
+             
+        if preferred_prefix:
+            matched = [v for v in videos if preferred_prefix in v.get("filename", "")]
+            if matched:
+                return matched[0]
+                
+        return videos[0]
 
-    def select_image_output(self, outputs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def select_image_output(self, outputs: List[Dict[str, Any]], preferred_prefix: str = None) -> Dict[str, Any]:
         image_exts = (".png", ".jpg", ".jpeg", ".webp")
-        for item in outputs:
-            filename = item.get("filename", "")
-            if filename.lower().endswith(image_exts):
-                return item
-        raise RuntimeError(f"No image output found among files: {[o.get('filename') for o in outputs]}")
+        images = [o for o in outputs if o.get("filename", "").lower().endswith(image_exts)]
+        
+        if not images:
+            raise RuntimeError(f"No image output found among files: {[o.get('filename') for o in outputs]}")
+            
+        if preferred_prefix:
+            matched = [i for i in images if preferred_prefix in i.get("filename", "")]
+            if matched:
+                return matched[0]
+                
+        return images[0]
 
     def validate_node_types(self, workflow: Dict[str, Any]):
         """Check if all node types in the workflow are registered on the server."""
@@ -256,9 +268,9 @@ class ComfyUIProvider(VideoProvider):
                 
             output_type = shot.get("output_type", "video")
             if output_type == "image":
-                output_info = self.select_image_output(outputs)
+                output_info = self.select_image_output(outputs, preferred_prefix=shot_id)
             else:
-                output_info = self.select_video_output(outputs)
+                output_info = self.select_video_output(outputs, preferred_prefix=shot_id)
 
             dest_path = os.path.join(project_dir, shot["output"])
             os.makedirs(os.path.dirname(dest_path), exist_ok=True)

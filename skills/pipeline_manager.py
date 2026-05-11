@@ -69,7 +69,8 @@ class VideoSkill:
             "needs_regeneration": 0,
             "start_images_total": 0,
             "start_images_existing": 0,
-            "missing_start_images": []
+            "missing_start_images": [],
+            "project_config": self.load_project_config()
         }
         
         plan_data = None
@@ -149,6 +150,45 @@ class VideoSkill:
         status["next_action"] = next_action
         return status
 
+    def load_project_config(self):
+        config_path = os.path.join(self.project_dir, "project_config.json")
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.warning(f"Failed to read project_config.json: {e}")
+        return {}
+
+    def cleanup_stale_jobs(self):
+        job_dir = os.path.join(self.project_dir, "reports", "jobs")
+        if not os.path.exists(job_dir):
+            return 0
+            
+        stale_count = 0
+        for f in os.listdir(job_dir):
+            if f.endswith(".json"):
+                path = os.path.join(job_dir, f)
+                try:
+                    with open(path, 'r') as jf:
+                        data = json.load(jf)
+                    
+                    if data.get("status") == "running":
+                        pid = data.get("pid")
+                        if not pid or not self.is_pid_running(pid):
+                            data["status"] = "stale"
+                            data["note"] = "PID not found during cleanup"
+                            data["finished_at"] = datetime.now().isoformat()
+                            
+                            with open(path, 'w') as jf:
+                                json.dump(data, jf, indent=2)
+                            
+                            logger.info(f"Cleaned up stale job: {data.get('job_id')}")
+                            stale_count += 1
+                except Exception as e:
+                    logger.error(f"Error cleaning up job file {f}: {e}")
+        return stale_count
+
     def check_jobs(self):
         job_dir = os.path.join(self.project_dir, "reports", "jobs")
         if not os.path.exists(job_dir):
@@ -218,6 +258,16 @@ class VideoSkill:
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
         print(f"To Re-gen:  {s['needs_regeneration']}")
         
+        config = s.get("project_config", {})
+        if config:
+            print("\n[Workflow Policy]")
+            if "t2i_preset" in config:
+                print(f"T2I Preset: {config['t2i_preset']}")
+            if "i2v_preset" in config:
+                print(f"I2V Preset: {config['i2v_preset']}")
+            if "model" in config:
+                print(f"Primary Model: {config['model']}")
+        
         if s["running_jobs"]:
             print("\n[Running Background Jobs]")
             for job in s["running_jobs"]:
@@ -248,6 +298,24 @@ class VideoSkill:
         elif s['next_action'] == "finalize_timeline":
             print("Action: Finalize with 'tools/build_remotion_timeline.py' and render.")
 
+    def print_handoff(self):
+        s = self.get_status()
+        print(f"=== Session Handoff: {s['project']} ===")
+        print(f"Current Phase: {s['next_action'].upper()}")
+        print(f"Progress: StartImg={s['start_images_existing']}/{s['start_images_total']}, Videos={s['generated']}/{s['num_shots']}, Reviewed={s['reviewed']}/{s['num_shots']}")
+        
+        if s["running_jobs"]:
+            print("Active Jobs:")
+            for j in s["running_jobs"]:
+                print(f"- {j['name']} (PID: {j['pid']})")
+        
+        print("\nLast Log Tails:")
+        all_jobs = s["running_jobs"] + s["recent_jobs"]
+        for job in all_jobs[:2]:
+            print(f"--- {job['name']} ---")
+            print(job["log_tail"])
+        print("--- END HANDOFF ---")
+
     def backup(self):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_name = f"_backup_{timestamp}"
@@ -272,11 +340,49 @@ class VideoSkill:
         print(f"\n✅ Backup created successfully at: {backup_path}")
         return backup_path
 
+    def init_state(self):
+        state_path = os.path.join(self.project_dir, "PROJECT_STATE.md")
+        if os.path.exists(state_path):
+            print(f"PROJECT_STATE.md already exists at {state_path}")
+            return
+            
+        project_name = os.path.basename(self.project_dir)
+        template = f"""# Project State: {project_name}
+
+Last updated: {datetime.now().strftime("%Y-%m-%d")}
+
+## Current Status
+- **Phase**: Setup
+- **Shot Plan**: [ ]
+- **Workflows**: [ ]
+- **Assets**: 0/0 generated
+- **Videos**: 0/0 generated
+
+## Next Actions
+1. [ ] Finalize brief.txt
+2. [ ] Run `tools/story_planner.py`
+3. [ ] Run `tools/generate_start_images.py`
+4. [ ] Run `tools/generate_shots.py`
+
+## Workflow Policy
+- **T2I**: workflow_presets/ernie_image_turbo.json
+- **I2V**: workflow_presets/ltx23_i2v.json
+
+## Notes
+- Use `skills/safe_run.py` for long jobs.
+"""
+        with open(state_path, 'w', encoding='utf-8') as f:
+            f.write(template)
+        print(f"✅ Created PROJECT_STATE.md template at {state_path}")
+
 def main():
     parser = argparse.ArgumentParser(description="Antigravity Pipeline Manager Skill")
     parser.add_argument("--project", required=True, help="Path to project directory")
     parser.add_argument("--status", action="store_true", help="Print current project status summary")
+    parser.add_argument("--handoff", action="store_true", help="Print concise handoff summary")
     parser.add_argument("--backup", action="store_true", help="Create a timestamped backup of project data")
+    parser.add_argument("--cleanup-stale-jobs", action="store_true", help="Mark running jobs with no active PID as stale")
+    parser.add_argument("--init-state", action="store_true", help="Create a PROJECT_STATE.md template")
     parser.add_argument("--json", action="store_true", help="Output status as JSON")
     args = parser.parse_args()
     
@@ -286,15 +392,22 @@ def main():
         
     skill = VideoSkill(args.project)
     
-    if args.status:
-        skill.print_summary()
-
-    if args.backup:
-        skill.backup()
-
     if args.json:
         status = skill.get_status()
         print(json.dumps(status, indent=2, ensure_ascii=False))
+    elif args.handoff:
+        skill.print_handoff()
+    elif args.backup:
+        skill.backup()
+    elif args.cleanup_stale_jobs:
+        count = skill.cleanup_stale_jobs()
+        print(f"Cleaned up {count} stale jobs.")
+    elif args.init_state:
+        skill.init_state()
+    elif args.status:
+        skill.print_summary()
+    else:
+        skill.print_summary()
 
 if __name__ == "__main__":
     main()
