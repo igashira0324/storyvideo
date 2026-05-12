@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "identity_id": "angel_miku_cosplayer_v1",
+  "display_name": "Angel Miku Cosplayer",
+  "reference_images": [
+    "assets/character_ref/angel_miku_ref_front.png"
+  ],
+  "identity_prompt": "same adult female cosplayer as the reference image, angel version Hatsune Miku inspired cosplay, turquoise twin tails, soft youthful face, large teal eyes, white angel dress, translucent white feather wings, halo, elegant idol MV styling",
+  "negative_identity_prompt": "different woman, different face, different hairstyle, short hair, black hair, blonde hair, red hair, male, child, old face, realistic unrelated person, inconsistent costume, missing twin tails, missing wings, extra person",
+  "identity_score_threshold": 0.75,
+  "notes": "Use this file only for character consistency. Do not inject unrelated character bible entries."
+}

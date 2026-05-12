@@ -1,0 +1,574 @@
+{
+  "project_name": "Angel_Hatsune_Miku_Music_Video",
+  "project_title": "Ethereal Wings",
+  "composition_name": "FinalVideo",
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "bgm": null,
+  "shots": [
+    {
+      "id": "shot_001_intro",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_001_start.png",
+      "positive_prompt": "Cinematic shot, ethereal atmosphere, a grand celestial gate made of pure light, a female figure in Hatsune Miku angel cosplay silhouette shrouded in radiant glow, volumetric lighting, divine ambiance, 8k resolution, realistic texture",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 21975524,
+      "subtitle": "From the heavens, a voice emerges.",
+      "narration": null,
+      "t2i_prompt": "Hyperrealistic portrait of a woman cosplaying as angel Hatsune Miku, standing before massive luminous white gates in a heavenly realm, bathed in soft golden and white divine light, ethereal fog, cinematic composition, 85mm lens",
+      "transition": "fade",
+      "output": "outputs/shot_001_intro.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        42
+      ]
+    },
+    {
+      "id": "shot_002_vocal_float",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_002_start.png",
+      "positive_prompt": "Cinematic shot, low angle view, Hatsune Miku angel cosplay floating gently in mid-air, large pristine white wings slowly unfurling, wearing sacred blue and white dress, singing with open mouth, ethereal particles floating, dreamlike atmosphere, soft focus background",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 1699450116,
+      "subtitle": "Her song transcends the mortal realm.",
+      "narration": null,
+      "t2i_prompt": "Full body shot of angel Hatsune Miku cosplay floating horizontally in air, massive white wings partially open, wearing flowing white and light blue garments, surrounded by glowing ethereal dust, cinematic lighting, fantasy aesthetic",
+      "transition": "crossfade",
+      "output": "outputs/shot_002_vocal_float.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        194190004,
+        3737493913
+      ]
+    },
+    {
+      "id": "shot_003_eye_closeup",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_003_start.png",
+      "positive_prompt": "Extreme close-up, intense focus on face, compassionate and serene expression, glowing azure blue eyes reflecting light, subtle tears of joy, soft ethereal lighting, shallow depth of field, cinematic texture",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed, asymmetrical eyes",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 4238812779,
+      "subtitle": "Eyes that hold the light of stars.",
+      "narration": null,
+      "t2i_prompt": "Macro close-up of angel Hatsune Miku cosplay face, glowing cyan eyes with lens flare, serene loving expression, soft cinematic rim lighting, ethereal glow on skin, hyperrealistic details, 100mm macro lens",
+      "transition": "dissolve",
+      "output": "outputs/shot_003_eye_closeup.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        202
+      ]
+    },
+    {
+      "id": "shot_004_chorus_feathers",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_004_start.png",
+      "positive_prompt": "Dynamic shot, medium long shot, Hatsune Miku angel cosplay flapping large white wings powerfully, thousands of white feathers falling like snow, intense divine lighting, dramatic shadows, ethereal atmosphere, high contrast",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 4108577936,
+      "subtitle": "The heavens tremble with her melody.",
+      "narration": null,
+      "t2i_prompt": "Action shot of angel Hatsune Miku cosplay in mid-air vigorously flapping massive wings, cascade of white feathers falling around her, dramatic volumetric lighting, cinematic composition, high energy, 35mm lens",
+      "transition": "flash",
+      "output": "outputs/shot_004_chorus_feathers.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        303
+      ]
+    },
+    {
+      "id": "shot_005_wide_wings",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_005_start.png",
+      "positive_prompt": "Cinematic wide shot, rear view, massive white wings fully spread filling the frame, Hatsune Miku angel cosplay standing on cloud-like mist, ethereal light rays piercing through feathers, divine grandeur, high detail",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 404,
+      "subtitle": "Wings of purity, vast and eternal.",
+      "narration": null,
+      "t2i_prompt": "Wide cinematic shot from behind, angel Hatsune Miku cosplay with enormous white wings fully extended, standing on glowing white clouds, divine god rays illuminating feather details, ethereal atmosphere, epic scale",
+      "transition": "fade",
+      "output": "outputs/shot_005_wide_wings.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_006_feather_rain_close",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_006_start.png",
+      "positive_prompt": "Close-up, slow motion, white feathers gently brushing against glowing blue and white costume, Hatsune Miku angel cosplay tilting head back, eyes closed in bliss, soft warm lighting, ethereal dust particles, dreamlike quality",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 3333423377,
+      "subtitle": "Lost in the divine rhythm.",
+      "narration": null,
+      "t2i_prompt": "Close-up of angel Hatsune Miku cosplay chest and face, eyes closed, head tilted back, white feathers slowly drifting across glowing costume, soft ethereal lighting, slow motion feel, cinematic bokeh",
+      "transition": "crossfade",
+      "output": "outputs/shot_006_feather_rain_close.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        505
+      ]
+    },
+    {
+      "id": "shot_007_ascent",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_007_start.png",
+      "positive_prompt": "Low angle dynamic shot, Hatsune Miku angel cosplay ascending rapidly into bright light, wings flapping swiftly, motion blur on background, intense radiant glow, ethereal energy trails, cinematic motion",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 606,
+      "subtitle": "Rising beyond the veil.",
+      "narration": null,
+      "t2i_prompt": "Dynamic low angle shot of angel Hatsune Miku cosplay flying upwards into bright white light, wings in motion, motion blur background, intense luminous glow, ethereal energy particles, cinematic action shot",
+      "transition": "zoom out",
+      "output": "outputs/shot_007_ascent.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_008_light_burst",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_008_start.png",
+      "positive_prompt": "Extreme wide shot, Hatsune Miku angel cosplay silhouette centered, surrounded by exploding radiant white light, feathers dispersing like stardust, heavenly realm background, divine atmosphere, high contrast",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 707,
+      "subtitle": "A light that never fades.",
+      "narration": null,
+      "t2i_prompt": "Silhouette of angel Hatsune Miku cosplay centered in frame, massive burst of bright white divine light radiating outward, feathers scattering like particles, ethereal heavenly background, high contrast, epic scale",
+      "transition": "flash",
+      "output": "outputs/shot_008_light_burst.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_009_fading_wings",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_009_start.png",
+      "positive_prompt": "Medium shot, rear view, wings slowly glowing and dissolving into light particles, Hatsune Miku angel cosplay standing peacefully, ethereal mist surrounding, soft diffused lighting, dreamlike transition",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 2364985263,
+      "subtitle": "Returning to the source.",
+      "narration": null,
+      "t2i_prompt": "Rear medium shot of angel Hatsune Miku cosplay, wings emitting soft glow and breaking into light particles, standing in ethereal mist, soft diffused lighting, peaceful atmosphere, cinematic fantasy",
+      "transition": "fade",
+      "output": "outputs/shot_009_fading_wings.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        808
+      ]
+    },
+    {
+      "id": "shot_010_outro",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_010_start.png",
+      "positive_prompt": "Close-up, face barely visible in radiant white light, Hatsune Miku angel cosplay silhouette fading into pure brilliance, ethereal glow, final peaceful moment, cinematic lighting, high quality texture",
+      "negative_prompt": "low quality, blurry, distorted, watermark, ugly, deformed",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 2427731926,
+      "subtitle": "Eternity in a melody.",
+      "narration": null,
+      "t2i_prompt": "Close-up portrait of angel Hatsune Miku cosplay face dissolving into bright white light, only silhouette remaining, ethereal glow, soft focus, cinematic ending shot, high quality, dreamlike",
+      "transition": "fade_to_white",
+      "output": "outputs/shot_010_outro.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      },
+      "seed_history": [
+        4081198953,
+        65574629
+      ]
+    }
+  ]
+}

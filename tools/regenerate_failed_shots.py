@@ -45,6 +45,46 @@ def run_regeneration(project_dir: str, failed_shots: List[str]):
     logger.info(f"Executing regeneration: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
+def run_t2i_regeneration(project_dir: str, failed_shots: List[str]):
+    # Update seeds in shot_plan.json
+    import random
+    plan_path = os.path.join(project_dir, "shot_plan.json")
+    with open(plan_path, 'r', encoding='utf-8') as f:
+        shot_plan = json.load(f)
+    
+    for shot in shot_plan.get("shots", []):
+        if shot["id"] in failed_shots:
+            old_seed = shot.get("seed", 42)
+            new_seed = random.randint(1, 2**32 - 1)
+            shot["seed"] = new_seed
+            logger.info(f"Updated T2I seed for {shot['id']}: {old_seed} -> {new_seed}")
+            
+    with open(plan_path, 'w', encoding='utf-8') as f:
+        json.dump(shot_plan, f, indent=2, ensure_ascii=False)
+
+    # First, move existing start images to .rejected
+    for shot_id in failed_shots:
+        img_rel = next(s["input_image"] for s in shot_plan["shots"] if s["id"] == shot_id)
+        img_path = os.path.join(project_dir, img_rel)
+        if os.path.exists(img_path):
+            rejected_path = img_path + ".rejected"
+            os.rename(img_path, rejected_path)
+            logger.info(f"Moved rejected start image to: {rejected_path}")
+
+    # Construct the command to run generate_start_images.py
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    t2i_script = os.path.join(script_dir, "generate_start_images.py")
+
+    cmd = [
+        sys.executable,
+        t2i_script,
+        "--project", project_dir,
+        "--only"
+    ] + failed_shots
+
+    logger.info(f"Executing T2I regeneration: {' '.join(cmd)}")
+    subprocess.run(cmd, check=True)
+
 def main():
     parser = argparse.ArgumentParser(description="Regenerate shots marked as 'needs_review' in the review report")
     parser.add_argument("--project", required=True, help="Project directory")
@@ -82,12 +122,24 @@ def main():
             break
 
         logger.info(f"Found {len(failed_shots)} shots that need review.")
+        
+        # Determine if we need to regenerate T2I (Start Images)
+        # We do this if status is 'identity_rejected' or start image is missing
+        t2i_targets = [sid for sid in failed_shots if review_report[sid].get("status") == "identity_rejected"]
+        if t2i_targets:
+            logger.info(f"Regenerating T2I start images for: {t2i_targets}")
+            run_t2i_regeneration(project_dir, t2i_targets)
+            
         run_regeneration(project_dir, failed_shots)
 
         if args.auto_review:
             logger.info("Running automatic review...")
             subprocess.run([sys.executable, os.path.join(script_dir, "review_shots.py"), "--project", project_dir], check=True)
             subprocess.run([sys.executable, os.path.join(script_dir, "ai_review_shots.py"), "--project", project_dir, "--model", args.vlm_model], check=True)
+            # Add character consistency review
+            identity_path = os.path.join(project_dir, "character_identity.json")
+            if os.path.exists(identity_path):
+                subprocess.run([sys.executable, os.path.join(script_dir, "character_consistency_review.py"), "--project", project_dir, "--model", args.vlm_model], check=True)
         else:
             logger.info("Auto-review disabled. Stopping after one regeneration round.")
             logger.info("Note: review_report.json is unchanged. Run review_shots.py and ai_review_shots.py manually, or use --auto-review.")

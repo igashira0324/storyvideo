@@ -66,6 +66,7 @@ class VideoSkill:
             "generated": 0,
             "reviewed": 0,
             "ai_passed": 0,
+            "identity_passed": 0,
             "needs_regeneration": 0,
             "start_images_total": 0,
             "start_images_existing": 0,
@@ -124,6 +125,18 @@ class VideoSkill:
                         logger.warning("Unexpected review_report format (not a dict)")
             except Exception as e:
                 logger.warning(f"Failed to read review report: {e}")
+                
+        cons_report = os.path.join(self.report_dir, "character_consistency_report.json")
+        if os.path.exists(cons_report):
+            try:
+                with open(cons_report, 'r', encoding='utf-8') as f:
+                    report = json.load(f)
+                    status["identity_passed"] = len([
+                        s for s in report.values() 
+                        if isinstance(s, dict) and s.get("same_character", False)
+                    ])
+            except Exception as e:
+                logger.warning(f"Failed to read consistency report: {e}")
                 
         # Check Background Jobs
         jobs_data = self.check_jobs()
@@ -256,6 +269,7 @@ class VideoSkill:
         print(f"Generated:  {s['generated']}/{s['num_shots']} shots")
         print(f"Reviewed:   {s['reviewed']}/{s['num_shots']} shots")
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
+        print(f"Identity:   {s['identity_passed']}/{s['num_shots']} shots PASSED")
         print(f"To Re-gen:  {s['needs_regeneration']}")
         
         config = s.get("project_config", {})

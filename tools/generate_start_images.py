@@ -36,6 +36,17 @@ def load_bible_prefix(project_dir: str) -> str:
 
     return "\n".join(parts) if parts else ""
 
+def load_character_identity(project_dir: str) -> Dict[str, Any]:
+    """Loads character identity configuration."""
+    identity_path = os.path.join(project_dir, "character_identity.json")
+    if os.path.exists(identity_path):
+        try:
+            with open(identity_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Failed to load character identity: {e}")
+    return {}
+
 def generate_start_images(project_dir: str, preset_path: str = None, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None):
     load_dotenv()
     
@@ -62,6 +73,15 @@ def generate_start_images(project_dir: str, preset_path: str = None, model: str 
 
     comfyui_url = os.getenv("COMFYUI_URL", "http://127.0.0.1:8188")
     provider = ComfyUIProvider(comfyui_url)
+
+    # Load Identity for injection
+    identity = load_character_identity(project_dir)
+    identity_prefix = ""
+    negative_prefix = ""
+    if identity and identity.get("enabled"):
+        identity_prefix = identity.get("identity_prompt", "")
+        negative_prefix = identity.get("negative_identity_prompt", "")
+        logger.info(f"Injecting Character Identity: {identity.get('display_name')}")
 
     # Load Bibles for injection
     bible_prefix = "" if no_bible else load_bible_prefix(project_dir)
@@ -101,13 +121,16 @@ def generate_start_images(project_dir: str, preset_path: str = None, model: str 
         
         # Prepare T2I shot config
         base_prompt = shot.get("t2i_prompt") or shot["positive_prompt"]
-        positive_prompt = f"{bible_prefix}\n\n{base_prompt}" if bible_prefix else base_prompt
+        positive_prompt = f"{identity_prefix}\n\n{bible_prefix}\n\n{base_prompt}" if identity_prefix or bible_prefix else base_prompt
+        
+        base_negative = shot.get("negative_prompt", "")
+        negative_prompt = f"{negative_prefix}, {base_negative}" if negative_prefix else base_negative
 
         t2i_shot = {
             "id": f"{shot_id}_start",
             "workflow": preset["workflow"],
             "positive_prompt": positive_prompt,
-            "negative_prompt": shot.get("negative_prompt", ""),
+            "negative_prompt": negative_prompt,
             "seed": shot.get("seed", 42),
             "width": plan.get("width", 1280),
             "height": plan.get("height", 720),

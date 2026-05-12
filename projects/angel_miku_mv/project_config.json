@@ -1,0 +1,11 @@
+{
+  "t2i_preset": "workflow_presets/ernie_image_turbo.json",
+  "i2v_preset": "workflow_presets/ltx23_i2v.json",
+  "character_consistency": {
+    "enabled": true,
+    "identity_file": "character_identity.json",
+    "mode": "prompt_plus_review",
+    "reference_image": "assets/character_ref/angel_miku_ref_front.png",
+    "identity_score_threshold": 0.75
+  }
+}
