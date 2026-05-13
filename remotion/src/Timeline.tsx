@@ -1,4 +1,4 @@
-import { Series, Video, AbsoluteFill, staticFile, Audio, useCurrentFrame, interpolate } from 'remotion';
+import { Series, Video, AbsoluteFill, staticFile, Audio } from 'remotion';
 import React from 'react';
 
 interface Shot {
@@ -17,14 +17,12 @@ interface TimelineProps {
 }
 
 const ShotView: React.FC<{shot: Shot}> = ({shot}) => {
-  const frame = useCurrentFrame();
-  
-  const opacity = 1;
-
   return (
-    <AbsoluteFill style={{ opacity, backgroundColor: 'black' }}>
-      <Video 
-        src={staticFile(shot.path)} 
+    <AbsoluteFill style={{ backgroundColor: 'black' }}>
+      <Video
+        src={staticFile(shot.path)}
+        startFrom={0}
+        endAt={shot.duration_frames}
         muted
         style={{
           width: '100%',
@@ -32,30 +30,45 @@ const ShotView: React.FC<{shot: Shot}> = ({shot}) => {
           objectFit: 'cover'
         }}
       />
-      
+
       {/* Narration Track */}
       {shot.narration_path && (
         <Audio src={staticFile(shot.narration_path)} />
       )}
 
       {shot.subtitle && (
-        <AbsoluteFill style={{
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          paddingBottom: 50,
-        }}>
-          <div style={{
-            color: 'white',
-            fontSize: 48,
-            textAlign: 'center',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            padding: '10px 20px',
-            borderRadius: 10,
-            maxWidth: '80%',
-            fontFamily: 'sans-serif',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
-          }}>
+        <AbsoluteFill
+          style={{
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            paddingBottom: 72,
+            paddingLeft: 36,
+            paddingRight: 36,
+            pointerEvents: 'none',
+          }}
+        >
+          <div
+            style={{
+              color: '#fffdf7',
+              fontSize: 42,
+              lineHeight: 1.35,
+              fontWeight: 700,
+              textAlign: 'center',
+              maxWidth: '88%',
+              padding: '14px 28px 16px',
+              borderRadius: 28,
+              fontFamily: '"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif',
+              letterSpacing: '0.04em',
+              background: 'linear-gradient(135deg, rgba(10,18,35,0.58), rgba(40,95,120,0.38))',
+              border: '1.5px solid rgba(255,255,255,0.45)',
+              boxShadow: '0 0 22px rgba(120,220,255,0.32), 0 10px 28px rgba(0,0,0,0.45)',
+              backdropFilter: 'blur(8px)',
+              textShadow: '0 2px 6px rgba(0,0,0,0.9), 0 0 12px rgba(120,220,255,0.65)',
+            }}
+          >
+            <span style={{ color: '#bff7ff', marginRight: 10 }}>✦</span>
             {shot.subtitle}
+            <span style={{ color: '#ffe9a8', marginLeft: 10 }}>✦</span>
           </div>
         </AbsoluteFill>
       )}
@@ -63,19 +76,19 @@ const ShotView: React.FC<{shot: Shot}> = ({shot}) => {
   );
 };
 
-export const MainTimeline: React.FC<TimelineProps> = ({ 
-  shots, 
-  bgm_path = "/assets/bgm.mp3", 
-  bgm_volume = 0.3 
+export const MainTimeline: React.FC<TimelineProps> = ({
+  shots,
+  bgm_path,
+  bgm_volume = 0.3
 }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
       {/* BGM Track */}
       {bgm_path && (
-        <Audio 
-          src={staticFile(bgm_path)} 
-          volume={bgm_volume} 
-          loop 
+        <Audio
+          src={staticFile(bgm_path)}
+          volume={bgm_volume}
+          loop
         />
       )}
 

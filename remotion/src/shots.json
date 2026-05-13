@@ -1,81 +1,81 @@
 [
   {
     "id": "shot_001_intro",
-    "path": "angel_miku_mv/outputs/shot_001_intro.mp4",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_001_intro.mp4",
     "duration_frames": 144,
-    "subtitle": "From the heavens, a voice emerges.",
+    "subtitle": "\u5149\u3068\u8abf\u548c\u306e\u5929\u4f7f\u3001\u521d\u97f3\u30df\u30af\u3002",
     "narration_path": null,
     "transition": "fade"
   },
   {
     "id": "shot_002_vocal_float",
-    "path": "angel_miku_mv/outputs/shot_002_vocal_float.mp4",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_002_vocal_float.mp4",
     "duration_frames": 144,
-    "subtitle": "Her song transcends the mortal realm.",
+    "subtitle": "\u305d\u306e\u6b4c\u58f0\u306f\u3001\u7a7a\u306e\u5f7c\u65b9\u307e\u3067\u97ff\u304d\u6e21\u308b\u3002",
     "narration_path": null,
     "transition": "crossfade"
   },
   {
     "id": "shot_003_eye_closeup",
-    "path": "angel_miku_mv/outputs/shot_003_eye_closeup.mp4",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_003_eye_closeup.mp4",
     "duration_frames": 144,
-    "subtitle": "Eyes that hold the light of stars.",
+    "subtitle": "\u661f\u306e\u5149\u3092\u5bbf\u3057\u305f\u3001\u3084\u3055\u3057\u3044\u77b3\u3002",
     "narration_path": null,
     "transition": "dissolve"
   },
   {
     "id": "shot_004_chorus_feathers",
-    "path": "angel_miku_mv/outputs/shot_004_chorus_feathers.mp4",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_004_chorus_feathers.mp4",
     "duration_frames": 144,
-    "subtitle": "The heavens tremble with her melody.",
+    "subtitle": "\u512a\u96c5\u306b\u3001\u305d\u3057\u3066\u529b\u5f37\u304f\u7a7a\u3078\u3068\u821e\u3044\u4e0a\u304c\u308a\u307e\u3059\u3002",
     "narration_path": null,
     "transition": "flash"
   },
   {
     "id": "shot_005_wide_wings",
-    "path": "angel_miku_mv/outputs/shot_005_wide_wings.mp4",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_005_wide_wings.mp4",
     "duration_frames": 144,
-    "subtitle": "Wings of purity, vast and eternal.",
+    "subtitle": "\u7d14\u767d\u306e\u7ffc\u3001\u5e83\u5927\u3067\u6c38\u9060\u306a\u308b\u3082\u306e\u3002",
     "narration_path": null,
     "transition": "fade"
   },
   {
-    "id": "shot_006_feather_rain_close",
-    "path": "angel_miku_mv/outputs/shot_006_feather_rain_close.mp4",
+    "id": "shot_006_land_gracefully",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_006_land_gracefully.mp4",
     "duration_frames": 144,
-    "subtitle": "Lost in the divine rhythm.",
+    "subtitle": "\u96f2\u3092\u7a81\u304d\u629c\u3051\u3001\u305d\u306e\u8f1d\u304d\u306f\u5e0c\u671b\u306e\u5149\u3068\u306a\u308a\u307e\u3059\u3002",
     "narration_path": null,
     "transition": "crossfade"
   },
   {
-    "id": "shot_007_ascent",
-    "path": "angel_miku_mv/outputs/shot_007_ascent.mp4",
+    "id": "shot_007_dance_joy",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_007_dance_joy.mp4",
     "duration_frames": 144,
-    "subtitle": "Rising beyond the veil.",
+    "subtitle": "\u7d14\u7c8b\u306a\u8abf\u548c\u306e\u821e\u3044\u3002",
     "narration_path": null,
-    "transition": "zoom out"
+    "transition": "dissolve"
   },
   {
-    "id": "shot_008_light_burst",
-    "path": "angel_miku_mv/outputs/shot_008_light_burst.mp4",
+    "id": "shot_008_touch_of_light",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_008_touch_of_light.mp4",
     "duration_frames": 144,
-    "subtitle": "A light that never fades.",
-    "narration_path": null,
-    "transition": "flash"
-  },
-  {
-    "id": "shot_009_fading_wings",
-    "path": "angel_miku_mv/outputs/shot_009_fading_wings.mp4",
-    "duration_frames": 144,
-    "subtitle": "Returning to the source.",
+    "subtitle": "\u305d\u306e\u624b\u306f\u9b42\u3092\u7652\u3084\u3059\u5947\u8de1\u306e\u8f1d\u304d\u3002",
     "narration_path": null,
     "transition": "fade"
   },
   {
-    "id": "shot_010_outro",
-    "path": "angel_miku_mv/outputs/shot_010_outro.mp4",
+    "id": "shot_009_ascent",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_009_ascent.mp4",
     "duration_frames": 144,
-    "subtitle": "Eternity in a melody.",
+    "subtitle": "\u96f2\u306e\u5f7c\u65b9\u3078\u3001\u518d\u3073\u9ad8\u307f\u3078\u3068\u6607\u3063\u3066\u3044\u304d\u307e\u3059\u3002",
+    "narration_path": null,
+    "transition": "zoom out"
+  },
+  {
+    "id": "shot_010_outro",
+    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_010_outro.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u6c38\u9060\u306f\u3001\u4e00\u7b4b\u306e\u30e1\u30ed\u30c7\u30a3\u306e\u4e2d\u306b\u3002",
     "narration_path": null,
     "transition": "fade_to_white"
   }
