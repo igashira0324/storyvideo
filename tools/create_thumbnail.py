@@ -31,7 +31,7 @@ def fit_cover(img, width, height):
     top = (new_h - height) // 2
     return img.crop((left, top, left + width, top + height))
 
-def add_glow_text(base, text, font, y, fill, stroke_fill, stroke_width, glow_fill):
+def add_glow_text(base, text, font, position, fill, stroke_fill, stroke_width, glow_fill, glow_radius=8, align="center"):
     # Glow layer
     glow = Image.new("RGBA", base.size, (0, 0, 0, 0))
     glow_draw = ImageDraw.Draw(glow)
@@ -39,7 +39,15 @@ def add_glow_text(base, text, font, y, fill, stroke_fill, stroke_width, glow_fil
     w, _ = base.size
     bbox = glow_draw.textbbox((0, 0), text, font=font, stroke_width=stroke_width)
     tw = bbox[2] - bbox[0]
-    x = (w - tw) // 2
+    
+    if align == "center":
+        x = (w - tw) // 2
+    elif align == "left":
+        x = position[0]
+    else: # right
+        x = w - tw - position[0]
+    
+    y = position[1]
 
     glow_draw.text(
         (x, y),
@@ -50,7 +58,7 @@ def add_glow_text(base, text, font, y, fill, stroke_fill, stroke_width, glow_fil
         stroke_fill=glow_fill,
     )
 
-    glow = glow.filter(ImageFilter.GaussianBlur(8))
+    glow = glow.filter(ImageFilter.GaussianBlur(glow_radius))
     base.alpha_composite(glow)
 
     # Sharp text layer
@@ -64,13 +72,29 @@ def add_glow_text(base, text, font, y, fill, stroke_fill, stroke_width, glow_fil
         stroke_fill=stroke_fill,
     )
 
+def draw_badge(img, text, font, pos, color=(255, 95, 210, 255)):
+    draw = ImageDraw.Draw(img)
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    
+    padding = 15
+    rect = [pos[0], pos[1], pos[0] + tw + padding*2, pos[1] + th + padding*2]
+    
+    # Draw rounded rect
+    draw.rounded_rectangle(rect, radius=10, fill=color, outline="white", width=3)
+    draw.text((pos[0] + padding, pos[1] + padding - 5), text, font=font, fill="white")
+
 def main():
     parser = argparse.ArgumentParser(description="Create vertical opening thumbnail")
     parser.add_argument("--input", required=True, help="Base image path")
     parser.add_argument("--output", required=True, help="Output thumbnail path")
-    parser.add_argument("--title", default="天使のミク")
-    parser.add_argument("--subtitle", default="光のメロディ")
+    parser.add_argument("--title", default="天使ミク")
+    parser.add_argument("--subtitle", default="COMIKET COSPLAY")
+    parser.add_argument("--kicker", default="COMIKET COSPLAY")
+    parser.add_argument("--location", default="AKIHABARA -> TOKYO BIG SIGHT")
     parser.add_argument("--font", default=None)
+    parser.add_argument("--style", default="comiket_poster", choices=["classic", "comiket_poster"])
     parser.add_argument("--width", type=int, default=720)
     parser.add_argument("--height", type=int, default=1280)
     args = parser.parse_args()
@@ -81,7 +105,7 @@ def main():
 
     font_path = find_font(args.font)
     if not font_path:
-        print("ERROR: Japanese-capable font not found. Please install Noto Sans CJK or specify path via --font", file=sys.stderr)
+        print("ERROR: Japanese-capable font not found.", file=sys.stderr)
         sys.exit(1)
 
     img = Image.open(args.input).convert("RGBA")
@@ -91,40 +115,42 @@ def main():
     gradient = Image.new("RGBA", img.size, (0, 0, 0, 0))
     gdraw = ImageDraw.Draw(gradient)
     for y in range(args.height):
-        if y > int(args.height * 0.58):
-            alpha = int((y - args.height * 0.58) / (args.height * 0.42) * 150)
-            gdraw.line([(0, y), (args.width, y)], fill=(0, 8, 20, min(alpha, 150)))
+        if y > int(args.height * 0.5):
+            alpha = int((y - args.height * 0.5) / (args.height * 0.5) * 160)
+            gdraw.line([(0, y), (args.width, y)], fill=(0, 8, 24, min(alpha, 160)))
     img.alpha_composite(gradient)
 
-    font_title = ImageFont.truetype(font_path, 76)
-    font_sub = ImageFont.truetype(font_path, 48)
+    if args.style == "comiket_poster":
+        # Fonts
+        font_kicker = ImageFont.truetype(font_path, 38)
+        font_title = ImageFont.truetype(font_path, 92)
+        font_sub = ImageFont.truetype(font_path, 44)
+        font_badge = ImageFont.truetype(font_path, 32)
+        font_loc = ImageFont.truetype(font_path, 24)
 
-    add_glow_text(
-        img,
-        args.title,
-        font_title,
-        900,
-        fill="#fffdf7",
-        stroke_fill="#04101f",
-        stroke_width=7,
-        glow_fill=(90, 230, 255, 180),
-    )
+        # 1. Kicker (Top)
+        add_glow_text(img, args.kicker, font_kicker, (0, 840), "#ffe9a8", "#061426", 4, (255, 233, 168, 100))
 
-    add_glow_text(
-        img,
-        args.subtitle,
-        font_sub,
-        1002,
-        fill="#fff2b0",
-        stroke_fill="#04101f",
-        stroke_width=5,
-        glow_fill=(255, 220, 120, 150),
-    )
+        # 2. Title (Main)
+        add_glow_text(img, args.title, font_title, (0, 900), "#fffdf7", "#061426", 8, (85, 231, 255, 180), glow_radius=12)
 
-    output_dir = os.path.dirname(args.output)
-    if output_dir:
-        os.makedirs(output_dir, exist_ok=True)
-        
+        # 3. Subtitle (Action)
+        add_glow_text(img, args.subtitle, font_sub, (0, 1020), "#ff5fd2", "#061426", 5, (255, 95, 210, 120))
+
+        # 4. Location (Bottom)
+        add_glow_text(img, args.location, font_loc, (0, 1180), "#88ccff", "#000000", 2, (0, 0, 0, 0))
+
+        # 5. Badge (Top Right)
+        draw_badge(img, "C104", font_badge, (560, 50))
+        draw_badge(img, "TOKYO", font_badge, (540, 120), color=(0, 120, 255, 255))
+
+    else: # classic
+        font_title = ImageFont.truetype(font_path, 76)
+        font_sub = ImageFont.truetype(font_path, 48)
+        add_glow_text(img, args.title, font_title, (0, 900), "#fffdf7", "#04101f", 7, (90, 230, 255, 180))
+        add_glow_text(img, args.subtitle, font_sub, (0, 1002), "#fff2b0", "#04101f", 5, (255, 220, 120, 150))
+
+    os.makedirs(os.path.dirname(args.output), exist_ok=True)
     img.convert("RGB").save(args.output, quality=95)
     print(f"Saved thumbnail: {args.output}")
 

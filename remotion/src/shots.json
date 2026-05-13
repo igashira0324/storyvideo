@@ -1,82 +1,82 @@
 [
   {
-    "id": "shot_001_intro",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_001_intro.mp4",
+    "id": "shot_001",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_001_home.mp4",
     "duration_frames": 144,
-    "subtitle": "\u5149\u3068\u8abf\u548c\u306e\u5929\u4f7f\u3001\u521d\u97f3\u30df\u30af\u3002",
+    "subtitle": "\u30a2\u30ad\u30cf\u30d0\u30e9\u3067\u6700\u9ad8\u306e\u30b3\u30b9\u30d7\u30ec\u5199\u771f\u3092\u64ae\u308d\u3046\uff01",
     "narration_path": null,
     "transition": "fade"
   },
   {
-    "id": "shot_002_vocal_float",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_002_vocal_float.mp4",
+    "id": "shot_002",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_002_arrival.mp4",
     "duration_frames": 144,
-    "subtitle": "\u305d\u306e\u6b4c\u58f0\u306f\u3001\u7a7a\u306e\u5f7c\u65b9\u307e\u3067\u97ff\u304d\u6e21\u308b\u3002",
-    "narration_path": null,
-    "transition": "crossfade"
-  },
-  {
-    "id": "shot_003_eye_closeup",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_003_eye_closeup.mp4",
-    "duration_frames": 144,
-    "subtitle": "\u661f\u306e\u5149\u3092\u5bbf\u3057\u305f\u3001\u3084\u3055\u3057\u3044\u77b3\u3002",
-    "narration_path": null,
-    "transition": "dissolve"
-  },
-  {
-    "id": "shot_004_chorus_feathers",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_004_chorus_feathers.mp4",
-    "duration_frames": 144,
-    "subtitle": "\u512a\u96c5\u306b\u3001\u305d\u3057\u3066\u529b\u5f37\u304f\u7a7a\u3078\u3068\u821e\u3044\u4e0a\u304c\u308a\u307e\u3059\u3002",
-    "narration_path": null,
-    "transition": "flash"
-  },
-  {
-    "id": "shot_005_wide_wings",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_005_wide_wings.mp4",
-    "duration_frames": 144,
-    "subtitle": "\u7d14\u767d\u306e\u7ffc\u3001\u5e83\u5927\u3067\u6c38\u9060\u306a\u308b\u3082\u306e\u3002",
+    "subtitle": "\u30b3\u30df\u30b1\u4f1a\u5834\u306b\u5230\u7740\uff01",
     "narration_path": null,
     "transition": "fade"
   },
   {
-    "id": "shot_006_land_gracefully",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_006_land_gracefully.mp4",
+    "id": "shot_003",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_003_pose.mp4",
     "duration_frames": 144,
-    "subtitle": "\u96f2\u3092\u7a81\u304d\u629c\u3051\u3001\u305d\u306e\u8f1d\u304d\u306f\u5e0c\u671b\u306e\u5149\u3068\u306a\u308a\u307e\u3059\u3002",
-    "narration_path": null,
-    "transition": "crossfade"
-  },
-  {
-    "id": "shot_007_dance_joy",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_007_dance_joy.mp4",
-    "duration_frames": 144,
-    "subtitle": "\u7d14\u7c8b\u306a\u8abf\u548c\u306e\u821e\u3044\u3002",
-    "narration_path": null,
-    "transition": "dissolve"
-  },
-  {
-    "id": "shot_008_touch_of_light",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_008_touch_of_light.mp4",
-    "duration_frames": 144,
-    "subtitle": "\u305d\u306e\u624b\u306f\u9b42\u3092\u7652\u3084\u3059\u5947\u8de1\u306e\u8f1d\u304d\u3002",
+    "subtitle": "\u30b3\u30b9\u30d7\u30ec\u64ae\u5f71\u4f1a\u306e\u6e96\u5099\u304c\u6574\u3044\u307e\u3057\u305f\u3002",
     "narration_path": null,
     "transition": "fade"
   },
   {
-    "id": "shot_009_ascent",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_009_ascent.mp4",
+    "id": "shot_004",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_004_smile.mp4",
     "duration_frames": 144,
-    "subtitle": "\u96f2\u306e\u5f7c\u65b9\u3078\u3001\u518d\u3073\u9ad8\u307f\u3078\u3068\u6607\u3063\u3066\u3044\u304d\u307e\u3059\u3002",
+    "subtitle": "\u30ab\u30e1\u30e9\u306b\u5411\u304b\u3063\u3066\u7d20\u6575\u306a\u7b11\u9854\uff01",
     "narration_path": null,
-    "transition": "zoom out"
+    "transition": "fade"
   },
   {
-    "id": "shot_010_outro",
-    "path": "pixar_angel_miku_mv/outputs/remotion_norm/shot_010_outro.mp4",
+    "id": "shot_005",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_005_garden.mp4",
     "duration_frames": 144,
-    "subtitle": "\u6c38\u9060\u306f\u3001\u4e00\u7b4b\u306e\u30e1\u30ed\u30c7\u30a3\u306e\u4e2d\u306b\u3002",
+    "subtitle": "\u4f1d\u7d71\u7684\u306a\u5ead\u5712\u3067\u306e\u64ae\u5f71\u958b\u59cb\uff01",
     "narration_path": null,
-    "transition": "fade_to_white"
+    "transition": "fade"
+  },
+  {
+    "id": "shot_006",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_006_walk.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u7f8e\u3057\u3044\u5ead\u5712\u3092\u512a\u96c5\u306b\u6b69\u304d\u307e\u3059\u3002",
+    "narration_path": null,
+    "transition": "fade"
+  },
+  {
+    "id": "shot_007",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_007_details.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u9752\u7dd1\u8272\u306e\u30c4\u30a4\u30f3\u30c6\u30fc\u30eb\u3068\u5149\u8f2a\u306e\u8a73\u7d30\u3002",
+    "narration_path": null,
+    "transition": "fade"
+  },
+  {
+    "id": "shot_008",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_008_cherry.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u685c\u306e\u4e0b\u3067\u306e\u64ae\u5f71\u3002",
+    "narration_path": null,
+    "transition": "fade"
+  },
+  {
+    "id": "shot_009",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_009_sunset.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u7f8e\u3057\u3044\u65e5\u306e\u66ae\u308c\u3002",
+    "narration_path": null,
+    "transition": "fade"
+  },
+  {
+    "id": "shot_010",
+    "path": "comiket_angel_miku_cosplay/outputs/remotion_norm/shot_010_final.mp4",
+    "duration_frames": 144,
+    "subtitle": "\u6700\u5f8c\u306e\u7b11\u9854\u3002",
+    "narration_path": null,
+    "transition": "fade"
   }
 ]
