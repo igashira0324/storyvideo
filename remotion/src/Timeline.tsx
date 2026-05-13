@@ -1,4 +1,4 @@
-import { Series, Video, AbsoluteFill, staticFile, Audio } from 'remotion';
+import { Series, Video, AbsoluteFill, staticFile, Audio, useCurrentFrame } from 'remotion';
 import React from 'react';
 
 interface Shot {
@@ -15,6 +15,52 @@ interface TimelineProps {
   bgm_path?: string;
   bgm_volume?: number;
 }
+
+const OpeningTitle: React.FC = () => {
+  return (
+    <AbsoluteFill
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 120,
+        pointerEvents: 'none',
+      }}
+    >
+      <div
+        style={{
+          textAlign: 'center',
+          fontFamily: '"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif',
+          fontWeight: 900,
+          letterSpacing: '0.05em',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 72,
+            color: '#fffdf7',
+            WebkitTextStroke: '7px rgba(3,12,28,0.95)',
+            textShadow:
+              '0 0 12px rgba(120,230,255,0.95), 0 0 28px rgba(255,225,130,0.75)',
+          }}
+        >
+          天使のミク
+        </div>
+        <div
+          style={{
+            marginTop: 18,
+            fontSize: 44,
+            color: '#fff2b0',
+            WebkitTextStroke: '4px rgba(3,12,28,0.95)',
+            textShadow:
+              '0 0 10px rgba(255,230,150,0.9), 0 0 22px rgba(120,230,255,0.55)',
+          }}
+        >
+          光のメロディ
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
 
 const SubtitleText: React.FC<{ text: string }> = ({ text }) => {
   return (
@@ -76,6 +122,9 @@ const SubtitleText: React.FC<{ text: string }> = ({ text }) => {
 };
 
 const ShotView: React.FC<{ shot: Shot }> = ({ shot }) => {
+  const frame = useCurrentFrame();
+  const showOpeningTitle = shot.id === 'shot_001_intro' && frame < 48;
+
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
       <Video
@@ -95,7 +144,11 @@ const ShotView: React.FC<{ shot: Shot }> = ({ shot }) => {
         <Audio src={staticFile(shot.narration_path)} />
       )}
 
-      {shot.subtitle && (
+      {/* Opening Title Overlay */}
+      {showOpeningTitle && <OpeningTitle />}
+
+      {/* Subtitles (only show if title is NOT showing) */}
+      {shot.subtitle && !showOpeningTitle && (
         <AbsoluteFill
           style={{
             justifyContent: 'flex-end',
