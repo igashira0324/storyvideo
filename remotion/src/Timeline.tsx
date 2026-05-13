@@ -16,7 +16,66 @@ interface TimelineProps {
   bgm_volume?: number;
 }
 
-const ShotView: React.FC<{shot: Shot}> = ({shot}) => {
+const SubtitleText: React.FC<{ text: string }> = ({ text }) => {
+  return (
+    <div
+      style={{
+        position: 'relative',
+        display: 'inline-block',
+        maxWidth: '92%',
+        textAlign: 'center',
+        fontFamily: '"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif',
+        fontSize: 46,
+        lineHeight: 1.35,
+        fontWeight: 900,
+        letterSpacing: '0.045em',
+      }}
+    >
+      {/* Outer dark outline */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          color: 'transparent',
+          WebkitTextStroke: '11px rgba(3, 12, 28, 0.92)',
+          filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.9))',
+          zIndex: 0,
+        }}
+      >
+        {text}
+      </div>
+
+      {/* Cyan glowing outline */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          color: 'transparent',
+          WebkitTextStroke: '5px rgba(95, 225, 255, 0.85)',
+          filter: 'drop-shadow(0 0 8px rgba(100,230,255,0.9)) drop-shadow(0 0 18px rgba(80,190,255,0.65))',
+          zIndex: 1,
+        }}
+      >
+        {text}
+      </div>
+
+      {/* Main text */}
+      <div
+        style={{
+          position: 'relative',
+          color: '#fffdf7',
+          WebkitTextStroke: '1.4px rgba(255, 225, 150, 0.85)',
+          textShadow: '0 0 5px rgba(255,255,255,0.95), 0 0 12px rgba(130,230,255,0.8), 0 2px 4px rgba(0,0,0,0.8)',
+          zIndex: 2,
+        }}
+      >
+        {text}
+      </div>
+    </div>
+  );
+};
+
+const ShotView: React.FC<{ shot: Shot }> = ({ shot }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
       <Video
@@ -41,35 +100,13 @@ const ShotView: React.FC<{shot: Shot}> = ({shot}) => {
           style={{
             justifyContent: 'flex-end',
             alignItems: 'center',
-            paddingBottom: 72,
-            paddingLeft: 36,
-            paddingRight: 36,
+            paddingBottom: 82,
+            paddingLeft: 32,
+            paddingRight: 32,
             pointerEvents: 'none',
           }}
         >
-          <div
-            style={{
-              color: '#fffdf7',
-              fontSize: 42,
-              lineHeight: 1.35,
-              fontWeight: 700,
-              textAlign: 'center',
-              maxWidth: '88%',
-              padding: '14px 28px 16px',
-              borderRadius: 28,
-              fontFamily: '"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif',
-              letterSpacing: '0.04em',
-              background: 'linear-gradient(135deg, rgba(10,18,35,0.58), rgba(40,95,120,0.38))',
-              border: '1.5px solid rgba(255,255,255,0.45)',
-              boxShadow: '0 0 22px rgba(120,220,255,0.32), 0 10px 28px rgba(0,0,0,0.45)',
-              backdropFilter: 'blur(8px)',
-              textShadow: '0 2px 6px rgba(0,0,0,0.9), 0 0 12px rgba(120,220,255,0.65)',
-            }}
-          >
-            <span style={{ color: '#bff7ff', marginRight: 10 }}>✦</span>
-            {shot.subtitle}
-            <span style={{ color: '#ffe9a8', marginLeft: 10 }}>✦</span>
-          </div>
+          <SubtitleText text={shot.subtitle} />
         </AbsoluteFill>
       )}
     </AbsoluteFill>
