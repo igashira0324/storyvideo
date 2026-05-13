@@ -1,0 +1,274 @@
+{
+  "project_name": "PixarStyleAngelMikuMV",
+  "project_title": "Hatsune Miku as an Angel in a Pixar/Disney Aesthetic MV",
+  "composition_name": "FinalVideo",
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "bgm": null,
+  "shots": [
+    {
+      "id": "shot_001_intro",
+      "identity_review": false,
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_001_start.png",
+      "positive_prompt": "Pixar-style 3DCG character Hatsune Miku as an angel, standing in a sunlit garden, big expressive teal eyes, soft skin, vibrant colors. Turquoise twin tails flowing, glowing golden halo, large white feather wings spread wide, white and blue dress. Cinematic 3D lighting.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 1001,
+      "subtitle": "光と調和の天使、初音ミク。",
+      "t2i_prompt": "Beautiful Pixar-style 3DCG image of Hatsune Miku as an angel in a sunlit garden. Big expressive teal eyes, soft subsurface scattering skin, stylized turquoise twin tails, large white feather wings, glowing golden halo, white and light blue dress. Vibrant colors, cinematic lighting.",
+      "transition": "fade",
+      "output": "outputs/shot_001_intro.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_002_vocal_float",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_002_start.png",
+      "positive_prompt": "Pixar-style 3DCG Hatsune Miku angel floating gently, singing with open mouth, expressive facial features, large white wings unfurling, ethereal particles, soft focus garden background, Disney-style character design.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 2002,
+      "subtitle": "Her song transcends the mortal realm.",
+      "t2i_prompt": "Full body shot of Pixar-style angel Hatsune Miku floating, massive white wings open, expressive friendly face, white and blue dress, surrounded by glowing particles, cinematic 3D lighting.",
+      "transition": "crossfade",
+      "output": "outputs/shot_002_vocal_float.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_003_eye_closeup",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_003_start.png",
+      "positive_prompt": "Extreme close-up of Pixar-style Hatsune Miku's face, large expressive teal eyes reflecting light, soft youthful skin, gentle smile, detailed 3D hair strands, ethereal rim lighting, Pixar movie quality.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 3003,
+      "subtitle": "Eyes that hold the light of stars.",
+      "t2i_prompt": "Extreme close-up portrait of Pixar-style angel Hatsune Miku, glowing teal eyes with lens flare, soft skin texture, stylized turquoise twin tails, serene expression, cinematic 3D lighting.",
+      "transition": "dissolve",
+      "output": "outputs/shot_003_eye_closeup.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_004_chorus_feathers",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_004_start.png",
+      "positive_prompt": "Pixar-style Hatsune Miku angel flapping wings vigorously, thousands of stylized white feathers falling like snow, vibrant colors, cinematic 3D atmosphere, dynamic action pose, Disney-style rendering.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 4004,
+      "subtitle": "優雅に、そして力強く空へと舞い上がります。",
+      "t2i_prompt": "Action shot of Pixar-style angel Hatsune Miku in mid-air, flapping massive wings, cascade of white feathers falling, cinematic 3D lighting, high energy composition.",
+      "transition": "flash",
+      "output": "outputs/shot_004_chorus_feathers.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_005_wide_wings",
+      "identity_review": false,
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_005_start.png",
+      "positive_prompt": "Wide cinematic shot from behind, Pixar-style angel Hatsune Miku with enormous white wings fully spread, standing on cloud-like mist, divine god rays illuminating 3D feather details, stylized landscape.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 5005,
+      "subtitle": "純白の翼、広大で永遠なるもの。",
+      "t2i_prompt": "Wide 3D cinematic shot from behind, Pixar-style angel Miku, enormous white wings fully extended, standing on glowing clouds, divine lighting, stylized landscape.",
+      "transition": "fade",
+      "output": "outputs/shot_005_wide_wings.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_006_land_gracefully",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_006_start.png",
+      "positive_prompt": "Pixar-style Hatsune Miku landing gracefully, wings folding gently, friendly smile, big expressive eyes, soft 3D skin, stylized environment, vibrant colors, Disney movie aesthetic.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 6006,
+      "subtitle": "雲を突き抜け、その輝きは希望の光となります。",
+      "t2i_prompt": "Full body shot of Pixar-style angel Miku landing, wings folding, friendly smile, big eyes, white and blue dress, sunlit garden background, high quality 3D render.",
+      "transition": "crossfade",
+      "output": "outputs/shot_006_land_gracefully.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_007_dance_joy",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_007_start.png",
+      "positive_prompt": "Pixar-style Hatsune Miku dancing joyfully, twin tails twirling in 3D space, expressive face, wings moving in rhythm, stylized environment with floating sparkles, vibrant and happy atmosphere.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 7007,
+      "subtitle": "純粋な調和の舞い。",
+      "t2i_prompt": "Dynamic 3D shot of Pixar-style Miku dancing, turquoise twin tails twirling, joyful expression, white wings moving, vibrant colors, cinematic lighting.",
+      "transition": "dissolve",
+      "output": "outputs/shot_007_dance_joy.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_008_touch_of_light",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_008_start.png",
+      "positive_prompt": "Close-up of Pixar-style Hatsune Miku's hand touching a glowing 3D butterfly, soft subsurface scattering on hand, expressive face in background, magical sparkles, dreamlike Pixar quality.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 8008,
+      "subtitle": "その手は魂を癒やす奇跡の輝き。",
+      "t2i_prompt": "Close-up of Pixar-style Miku's hand touching a glowing magical butterfly, soft 3D lighting, subsurface scattering, expressive eyes in bokeh background.",
+      "transition": "fade",
+      "output": "outputs/shot_008_touch_of_light.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_009_ascent",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_009_start.png",
+      "positive_prompt": "Dynamic low angle shot, Pixar-style angel Miku ascending rapidly into golden 3D light, wings flapping swiftly, motion blur, intense radiant glow, cinematic Pixar camera movement.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 9009,
+      "subtitle": "雲の彼方へ、再び高みへと昇っていきます。",
+      "t2i_prompt": "Dynamic 3D shot of Pixar-style angel Miku flying upwards into golden light, wings in motion, motion blur, luminous glow, cinematic composition.",
+      "transition": "zoom out",
+      "output": "outputs/shot_009_ascent.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    },
+    {
+      "id": "shot_010_outro",
+      "identity_review": false,
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_010_start.png",
+      "positive_prompt": "Pixar-style Hatsune Miku angel silhouette fading into pure white brilliance, stylized glowing 3D wings, final peaceful moment, cinematic 3D lighting, dreamlike Pixar ending.",
+      "negative_prompt": "low quality, blurry, distorted, watermark, realistic, 2D",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 10010,
+      "subtitle": "永遠は、一筋のメロディの中に。",
+      "t2i_prompt": "Final shot of Pixar-style angel Miku silhouette dissolving into bright white light, glowing 3D wings, peaceful and grand, cinematic ending.",
+      "transition": "fade_to_white",
+      "output": "outputs/shot_010_outro.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": { "node_id": "267:266", "input_key": "value" },
+        "negative": { "node_id": "267:247", "input_key": "text" },
+        "image": { "node_id": "269", "input_key": "image" },
+        "seeds": [
+          { "node_id": "267:237", "input_key": "noise_seed" },
+          { "node_id": "267:216", "input_key": "noise_seed" }
+        ],
+        "length": { "node_id": "267:225", "input_key": "value" },
+        "save": { "node_id": "75", "input_key": "filename_prefix" }
+      }
+    }
+  ]
+}

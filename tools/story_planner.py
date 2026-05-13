@@ -49,6 +49,7 @@ Guidelines:
 - Ensure 'duration_sec' is an integer between 3 and 8.
 - Ensure 'seed' is an integer.
 - Ensure "output" paths use "outputs/shot_xxx.mp4" format and are unique.
+- IMPORTANT: All "subtitle" and "narration" fields MUST be in Japanese (日本語).
 - Output ONLY the JSON object. Do not include markdown formatting or ellipsis.
 
 Brief:
