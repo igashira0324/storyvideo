@@ -102,7 +102,9 @@ def main():
         "width": shot_plan.get("width", 1280),
         "height": shot_plan.get("height", 720),
         "fps": shot_plan.get("fps", 24),
-        "bgmPath": f"{project_name}/{shot_plan['bgm']}" if shot_plan.get("bgm") else None
+        "bgmPath": f"{project_name}/{shot_plan['bgm']}" if shot_plan.get("bgm") else None,
+        "projectTitle": shot_plan.get("project_title"),
+        "projectSubtitle": shot_plan.get("project_subtitle")
     }
     
     config_path = os.path.join(src_dir, "config.json")

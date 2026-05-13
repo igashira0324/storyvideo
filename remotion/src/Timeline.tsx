@@ -14,9 +14,11 @@ interface TimelineProps {
   shots: Shot[];
   bgm_path?: string;
   bgm_volume?: number;
+  project_title?: string;
+  project_subtitle?: string;
 }
 
-const OpeningTitle: React.FC = () => {
+const OpeningTitle: React.FC<{ title?: string; subtitle?: string }> = ({ title, subtitle }) => {
   return (
     <AbsoluteFill
       style={{
@@ -43,7 +45,7 @@ const OpeningTitle: React.FC = () => {
               '0 0 12px rgba(120,230,255,0.95), 0 0 28px rgba(255,225,130,0.75)',
           }}
         >
-          天使のミク
+          {title || "天使のミク"}
         </div>
         <div
           style={{
@@ -55,7 +57,7 @@ const OpeningTitle: React.FC = () => {
               '0 0 10px rgba(255,230,150,0.9), 0 0 22px rgba(120,230,255,0.55)',
           }}
         >
-          光のメロディ
+          {subtitle || "光のメロディ"}
         </div>
       </div>
     </AbsoluteFill>
@@ -121,7 +123,7 @@ const SubtitleText: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-const ShotView: React.FC<{ shot: Shot; isFirstShot?: boolean }> = ({ shot, isFirstShot }) => {
+const ShotView: React.FC<{ shot: Shot; isFirstShot?: boolean; title?: string; subtitle?: string }> = ({ shot, isFirstShot, title, subtitle }) => {
   const frame = useCurrentFrame();
   const showOpeningTitle = isFirstShot && frame < 48;
 
@@ -145,7 +147,7 @@ const ShotView: React.FC<{ shot: Shot; isFirstShot?: boolean }> = ({ shot, isFir
       )}
 
       {/* Opening Title Overlay */}
-      {showOpeningTitle && <OpeningTitle />}
+      {showOpeningTitle && <OpeningTitle title={title} subtitle={subtitle} />}
 
       {/* Subtitles (only show if title is NOT showing) */}
       {shot.subtitle && !showOpeningTitle && (
@@ -169,7 +171,9 @@ const ShotView: React.FC<{ shot: Shot; isFirstShot?: boolean }> = ({ shot, isFir
 export const MainTimeline: React.FC<TimelineProps> = ({
   shots,
   bgm_path,
-  bgm_volume = 0.3
+  bgm_volume = 0.3,
+  project_title,
+  project_subtitle
 }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
@@ -185,7 +189,12 @@ export const MainTimeline: React.FC<TimelineProps> = ({
       <Series>
         {shots.map((shot, index) => (
           <Series.Sequence key={shot.id} durationInFrames={shot.duration_frames}>
-            <ShotView shot={shot} isFirstShot={index === 0} />
+            <ShotView 
+              shot={shot} 
+              isFirstShot={index === 0} 
+              title={project_title} 
+              subtitle={project_subtitle} 
+            />
           </Series.Sequence>
         ))}
       </Series>

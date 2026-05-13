@@ -3,5 +3,7 @@
   "width": 720,
   "height": 1280,
   "fps": 24,
-  "bgmPath": null
+  "bgmPath": null,
+  "projectTitle": "天使ミク",
+  "projectSubtitle": "コミケ撮影記"
 }

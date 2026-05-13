@@ -19,7 +19,9 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           shots: shotsData,
           bgm_path: config.bgmPath,
-          bgm_volume: 0.2
+          bgm_volume: 0.2,
+          project_title: config.projectTitle,
+          project_subtitle: config.projectSubtitle
         }}
       />
     </>
