@@ -1,0 +1,87 @@
+{
+  "project": "CosplayMiku",
+  "timestamp": "2026-05-13 15:09:52",
+  "total_duration_sec": 1702.8453805446625,
+  "results": [
+    {
+      "id": "shot_001",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_001_home.mp4",
+      "prompt_id": "b130d1e6-05e4-4f03-8100-fd2b014fc0aa"
+    },
+    {
+      "id": "shot_002",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_002_arrival.mp4",
+      "prompt_id": "7ffa88d5-0d06-4ff4-bf71-1c896c4e84a0"
+    },
+    {
+      "id": "shot_003",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_003_pose.mp4",
+      "prompt_id": "ff2938a4-38a1-4800-949b-f57a42b86bc7"
+    },
+    {
+      "id": "shot_004",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_004_smile.mp4",
+      "prompt_id": "5453aef5-149f-45f7-aa3f-a011bfded6a5"
+    },
+    {
+      "id": "shot_005",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_005_garden.mp4",
+      "prompt_id": "55da4ab9-f033-4e1a-a9da-9e90a3eb5a18"
+    },
+    {
+      "id": "shot_006",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_006_walk.mp4",
+      "prompt_id": "1a03468b-67fb-48c1-bfd8-28dd762f3bd0"
+    },
+    {
+      "id": "shot_007",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_007_details.mp4",
+      "prompt_id": "1e0249e9-0c57-46c1-a5bd-9a68bee873ef"
+    },
+    {
+      "id": "shot_008",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_008_cherry.mp4",
+      "prompt_id": "6d3ac6c8-cada-4b52-a0f1-12bff8f5f3e7"
+    },
+    {
+      "id": "shot_009",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_009_sunset.mp4",
+      "prompt_id": "070bafb1-d4be-490a-83c3-96686f7d2c5d"
+    },
+    {
+      "id": "shot_010",
+      "status": "success",
+      "retries": 0,
+      "error": null,
+      "output": "outputs/shot_010_final.mp4",
+      "prompt_id": "0d126eac-f1ae-42f2-b8fd-56f4759730c2"
+    }
+  ]
+}

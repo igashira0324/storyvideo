@@ -1,0 +1,72 @@
+{
+  "shot_001": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.040726661682129
+  },
+  "shot_002": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.2543649673461914
+  },
+  "shot_003": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.4000368118286133
+  },
+  "shot_004": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 0.9061870574951172
+  },
+  "shot_005": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.1722230911254883
+  },
+  "shot_006": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.4034662246704102
+  },
+  "shot_007": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.2590885162353516
+  },
+  "shot_008": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.6777629852294922
+  },
+  "shot_009": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.2690343856811523
+  },
+  "shot_010": {
+    "status": "ok",
+    "needs_review": false,
+    "duration": 6.041667,
+    "resolution": "576x1024",
+    "size_mb": 1.1470260620117188
+  }
+}
