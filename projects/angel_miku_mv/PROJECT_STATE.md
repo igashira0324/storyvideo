@@ -14,6 +14,15 @@
 - [x] Generate video clips for all shots
 - [x] Review video clips
 
-## Phase: Assembly
-- [x] Build Remotion timeline
-- [x] Render final video
+## Phase: Character Lock (Sprint 3)
+- [x] Create `character_identity.json` with descriptive prompts
+- [x] Fix reference image in `assets/character_ref/`
+- [x] Inject identity prompts into T2I and I2V
+- [x] Perform character consistency review using VLM
+- [x] Regenerate all shots with identity injection
+- [x] Re-render final video (v3)
+
+## Current Status
+- **Final Video**: `outputs/angel_miku_60s_mv_v3_identity_fixed.mp4`
+- **Character Consistency**: Improved (VLM Score 0.85-1.0)
+- **Git State**: All tools and configs pushed
