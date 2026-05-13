@@ -1,0 +1,15 @@
+{
+  "project_name": "comiket_angel_miku_cosplay",
+  "model": "ltx_video_2.3",
+  "t2i_preset": "workflow_presets/ernie_image_turbo.json",
+  "i2v_preset": "workflow_presets/ltx23_i2v_api.json",
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "character_consistency": {
+    "enabled": true,
+    "identity_file": "character_identity.json",
+    "mode": "prompt_plus_review",
+    "identity_score_threshold": 0.8
+  }
+}

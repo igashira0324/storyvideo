@@ -121,9 +121,9 @@ const SubtitleText: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-const ShotView: React.FC<{ shot: Shot }> = ({ shot }) => {
+const ShotView: React.FC<{ shot: Shot; isFirstShot?: boolean }> = ({ shot, isFirstShot }) => {
   const frame = useCurrentFrame();
-  const showOpeningTitle = shot.id === 'shot_001_intro' && frame < 48;
+  const showOpeningTitle = isFirstShot && frame < 48;
 
   return (
     <AbsoluteFill style={{ backgroundColor: 'black' }}>
@@ -183,9 +183,9 @@ export const MainTimeline: React.FC<TimelineProps> = ({
       )}
 
       <Series>
-        {shots.map((shot) => (
+        {shots.map((shot, index) => (
           <Series.Sequence key={shot.id} durationInFrames={shot.duration_frames}>
-            <ShotView shot={shot} />
+            <ShotView shot={shot} isFirstShot={index === 0} />
           </Series.Sequence>
         ))}
       </Series>
