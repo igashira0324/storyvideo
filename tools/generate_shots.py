@@ -1,9 +1,5 @@
-import os
-import sys
-import json
-import argparse
-import logging
 from typing import Any, Dict, List, Optional
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Add tools to path
@@ -86,6 +82,7 @@ def main():
     parser.add_argument("--skip-existing", action="store_true", help="Skip if output file already exists")
     parser.add_argument("--dry-run", action="store_true", help="Prepare workflows without sending to ComfyUI")
     parser.add_argument("--retries", type=int, default=1, help="Max retries per shot")
+    parser.add_argument("--force", action="store_true", help="Regenerate shots even if they already exist")
     parser.add_argument("--skip-preflight", action="store_true", help="Skip ComfyUI node type validation")
     args = parser.parse_args()
 
@@ -120,10 +117,17 @@ def main():
             continue
             
         output_path = os.path.join(project_dir, shot["output"])
-        if args.skip_existing and os.path.exists(output_path):
-            logger.info(f"Skipping {shot_id}, output already exists: {output_path}")
-            results.append({"id": shot_id, "status": "skipped", "output": shot["output"]})
-            continue
+        if os.path.exists(output_path):
+            if args.force:
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                base, ext = os.path.splitext(output_path)
+                rejected_path = f"{base}.{ts}.rejected{ext}"
+                os.rename(output_path, rejected_path)
+                logger.info(f"Moved existing video to: {rejected_path}")
+            elif args.skip_existing:
+                logger.info(f"Skipping {shot_id}, output already exists: {output_path}")
+                results.append({"id": shot_id, "status": "skipped", "output": shot["output"]})
+                continue
             
         # Create a copy of shot to avoid modifying original plan in memory
         shot_to_generate = dict(shot)

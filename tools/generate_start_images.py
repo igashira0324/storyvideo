@@ -4,6 +4,7 @@ import json
 import argparse
 import logging
 from typing import Any, Dict, List
+from datetime import datetime
 from providers.comfyui import ComfyUIProvider
 from dotenv import load_dotenv
 
@@ -115,7 +116,9 @@ def generate_start_images(project_dir: str, preset_path: str = None, model: str 
         output_path = os.path.join(project_dir, input_image_rel)
         if os.path.exists(output_path):
             if force:
-                rejected_path = output_path.replace(".png", ".rejected.png")
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                base, ext = os.path.splitext(output_path)
+                rejected_path = f"{base}.{ts}.rejected{ext}"
                 os.rename(output_path, rejected_path)
                 logger.info(f"Moved existing image to: {rejected_path}")
             else:

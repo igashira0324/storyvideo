@@ -110,7 +110,7 @@ def main():
     parser.add_argument("--model", default="minicpm-v", help="Ollama VLM model name")
     parser.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama API URL")
     parser.add_argument("--num-frames", type=int, default=2, help="Number of frames per shot to review")
-    parser.add_argument("--threshold", type=float, default=0.75, help="Minimum identity score")
+    parser.add_argument("--threshold", type=float, help="Minimum identity score (overrides character_identity.json)")
     parser.add_argument("--only", nargs="+", help="Specific shot IDs to review")
     args = parser.parse_args()
 
@@ -149,6 +149,12 @@ def main():
     
     shots_map = {s["id"]: s for s in shot_plan.get("shots", [])}
     consistency_results = {}
+    
+    # Resolve threshold
+    threshold = args.threshold
+    if threshold is None:
+        threshold = float(identity_info.get("identity_score_threshold", 0.75))
+    logger.info(f"Using identity score threshold: {threshold}")
 
     for shot_id, info in review_report.items():
         if args.only and shot_id not in args.only:
@@ -175,14 +181,20 @@ def main():
         res = ask_vlm_consistency(ref_img_path, frame_paths, identity_info, args.model, args.url)
         consistency_results[shot_id] = res
         
+        # Embed result into review report
+        info["character_consistency"] = res
+        
         score = res.get("identity_score", 0.0)
-        passed = res.get("same_character", False) and score >= args.threshold
+        passed = res.get("same_character", False) and score >= threshold
         
         if not passed:
             info["status"] = "identity_rejected"
             info["needs_review"] = True
             logger.warning(f"Shot {shot_id} REJECTED by Character Identity Review (Score: {score}): {res.get('reason')}")
         else:
+            info["needs_review"] = False
+            if info.get("status") == "identity_rejected":
+                info["status"] = "ok"
             logger.info(f"Shot {shot_id} PASSED Character Identity Review (Score: {score})")
 
     # Save reports

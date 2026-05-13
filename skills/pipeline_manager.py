@@ -67,6 +67,8 @@ class VideoSkill:
             "reviewed": 0,
             "ai_passed": 0,
             "identity_passed": 0,
+            "identity_failed": 0,
+            "identity_skipped": 0,
             "needs_regeneration": 0,
             "start_images_total": 0,
             "start_images_existing": 0,
@@ -135,6 +137,12 @@ class VideoSkill:
                         s for s in report.values() 
                         if isinstance(s, dict) and s.get("same_character", False)
                     ])
+                    status["identity_failed"] = len([
+                        s for s in report.values() 
+                        if isinstance(s, dict) and not s.get("same_character", False)
+                    ])
+                    # Count based on shot plan skips
+                    status["identity_skipped"] = status["num_shots"] - (status["identity_passed"] + status["identity_failed"])
             except Exception as e:
                 logger.warning(f"Failed to read consistency report: {e}")
                 
@@ -269,7 +277,7 @@ class VideoSkill:
         print(f"Generated:  {s['generated']}/{s['num_shots']} shots")
         print(f"Reviewed:   {s['reviewed']}/{s['num_shots']} shots")
         print(f"AI Passed:  {s['ai_passed']}/{s['num_shots']} shots")
-        print(f"Identity:   {s['identity_passed']}/{s['num_shots']} shots PASSED")
+        print(f"Identity:   {s['identity_passed']} PASSED, {s['identity_failed']} FAILED, {s['identity_skipped']} SKIPPED")
         print(f"To Re-gen:  {s['needs_regeneration']}")
         
         config = s.get("project_config", {})
