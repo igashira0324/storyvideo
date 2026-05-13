@@ -4,11 +4,12 @@ import argparse
 import os
 import sys
 
+# Priority list for Japanese-capable fonts
 FONT_CANDIDATES = [
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
     "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansJP-Bold.otf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansJP-Bold.otf",
 ]
 
 def find_font(user_font=None):
@@ -29,20 +30,6 @@ def fit_cover(img, width, height):
     left = (new_w - width) // 2
     top = (new_h - height) // 2
     return img.crop((left, top, left + width, top + height))
-
-def draw_centered_text(draw, canvas, text, font, y, fill, stroke_fill, stroke_width):
-    w, _ = canvas.size
-    bbox = draw.textbbox((0, 0), text, font=font, stroke_width=stroke_width)
-    tw = bbox[2] - bbox[0]
-    x = (w - tw) // 2
-    draw.text(
-        (x, y),
-        text,
-        font=font,
-        fill=fill,
-        stroke_width=stroke_width,
-        stroke_fill=stroke_fill,
-    )
 
 def add_glow_text(base, text, font, y, fill, stroke_fill, stroke_width, glow_fill):
     # Glow layer
@@ -94,7 +81,7 @@ def main():
 
     font_path = find_font(args.font)
     if not font_path:
-        print("ERROR: Japanese font not found. Please pass --font /path/to/font", file=sys.stderr)
+        print("ERROR: Japanese-capable font not found. Please install Noto Sans CJK or specify path via --font", file=sys.stderr)
         sys.exit(1)
 
     img = Image.open(args.input).convert("RGBA")
@@ -134,7 +121,10 @@ def main():
         glow_fill=(255, 220, 120, 150),
     )
 
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    output_dir = os.path.dirname(args.output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+        
     img.convert("RGB").save(args.output, quality=95)
     print(f"Saved thumbnail: {args.output}")
 
