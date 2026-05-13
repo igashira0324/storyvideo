@@ -1,0 +1,8 @@
+{
+  "name": "Angel Miku Cosplayer",
+  "display_name": "Angel Miku Cosplayer",
+  "enabled": true,
+  "description": "A beautiful young Japanese woman with fair skin and expressive eyes, cosplaying as Angel Hatsune Miku. She has long, vibrant turquoise twin tails reaching her waist, a small glowing golden halo floating above her head, and two large, detailed white feathered wings attached to her back. She wears a white and light blue frilly dress with gold accents. Her expression is cheerful and serene.",
+  "identity_prompt": "A beautiful young Japanese woman cosplaying as Angel Hatsune Miku, long turquoise twin tails, glowing golden halo, large white feathered wings, white and light blue frilly dress, fair skin, cinematic lighting, high-quality cosplay photography.",
+  "reference_images": ["assets/shot_001_start.png"]
+}

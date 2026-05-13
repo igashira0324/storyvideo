@@ -1,0 +1,551 @@
+{
+  "project_name": "CosplayMiku",
+  "project_title": "Angel Hatsune Miku Cosplay Adventure",
+  "composition_name": "FinalVideo",
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "bgm": null,
+  "shots": [
+    {
+      "id": "shot_001",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_001_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, standing in front of a mirror at home, checking her cosplay outfit, vibrant colors, soft lighting, camera angle from behind showing the reflection in the mirror, focus on detailed wings and halo.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 42,
+      "subtitle": "アキハバラで最高のコスプレ写真を撮ろう！",
+      "narration": null,
+      "t2i_prompt": "美しい女性が自宅で天使型コスプレを確認している様子。大きな白い翼と青緑色のツインテール、輝く光輪を持ち、鏡の前で自分自身をチェックしています。",
+      "transition": "fade",
+      "output": "outputs/shot_001_home.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_002",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_002_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, walking towards Tokyo Big Sight, iconic inverted pyramids in the background, vibrant colors, dynamic camera movement following her, focus on her elegant walk and surroundings.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 43,
+      "subtitle": "コミケ会場に到着！",
+      "narration": null,
+      "t2i_prompt": "美しい女性が東京ビッグサイトに向かって歩く姿。インパクトのある逆ピラミッド型の建物が背景に見え、彼女の華麗な歩き方と周囲の景色を表現。",
+      "transition": "fade",
+      "output": "outputs/shot_002_arrival.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_003",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_003_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, posing in the cosplay area at Tokyo Big Sight, surrounded by many photographers, vibrant colors, dynamic camera movement showing different angles of her pose.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 44,
+      "subtitle": "コスプレ撮影会の準備が整いました。",
+      "narration": null,
+      "t2i_prompt": "美しい女性が東京ビッグサイトでのコスプレエリアでポーズを取る姿。多くのカメラマンたちに囲まれて、彼女の優雅なポージングと周囲の様子を表現。",
+      "transition": "fade",
+      "output": "outputs/shot_003_pose.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_004",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_004_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, close-up of her smiling face at the camera, vibrant colors, soft lighting, focus on her facial expression.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 45,
+      "subtitle": "カメラに向かって素敵な笑顔！",
+      "narration": null,
+      "t2i_prompt": "美しい女性が微笑む姿のクローズアップ。彼女の大きな白い翼と青緑色のツインテール、輝く光輪を背景にした、柔らかな照明の中での表情を表現。",
+      "transition": "fade",
+      "output": "outputs/shot_004_smile.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_005",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_005_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, walking gracefully into a traditional Japanese garden for a dedicated photoshoot, vibrant colors, dynamic camera movement following her, focus on the serene beauty of the garden.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 46,
+      "subtitle": "伝統的な庭園での撮影開始！",
+      "narration": null,
+      "t2i_prompt": "美しい女性が伝統的な日本庭園に入り、専門的な撮影が始まる様子。彼女の大きな白い翼と青緑色のツインテール、輝く光輪を背景にした、静寂な美しさを表現。",
+      "transition": "fade",
+      "output": "outputs/shot_005_garden.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_006",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_006_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, walking gracefully through the garden, wings slightly moving in the breeze, vibrant colors, dynamic camera movement following her, focus on her elegant walk and surroundings.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 47,
+      "subtitle": "美しい庭園を優雅に歩きます。",
+      "narration": null,
+      "t2i_prompt": "美しい女性が伝統的な日本庭園を通って歩く様子。彼女の大きな白い翼と青緑色のツインテール、輝く光輪を持ち、風にそよぐ姿を表現。",
+      "transition": "fade",
+      "output": "outputs/shot_006_walk.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_007",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_007_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, close-up of her turquoise twin tails and the glowing halo, vibrant colors, soft lighting, focus on the details of the hair and halo.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 48,
+      "subtitle": "青緑色のツインテールと光輪の詳細。",
+      "narration": null,
+      "t2i_prompt": "美しい女性が青緑色のツインテールと輝く光輪を持つ様子。彼女の大きな白い翼を背景にした、柔らかな照明の中での細部まで描写。",
+      "transition": "fade",
+      "output": "outputs/shot_007_details.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_008",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_008_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, posing under a cherry blossom tree with a parasol, vibrant colors, dynamic camera movement showing different angles of her pose.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 49,
+      "subtitle": "桜の下での撮影。",
+      "narration": null,
+      "t2i_prompt": "美しい女性が桜の木の下で傘を持ち、ポーズを取る様子。彼女の大きな白い翼と青緑色のツインテール、輝く光輪が背景にある、様々な角度からの描写。",
+      "transition": "fade",
+      "output": "outputs/shot_008_cherry.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_009",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_009_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, sunset shot at the garden, her silhouette against a beautiful traditional Japanese garden, vibrant colors, dynamic camera movement showing different angles of the scene.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 50,
+      "subtitle": "美しい日の暮れ。",
+      "narration": null,
+      "t2i_prompt": "美しい女性が夕日の中、伝統的な日本庭園の背後に映るシルエット。彼女の大きな白い翼と青緑色のツインテール、輝く光輪を背景にした、様々な角度からの描写。",
+      "transition": "fade",
+      "output": "outputs/shot_009_sunset.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    },
+    {
+      "id": "shot_010",
+      "workflow": "comfy_workflows/ltx23_i2v_api.json",
+      "input_image": "assets/shot_010_start.png",
+      "positive_prompt": "Beautiful woman with large white wings and turquoise twin tails, glowing halo, final look at the camera with a peace sign, vibrant colors, dynamic camera movement showing different angles of her pose.",
+      "negative_prompt": "low quality, blurry, distorted, watermark",
+      "duration_sec": 6,
+      "fps": 24,
+      "seed": 51,
+      "subtitle": "最後の笑顔。",
+      "narration": null,
+      "t2i_prompt": "美しい女性がカメラに向かって平和のサインを出す様子。彼女の大きな白い翼と青緑色のツインテール、輝く光輪を背景にした、様々な角度からの描写。",
+      "transition": "fade",
+      "output": "outputs/shot_010_final.mp4",
+      "frame_count_formula": "ltx_8n_plus_1",
+      "workflow_params": {
+        "positive": {
+          "node_id": "267:266",
+          "input_key": "value"
+        },
+        "negative": {
+          "node_id": "267:247",
+          "input_key": "text"
+        },
+        "image": {
+          "node_id": "269",
+          "input_key": "image"
+        },
+        "seeds": [
+          {
+            "node_id": "267:237",
+            "input_key": "noise_seed"
+          },
+          {
+            "node_id": "267:216",
+            "input_key": "noise_seed"
+          }
+        ],
+        "length": {
+          "node_id": "267:225",
+          "input_key": "value"
+        },
+        "save": {
+          "node_id": "75",
+          "input_key": "filename_prefix"
+        },
+        "image_node_id": null,
+        "positive_node_id": null,
+        "negative_node_id": null,
+        "seed_node_ids": null,
+        "length_node_id": null,
+        "save_node_id": null
+      }
+    }
+  ]
+}
