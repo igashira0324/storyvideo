@@ -65,6 +65,12 @@ def main():
 
         # Remotion expects path relative to 'public' folder
         video_rel_path = shot["output"] # e.g. "outputs/shot_001.mp4"
+        
+        # Check if normalized version exists
+        norm_rel = f"outputs/remotion_norm/{os.path.basename(video_rel_path)}"
+        if os.path.exists(os.path.join(project_dir, norm_rel)):
+            video_rel_path = norm_rel
+            
         remotion_path = f"{project_name}/{video_rel_path}"
         
         narration_rel_path = shot.get("narration")
