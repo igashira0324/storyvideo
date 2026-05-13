@@ -5,8 +5,8 @@
   "reference_images": [
     "assets/character_ref/angel_miku_ref_front.png"
   ],
-  "identity_prompt": "same adult female cosplayer as the reference image, angel version Hatsune Miku inspired cosplay, turquoise twin tails, soft youthful face, large teal eyes, white angel dress, translucent white feather wings, halo, elegant idol MV styling",
-  "negative_identity_prompt": "different woman, different face, different hairstyle, short hair, black hair, blonde hair, red hair, male, child, old face, realistic unrelated person, inconsistent costume, missing twin tails, missing wings, extra person",
+  "identity_prompt": "one consistent adult female cosplayer character, turquoise twin tails with long straight twin-tail hair, large teal eyes, soft youthful oval face, small nose, gentle idol expression, white and light blue angel idol dress, translucent white feather wings, glowing halo above head, elegant angel Hatsune Miku inspired cosplay, consistent face, consistent hairstyle, consistent costume",
+  "negative_identity_prompt": "different woman, different person, inconsistent face, face morphing, different hairstyle, short hair, black hair, blonde hair, red hair, missing twin tails, missing halo, missing wings, male, child, old woman, extra person, duplicate character, deformed face, distorted eyes",
   "identity_score_threshold": 0.75,
-  "notes": "Use this file only for character consistency. Do not inject unrelated character bible entries."
+  "notes": "Text-based identity description for T2I and I2V consistency. Reference image used for review only."
 }

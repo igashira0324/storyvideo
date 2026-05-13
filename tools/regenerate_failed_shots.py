@@ -124,8 +124,9 @@ def main():
         logger.info(f"Found {len(failed_shots)} shots that need review.")
         
         # Determine if we need to regenerate T2I (Start Images)
-        # We do this if status is 'identity_rejected' or start image is missing
-        t2i_targets = [sid for sid in failed_shots if review_report[sid].get("status") == "identity_rejected"]
+        # We do this for identity_rejected or ai_rejected to ensure character fixes
+        t2i_statuses = {"identity_rejected", "ai_rejected"}
+        t2i_targets = [sid for sid in failed_shots if review_report[sid].get("status") in t2i_statuses]
         if t2i_targets:
             logger.info(f"Regenerating T2I start images for: {t2i_targets}")
             run_t2i_regeneration(project_dir, t2i_targets)

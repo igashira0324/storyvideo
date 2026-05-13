@@ -23,9 +23,16 @@ def extract_frames(video_path: str, output_dir: str, num_frames: int = 3) -> Lis
     duration = float(subprocess.check_output(cmd).decode().strip())
     
     frame_paths = []
-    for i in range(num_frames):
-        # Extract frames at 10%, 50%, 90%
-        time_pos = duration * (0.1 + 0.4 * i) if num_frames > 1 else duration * 0.5
+    if num_frames <= 1:
+        time_positions = [duration * 0.5]
+    else:
+        # Sample frames from 10% to 90% of duration
+        time_positions = [duration * (0.1 + 0.8 * i / (num_frames - 1)) for i in range(num_frames)]
+    
+    for i, time_pos in enumerate(time_positions):
+        # Ensure time_pos is within valid range [0.1, duration - 0.1]
+        time_pos = min(max(time_pos, 0.1), max(duration - 0.1, 0.1))
+        
         frame_filename = f"frame_cons_{i}.jpg"
         frame_path = os.path.join(output_dir, frame_filename)
         
@@ -148,6 +155,13 @@ def main():
             continue
             
         shot_data = shots_map.get(shot_id)
+        if not shot_data:
+            continue
+            
+        if shot_data.get("identity_review") is False:
+            logger.info(f"Skipping identity review for {shot_id} (identity_review: false)")
+            continue
+
         video_rel = shot_data.get("output")
         video_path = os.path.join(project_dir, video_rel)
         

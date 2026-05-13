@@ -9,6 +9,7 @@
   "shots": [
     {
       "id": "shot_001_intro",
+      "identity_review": false,
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_001_start.png",
       "positive_prompt": "Cinematic shot, ethereal atmosphere, a grand celestial gate made of pure light, a female figure in Hatsune Miku angel cosplay silhouette shrouded in radiant glow, volumetric lighting, divine ambiance, 8k resolution, realistic texture",
@@ -238,6 +239,7 @@
     },
     {
       "id": "shot_005_wide_wings",
+      "identity_review": false,
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_005_start.png",
       "positive_prompt": "Cinematic wide shot, rear view, massive white wings fully spread filling the frame, Hatsune Miku angel cosplay standing on cloud-like mist, ethereal light rays piercing through feathers, divine grandeur, high detail",
@@ -403,6 +405,7 @@
     },
     {
       "id": "shot_008_light_burst",
+      "identity_review": false,
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_008_start.png",
       "positive_prompt": "Extreme wide shot, Hatsune Miku angel cosplay silhouette centered, surrounded by exploding radiant white light, feathers dispersing like stardust, heavenly realm background, divine atmosphere, high contrast",
@@ -457,6 +460,7 @@
     },
     {
       "id": "shot_009_fading_wings",
+      "identity_review": false,
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_009_start.png",
       "positive_prompt": "Medium shot, rear view, wings slowly glowing and dissolving into light particles, Hatsune Miku angel cosplay standing peacefully, ethereal mist surrounding, soft diffused lighting, dreamlike transition",
@@ -514,6 +518,7 @@
     },
     {
       "id": "shot_010_outro",
+      "identity_review": false,
       "workflow": "comfy_workflows/ltx23_i2v_api.json",
       "input_image": "assets/shot_010_start.png",
       "positive_prompt": "Close-up, face barely visible in radiant white light, Hatsune Miku angel cosplay silhouette fading into pure brilliance, ethereal glow, final peaceful moment, cinematic lighting, high quality texture",

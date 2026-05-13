@@ -47,7 +47,7 @@ def load_character_identity(project_dir: str) -> Dict[str, Any]:
             logger.warning(f"Failed to load character identity: {e}")
     return {}
 
-def generate_start_images(project_dir: str, preset_path: str = None, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None):
+def generate_start_images(project_dir: str, preset_path: str = None, model: str = None, dry_run: bool = False, no_bible: bool = False, only_shots: List[str] = None, force: bool = False):
     load_dotenv()
     
     # Resolve Preset
@@ -114,8 +114,13 @@ def generate_start_images(project_dir: str, preset_path: str = None, model: str 
 
         output_path = os.path.join(project_dir, input_image_rel)
         if os.path.exists(output_path):
-            logger.info(f"Skipping {shot_id}: image already exists at {input_image_rel}")
-            continue
+            if force:
+                rejected_path = output_path.replace(".png", ".rejected.png")
+                os.rename(output_path, rejected_path)
+                logger.info(f"Moved existing image to: {rejected_path}")
+            else:
+                logger.info(f"Skipping {shot_id}: image already exists at {input_image_rel}")
+                continue
 
         logger.info(f"Generating start image for {shot_id}...")
         
@@ -154,10 +159,11 @@ def main():
     parser.add_argument("--preset", help="T2I workflow preset JSON (optional, reads from project_config if missing)")
     parser.add_argument("--dry-run", action="store_true", help="Dry run mode")
     parser.add_argument("--no-bible", action="store_true", help="Disable bible injection")
+    parser.add_argument("--force", action="store_true", help="Regenerate start images even if they already exist")
     parser.add_argument("--only", nargs="+", help="Specific shot IDs to generate")
     args = parser.parse_args()
 
-    generate_start_images(args.project, args.preset, dry_run=args.dry_run, no_bible=args.no_bible, only_shots=args.only)
+    generate_start_images(args.project, args.preset, dry_run=args.dry_run, no_bible=args.no_bible, only_shots=args.only, force=args.force)
 
 if __name__ == "__main__":
     main()

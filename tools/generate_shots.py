@@ -32,6 +32,19 @@ def update_node_input(workflow: Dict[str, Any], node_id: str, value: Any, possib
     logger.warning(f"None of the possible keys {possible_keys} found in node {node_id} inputs.")
     return False
 
+def load_character_identity(project_dir: str) -> Dict[str, Any]:
+    """Loads character identity configuration."""
+    identity_path = os.path.join(project_dir, "character_identity.json")
+    if os.path.exists(identity_path):
+        try:
+            with open(identity_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if data.get("enabled"):
+                    return data
+        except Exception as e:
+            logger.warning(f"Failed to load character identity: {e}")
+    return {}
+
 def process_shot(provider: Any, project_dir: str, shot: Dict[str, Any], dry_run: bool = False, max_retries: int = 1, skip_preflight: bool = False) -> Dict[str, Any]:
     shot_id = shot["id"]
     logger.info(f"Processing shot: {shot_id}")
@@ -89,6 +102,11 @@ def main():
     shot_plan = utils.load_json(shot_plan_path)
     provider = ComfyUIProvider(comfy_url)
     
+    # Load Character Identity
+    identity = load_character_identity(project_dir)
+    if identity:
+        logger.info(f"Using character identity for I2V injection: {identity.get('display_name')}")
+    
     shots = shot_plan.get("shots", [])
     results = []
     
@@ -107,7 +125,22 @@ def main():
             results.append({"id": shot_id, "status": "skipped", "output": shot["output"]})
             continue
             
-        report = process_shot(provider, project_dir, shot, args.dry_run, args.retries, args.skip_preflight)
+        # Create a copy of shot to avoid modifying original plan in memory
+        shot_to_generate = dict(shot)
+        
+        # Inject Identity Prompts if enabled
+        if identity:
+            identity_prompt = identity.get("identity_prompt", "")
+            negative_identity_prompt = identity.get("negative_identity_prompt", "")
+            
+            if identity_prompt:
+                shot_to_generate["positive_prompt"] = f"{identity_prompt}\n\n{shot_to_generate.get('positive_prompt', '')}"
+                
+            if negative_identity_prompt:
+                base_neg = shot_to_generate.get("negative_prompt", "")
+                shot_to_generate["negative_prompt"] = f"{negative_identity_prompt}, {base_neg}"
+
+        report = process_shot(provider, project_dir, shot_to_generate, args.dry_run, args.retries, args.skip_preflight)
         results.append(report)
         
         if report["status"] == "failed":
