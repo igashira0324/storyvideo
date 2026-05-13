@@ -1,0 +1,8 @@
+Project: Pixar Style Angel Miku MV
+Theme: Angel Hatsune Miku Cosplay in a high-end 3DCG Pixar/Disney aesthetic.
+Style: Pixar-style 3DCG, big expressive eyes, soft subsurface scattering skin, vibrant colors, cinematic lighting, Disney-style character design.
+Character: Hatsune Miku as an angel. Turquoise twin tails, glowing halo, large white feather wings, white/blue dress.
+Format: 9:16 Vertical, 60 seconds (10 shots, 6s each).
+Music: Uplifting orchestral fantasy.
+Workflow: T2I (Ernie) -> I2V (LTX-2.3) -> Remotion.
+Pipeline: Character Lock MVP (Sprint 3.5).

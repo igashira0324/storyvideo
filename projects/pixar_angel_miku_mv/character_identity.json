@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "identity_id": "pixar_angel_miku_v1",
+  "display_name": "Pixar Angel Miku",
+  "reference_images": [
+    "assets/character_ref/pixar_miku_ref.png"
+  ],
+  "identity_prompt": "high-end 3DCG animation style character, Pixar and Disney aesthetic, large expressive teal eyes, soft rounded face, youthful and friendly expression, stylized turquoise twin tails with silky texture, white and light blue angelic idol dress with detailed fabric, large fluffy white feather wings, glowing golden halo above head, vibrant colors, cinematic 3D lighting, subsurface scattering on skin, masterfully rendered 3D model",
+  "negative_identity_prompt": "realistic, photography, 2D anime, flat shading, low quality, distorted, dark, gritty, mature woman, different person, inconsistent face, missing twin tails, missing wings, missing halo, sketch, painting",
+  "identity_score_threshold": 0.8,
+  "notes": "Pixar/Disney 3DCG aesthetic character lock."
+}
